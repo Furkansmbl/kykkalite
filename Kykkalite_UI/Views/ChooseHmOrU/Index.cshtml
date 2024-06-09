@@ -1,0 +1,53 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 60%;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-outline-success {
+            border: 2px solid #28a745;
+            color: #28a745;
+        }
+
+            .btn-outline-success:hover {
+                background-color: #28a745;
+                color: white;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/GetHmatamaByhmId/Index" class="btn btn-outline-success">Hammadde Sayfasına Git</a>
+        <a href="/GetUpatamaKodlariByUrunID/Index/" class="btn btn-outline-success">Ürün Sayfasına Git</a>
+    </div>
+</body>
+</html>

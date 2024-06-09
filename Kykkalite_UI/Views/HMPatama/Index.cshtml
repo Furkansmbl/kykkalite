@@ -1,0 +1,70 @@
+﻿@model List<ResultHMPatamaDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde Parametre Atama</h6>
+                <a href="/HMPatama/CreateHMPatama/" class="btn btn-outline-info">Yeni Hammadde Parametresi Girişi</a>
+                <td><a href="/HMPatama/UpdateHMPatama/" class="btn btn-outline-success">Güncelle</a></td>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+
+                            <tr>
+                                <th scope="col">HmpaId</th>
+                                <th scope="col">ParametreKodu</th>
+                                <th scope="col">HammaddeId</th>
+                                <th scope="col">HmpatamaKodu</th>
+                                <th scope="col">ParametreKritiklikSeviyesi</th>
+                                <th scope="col">KontrolDegeriNominal</th>
+                                <th scope="col">AltOnaySiniri</th>
+                                <th scope="col">UstOnaySiniri</th>
+                                <th scope="col">AltSartliKabulSiniri</th>
+                                <th scope="col">UstSartliKabulSiniri</th>
+                                <th scope="col">CihazId</th>
+                                <th scope="col">ReferansDokuman</th>
+                                <th scope="col">Aciklama</th>
+                                <th scope="col">FabrikaId</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">EklenmeTarihi</th>
+                                <th scope="col">KullanımDurumu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.HmpaId</th>
+                                    <td>@item.ParametreKodu</td>
+                                    <td>@item.HammaddeId</td>
+                                    <td>@item.HmpatamaKodu</td>
+                                    <td>@item.ParametreKritiklikSeviyesi</td>
+                                    <td>@item.KontrolDegeriNominal</td>
+                                    <td>@item.AltOnaySiniri</td>
+                                    <td>@item.UstOnaySiniri</td>
+                                    <td>@item.AltSartliKabulSiniri</td>
+                                    <td>@item.UstSartliKabulSiniri</td>
+                                    <td>@item.CihazId</td>
+                                    <td>@item.ReferansDokuman</td>
+                                    <td>@item.Aciklama</td>
+                                    <td>@item.FabrikaId</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td>@item.EklenmeTarihi</td>
+                                    <td>@item.KullanimDurumu</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

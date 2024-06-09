@@ -1,0 +1,405 @@
+﻿@using static Kykkalite_UI.Controllers.GetHmatamaByhmIdController
+@using System.Text.Json
+@using System.Text.Encodings.Web
+
+@model QueryViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "";
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .form-group label {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="number"],
+            .form-group select {
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                margin-top: 5px;
+                font-size: 16px;
+                background-color: #fff;
+                box-shadow: none;
+            }
+
+            .form-group button {
+                padding: 10px 20px;
+                background-color: #007bff;
+                border: none;
+                color: #fff;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-size: 16px;
+                box-shadow: none;
+            }
+
+                .form-group button:hover {
+                    background-color: #0056b3;
+                }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            background-color: #fff;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+
+        .btn-outline-success {
+            padding: 8px 16px;
+            border: 2px solid #28a745;
+            color: #28a745;
+            background-color: transparent;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            .btn-outline-success:hover {
+                background-color: #28a745;
+                color: #fff;
+            }
+
+        .no-results {
+            margin-top: 20px;
+            color: #dc3545;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            box-shadow: none; /* Gölgeleri kaldır */
+        }
+
+        input {
+            width: 75px;
+            padding: 10px;
+            border-radius: 10px;
+            outline: none;
+            border: 1px solid #c5c5c5;
+            font-size: 21px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-group">
+        <td><a href="/GetUpatamaKodlariByUrunID/Index/" class="btn btn-outline-success">Ürün Sayfasına Git</a></td>
+
+    </div>
+    <div class="container-fluid">
+        <form method="post">
+            <div class="form-group">
+                <label for="fabrikaAdi">Fabrika Adı:</label>
+                <input type="text" id="fabrikaAdi" name="FabrikAdı" required>
+            </div>
+
+            <div class="form-group">
+                <label for="personelAdSoyad">Personel:</label>
+                <input type="text" class="form-control" value="@ViewBag.PersonelSicilNo" readonly />
+
+            </div>
+
+            <div class="form-group">
+                <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
+                <input type="text" id="malzemeAciklamasi" name="malzemeAciklamasi" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Query</button>
+            </div>
+        </form>
+        <div class="table-container">
+            @if (Model != null && Model.ResultSet != null && Model.ResultSet.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>HammaddeID</th>
+                            <th>Sıra No</th>
+                            <th>Tarihi</th>
+                            <th>Saat</th>
+                            <th>IrsaliyeNo</th>
+                            <th>MalzemeLotSeriNo</th>
+                            <th>KYKBarkodNo</th>
+                            <th>MalzemeUretimTarihi</th>
+                            <th>MalzemeSKT</th>
+                            <th>MalzemeMiktarı</th>
+                            <th>MiktarBirimi</th>
+                            <th>Aciklama</th>
+                            <th>OnayDurumu</th>
+                            <th>Amir OnayDurumu</th>
+                            <th>PersonelSicilNo</th>
+                            @foreach (var item in Model.ResultSet)
+                            {
+                                <th>
+                                    <sub style="font-size: smaller; color: black">ÜŞOS: @item.UstSartliKabulSiniri</sub>
+                                    <br />
+                                    <sub style="font-size: smaller; color: black">ÜOS: @item.UstOnaySiniri</sub>
+                                    <br />
+                                    <sub style="font-size: smaller; color: black">AOS: @item.AltOnaySiniri</sub>
+                                    <br />
+                                    <sub style="font-size: smaller; color: black">AŞOS: @item.AltSartliKabulSiniri</sub>
+                                    <br />
+                                    @item.KontrolParametresi
+                                </th>
+                            }
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="number" name="HammaddeID" class="static" value="@Model.ResultSet[0].HammaddeId" /></td>
+                            <td><input type="number" name="SiraNo" class="static" /></td>
+                            <td><input type="datetime" name="Tarihi" class="static" /></td>
+                            <td><input type="text" name="Saat" class="static" /></td>
+                            <td><input type="text" name="IrsaliyeNo" class="static" /></td>
+                            <td><input type="text" name="MalzemeLotSeriNo" class="static" /></td>
+                            <td><input type="text" name="KYKBarkodNo" class="static" /></td>
+                            <td><input type="datetime" name="MalzemeUretimTarihi" class="static" /></td>
+                            <td><input type="datetime" name="MalzemeSKT" class="static" /></td>
+                            <td><input type="number" name="MalzemeMiktarı" class="static" /></td>
+                            <td><input type="text" name="MiktarBirimi" class="static" /></td>
+                            <td><input type="text" name="Aciklama" class="static" /></td>
+                            <td>
+                                <input id="onay_durumu" type="hidden" name="OnayDurumu" />
+                                <p id="onay_durumu_p">Yukleniyor...</p>
+                                <input type="hidden" name="EklenmeTarihi" class="static" />
+                            </td>
+                            <td><input type="number" name="AmirOnayDurumu" class="static" /></td>
+                            <td><input type="text" name="PersonelSicilNo" class="static" value="@ViewBag.PersonelSicilNo" /></td>
+
+                            @for (int i = 0; i < Model.ResultSet.Count; i++)
+                            {
+                                var name = $"Value{i + 1}";
+                                <td>
+                                    <input type="text" name="@name" id="@i" class="static colorcheck" oninput="updateColor(@i)" onkeydown="updateColor(@i)" />
+                                </td>
+                            }
+                            <td>
+                                <button type="button" class="btn-outline-success" id="sendButton">Gönder</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                
+                    </thead>
+                    <tbody>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+
+            }
+            else
+            {
+                <p class="no-results">Sonuç bulunamadı, verileri tekrar kontrol ediniz.</p>
+            }
+
+        </div>
+    </div>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var now = new Date();
+
+
+            var formattedDate = now.toISOString().slice(0, 16);
+
+            document.querySelector('[name="EklenmeTarihi"]').value = formattedDate;
+        });
+    </script>
+    <script>
+        var jsonStr = '@Html.Raw(JavaScriptEncoder.Default.Encode(JsonSerializer.Serialize(Model?.ResultSet)))'
+        var json = JSON.parse(jsonStr)
+        console.log(json)
+        let inputStatus = new Map();
+
+        function checkColors() {
+            var fields = document.getElementsByClassName("colorcheck");
+        }
+
+        function updateColor(index) {
+            var element = document.getElementById('' + index);
+            var value = parseFloat(element.value);
+            var lowerLimit = json[index].AltOnaySiniri;
+            var upperLimit = json[index].UstOnaySiniri;
+            var lowerConditionalLimit = json[index].AltSartliKabulSiniri
+            var upperConditionalLimit = json[index].UstSartliKabulSiniri
+            var isValidNumber = !isNaN(value);
+            var color = "red";
+
+            if (isValidNumber) {
+                if (value >= lowerLimit && value <= upperLimit) {
+                    color = "green";
+                } else if (value >= lowerConditionalLimit && value <= upperConditionalLimit) {
+                    color = "yellow";
+                    sendEmail(json);
+                }
+            }
+
+            setAndCheckMode(index, color);
+
+            element.style.backgroundColor = color;
+            checkColors();
+        }
+
+        function setAndCheckMode(index, color) {
+            inputStatus.set(index, color);
+
+            let count = {
+                red: 0,
+                yellow: 0,
+                green: 0,
+            };
+
+            inputStatus.forEach((value, index, map) => {
+
+                // count[value] += 1;
+
+                if (value == 'red') {
+                    count.red += 1;
+                } else if (value == 'green') {
+                    count.yellow += 1;
+                } else if (value == 'yellow') {
+                    count.green += 1;
+                }
+            })
+
+            if (count.red > 0) {
+                document.getElementById('onay_durumu').value = 'red';
+                document.getElementById('onay_durumu_p').innerHTML = 'Üretimi Durdur!';
+                document.getElementById('onay_durumu_p').style.backgroundColor = 'red';
+            } else if (count.yellow > 0) {
+                document.getElementById('onay_durumu').value = 'yellow';
+                document.getElementById('onay_durumu_p').innerHTML = 'Onay Bekliyor!';
+                document.getElementById('onay_durumu_p').style.backgroundColor = 'yellow';
+            } else {
+                document.getElementById('onay_durumu').value = 'green';
+                document.getElementById('onay_durumu_p').innerHTML = 'Uygun Sonuçlar';
+                document.getElementById('onay_durumu_p').style.backgroundColor = 'green';
+            }
+
+
+
+            console.log(count)
+        }
+    <script>
+        function toCamelCase(str) {
+            return str.replace(/([-_][a-z])/gi, function ($1) {
+                return $1.toUpperCase().replace('-', '').replace('_', '');
+            }).replace(/^[A-Z]/, function (match) {
+                return match.toLowerCase();
+            });
+        }
+        document.getElementById('sendButton').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            var fields = document.getElementsByClassName("static");
+            var formdata = {};
+            for (var i = 0; i < fields.length; i++) {
+                var field = fields[i];
+                var name = field.name;
+                let value;
+                if (field.type === "checkbox")
+                    value = field.checked;
+                else {
+                    if (!name.startsWith("Value"))
+                        value = field.value.trim();
+                    else
+                        value = field.value ? field.value : "1"
+                    console.log(name, value);
+                }
+
+                formdata[toCamelCase(name)] = value;
+            }
+            console.log(formdata);
+
+
+
+            var jsonData = JSON.stringify(formdata);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/HMnumune/CreateHMnumune", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        alert('Numune ve Value ekleme işlemi başarıyla tamamlandı!');
+                        window.location.href = '/GetUpatamaKodlariByUrunID/Index';
+                    } else {
+                        alert('Post işlemi başarısız oldu. CreateUnumune sayfasına yönlendiriliyorsunuz...');
+                        window.location.href = '/Unumune/CreateUnumune';
+                    }
+                }
+            };
+            xhr.send(jsonData);
+        });
+
+    </script>
+</body>
+</html>

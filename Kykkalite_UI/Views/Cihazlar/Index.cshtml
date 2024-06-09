@@ -1,0 +1,80 @@
+﻿@model List<ResultCihazlarDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Cihazlar</h6>
+                <a href="/Cihazlar/CreateCihazlar/" class="btn btn-outline-info">Yeni Cihaz Ekle</a>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">CihazID</th>
+                                <th scope="col">CihazKodu</th>
+                                <th scope="col">KullanılanCihazEkipman</th>
+                                <th scope="col">FabrikaID</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">EklenmeGuncellenmeTarihi</th>
+                                <th scope="col">KullanımDurumu</th>
+                                <th scope="col">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.CihazID</td>
+                                    <td>@item.CihazKodu</td>
+                                    <td>@item.KullanılanCihazEkipman</td>
+                                    <td>@item.FabrikaID</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td>@item.EklenmeGuncellenmeTarihi</td>
+                                    <td>@item.KullanımDurumu</td>
+                                    <td><a href="/Cihazlar/UpdateCihazlar/@item.CihazKodu" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Güncelleme butonlarına click event'i ekle
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            // Linkin varsayılan davranışını engelle
+            e.preventDefault();
+
+            // Tıklanan butonun bulunduğu satırı seç
+            var row = this.closest('tr');
+
+            // Seçili satırdaki hücrelerden verileri al
+            var cihazId = row.cells[0].innerText.trim();
+            var cihazKodu = row.cells[1].innerText.trim();
+            var kullanılanCihazEkipman = row.cells[2].innerText.trim();
+            var fabrikaID = row.cells[3].innerText.trim();
+            var personelSicilNo = row.cells[4].innerText.trim();
+            var eklenmeGuncellenmeTarihi = row.cells[5].innerText.trim();
+            var kullanımDurumu = row.cells[6].innerText.trim();
+
+            // Güncelleme sayfasına yönlendirme URL'sini oluştur
+            var url = "/Cihazlar/UpdateCihazlar?CihazID=" + encodeURIComponent(cihazId) +
+                "&CihazKodu=" + encodeURIComponent(cihazKodu) +
+                "&KullanılanCihazEkipman=" + encodeURIComponent(kullanılanCihazEkipman) +
+                "&FabrikaID=" + encodeURIComponent(fabrikaID) +
+                "&PersonelSicilNo=" + encodeURIComponent(personelSicilNo) +
+                "&EklenmeGuncellenmeTarihi=" + encodeURIComponent(eklenmeGuncellenmeTarihi) +
+                "&KullanımDurumu=" + encodeURIComponent(kullanımDurumu);
+
+            // Yönlendirme
+            window.location.href = url;
+        });
+    });
+</script>

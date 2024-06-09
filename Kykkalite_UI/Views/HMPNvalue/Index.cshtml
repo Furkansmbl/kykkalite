@@ -1,0 +1,125 @@
+﻿@model List<ResultHMPNvalueDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde Değer</h6>
+                <td> <a href="/HMPNvalue/ExportToExcel" class="btn btn-primary">Export to Excel</a></td>
+
+                <div class="mb-4">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Numune Id ara...">
+                </div>
+                <div class="tab-content" id="hammaddeTabContent">
+                    @for (int i = 0; i < Model.Count; i += 30)
+                    {
+                        <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="table-@(i)" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table hammadde-table" id="hammaddeTable-@(i)">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">HmpnvalueId</th>
+                                            <th scope="col">HmpatamaKodu</th>
+                                            <th scope="col">NumuneId</th>
+                                            <th scope="col">Value</th>
+                                            <th scope="col">EklenmeTarihi</th>
+                                            <th scope="col">PersonelSicilNo</th>
+                                            <th scope="col">Güncelle</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int j = i; j < Math.Min(i + 30, Model.Count); j++)
+                                        {
+                                            var item = Model[j];
+                                            <tr class="hammadde-row">
+                                                <td>@item.HmpnvalueId</td>
+                                                <td>@item.HmpatamaKodu</td>
+                                                <td>@item.NumuneId</td>
+                                                <td>@item.Value</td>
+                                                <td>@item.EklenmeTarihi</td>
+                                                <td>@item.PersonelSicilNo</td>
+                                                <td><a href="/HMPNvalue/UpdateHMPNvalue/" class="btn btn-outline-success">Güncelle</a></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button class="btn btn-primary mt-3" id="advanceButton">İleri</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tabCount = Math.ceil(@Model.Count / 30);
+        var currentTab = 0;
+
+    document.getElementById("advanceButton").addEventListener("click", function () {
+        currentTab++;
+        if (currentTab >= tabCount) {
+            currentTab = 0;
+        }
+        document.querySelector('.tab-pane.show').classList.remove('show', 'active');
+        document.getElementById("table-" + (currentTab * 30)).classList.add('show', 'active');
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('.hammadde-row');
+        var found = false;
+
+        rows.forEach(function (row) {
+            var numuneId = row.cells[2].innerText.toLowerCase();
+            if (numuneId.includes(searchValue)) {
+                row.style.display = '';
+                found = true;
+                var tabPane = row.closest('.tab-pane');
+                if (!tabPane.classList.contains('show')) {
+                    document.querySelector('.tab-pane.show').classList.remove('show', 'active');
+                    tabPane.classList.add('show', 'active');
+                }
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (!found) {
+            var activeTab = document.querySelector('.tab-pane.show');
+            if (activeTab) {
+                activeTab.classList.remove('show', 'active');
+            }
+            var firstTab = document.querySelector('.tab-pane');
+            if (firstTab) {
+                firstTab.classList.add('show', 'active');
+            }
+        }
+    });
+
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var hmpnvalueId = row.cells[0].innerText.trim();
+            var hmpatamaKodu = row.cells[1].innerText.trim();
+            var numuneId = row.cells[2].innerText.trim();
+            var value = row.cells[3].innerText.trim();
+            var eklenmeTarihi = row.cells[4].innerText.trim();
+            var personelSicilNo = row.cells[5].innerText.trim();
+
+            var url = "/HMPNvalue/UpdateHMPNvalue?HmpnvalueId=" + encodeURIComponent(hmpnvalueId) +
+                "&HmpatamaKodu=" + encodeURIComponent(hmpatamaKodu) +
+                "&NumuneId=" + encodeURIComponent(numuneId) +
+                "&Value=" + encodeURIComponent(value) +
+                "&EklenmeTarihi=" + encodeURIComponent(eklenmeTarihi) +
+                "&PersonelSicilNo=" + encodeURIComponent(personelSicilNo);
+            window.location.href = url;
+        });
+    });
+</script>

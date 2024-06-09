@@ -1,0 +1,65 @@
+﻿@model UpdateCihazlarDto
+@{
+    ViewData["Title"] = "UpdateCihazlar";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Cihaz Güncelleme Sayfası</h6>
+                <form method="post">
+                    <input type="hidden" asp-for="CihazID" class="form-control" />
+                    <label>CihazKodu</label>
+                    <input type="text" asp-for="CihazKodu" class="form-control" />
+                    <br />
+                    <label>Kullanılan Cihaz/Ekipman</label>
+                    <input type="text" asp-for="KullanılanCihazEkipman" class="form-control" />
+                    <br />
+                    <label>Fabrikalar</label>
+                    @Html.DropDownListFor(x => x.FabrikaID, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                    <br />
+                    <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
+                    <label>KullanımDurumu</label>
+                    <select asp-for="KullanımDurumu" class="form-select">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <br />
+                    <button class="btn btn-primary">Cihazı Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sayfa yüklendiğinde çalışacak olan kod
+    document.addEventListener('DOMContentLoaded', function () {
+        // Eklenme/Güncellenme Tarihini al
+        var now = new Date();
+
+        // YYYY-MM-DDTHH:MM formatına dönüştür
+        var formattedDate = now.toISOString().slice(0, 16);
+
+        // EklenmeGuncellenmeTarihi alanını bul ve değerini güncelle
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // URL'den parametreleri al
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Parametre değerlerini form alanlarına doldur
+        document.getElementById('CihazID').value = urlParams.get('CihazID');
+        document.getElementById('CihazKodu').value = urlParams.get('CihazKodu');
+        document.getElementById('KullanılanCihazEkipman').value = urlParams.get('KullanılanCihazEkipman');
+        document.getElementById('FabrikaID').value = urlParams.get('FabrikaID');
+        document.getElementById('PersonelSicilNo').value = urlParams.get('PersonelSicilNo');
+        document.getElementById('EklenmeGuncellenmeTarihi').value = urlParams.get('EklenmeGuncellenmeTarihi');
+        document.getElementById('KullanımDurumu').value = urlParams.get('KullanımDurumu');
+    });
+</script>

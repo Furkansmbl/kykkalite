@@ -1,0 +1,136 @@
+﻿@model List<ResultUrunlerDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Ürünler</h6>
+                <a href="/Urunler/CreateUrunler/" class="btn btn-outline-info">Yeni Ürün Girişi</a>
+                <td> <a href="/Urunler/ExportToExcel" class="btn btn-primary">Export to Excel</a></td>
+
+                <div class="mb-4">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Malzeme Açıklaması ara...">
+                </div>
+
+                <ul class="nav nav-tabs" id="parametreTabs" role="tablist">
+                    @for (int i = 0; i < Model.Count; i += 30)
+                    {
+                        var start = i + 1;
+                        var end = Math.Min(i + 30, Model.Count);
+                        <li class="nav-item">
+                            <a class="nav-link @(i == 0 ? "active" : "")" id="tab-@(i)" data-bs-toggle="tab" href="#table-@(i)" role="tab" aria-controls="table-@(i)" aria-selected="@(i == 0 ? "true" : "false")">@(start)-@(end)</a>
+                        </li>
+                    }
+                </ul>
+
+                <div class="tab-content" id="parametreTabContent">
+                    @for (int i = 0; i < Model.Count; i += 30)
+                    {
+                        <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="table-@(i)" role="tabpanel" aria-labelledby="tab-@(i)">
+                            <div class="table-responsive">
+                                <table class="table urun-table" id="urunTable-@(i)">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">MalzemeAciklamasi</th>
+                                            <th scope="col">MalzemeKodu</th>
+                                            <th scope="col">UrunId</th>
+                                            <th scope="col">UrunGrupId</th>
+                                            <th scope="col">PersonelSicilNo</th>
+                                            <th scope="col">KullanımDurumu</th>
+                                            <th scope="col">EklenmeGuncellenmeTarihi</th>
+                                            <th scope="col">Güncelle</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int j = i; j < Math.Min(i + 30, Model.Count); j++)
+                                        {
+                                            var item = Model[j];
+                                            <tr class="urun-row">
+                                                <td>@item.MalzemeAciklamasi</td>
+                                                <td>@item.MalzemeKodu</td>
+                                                <td>@item.UrunId</td>
+                                                <td>@item.UrunGrupId</td>
+                                                <td>@item.PersonelSicilNo</td>
+                                                <td>@item.KullanimDurumu</td>
+                                                <td>@item.EklenmeGuncellenmeTarihi</td>
+                                                <td><a href="/Urunler/UpdateUrunler/" class="btn btn-outline-success">Güncelle</a></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <button class="btn btn-primary mt-3" id="advanceButton">İleri</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tabCount = Math.ceil(@Model.Count / 30);
+        var currentTab = 0;
+
+    document.getElementById("advanceButton").addEventListener("click", function () {
+        currentTab++;
+        if (currentTab >= tabCount) {
+            currentTab = 0;
+        }
+        document.getElementById("tab-" + (currentTab * 30)).click();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('.urun-row');
+        var found = false;
+
+        rows.forEach(function (row) {
+            var malzemeAciklamasi = row.cells[0].innerText.toLowerCase();
+            if (malzemeAciklamasi.includes(searchValue)) {
+                row.style.display = '';
+                found = true;
+                var tabPane = row.closest('.tab-pane');
+                if (!tabPane.classList.contains('show')) {
+                    document.querySelector('.tab-pane.show').classList.remove('show', 'active');
+                    document.querySelector('.nav-link.active').classList.remove('active');
+                    tabPane.classList.add('show', 'active');
+                    var tabId = tabPane.id;
+                    document.querySelector('a[href="#' + tabId + '"]').classList.add('active');
+                }
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (!found) {
+            var activeTab = document.querySelector('.tab-pane.show');
+            activeTab.classList.remove('show', 'active');
+            document.querySelector('.nav-link.active').classList.remove('active');
+            document.querySelector('#table-0').classList.add('show', 'active');
+            document.querySelector('#tab-0').classList.add('active');
+        }
+    });
+
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var malzemeAciklamasi = row.cells[0].innerText.trim();
+            var malzemeKodu = row.cells[1].innerText.trim();
+            var urunId = row.cells[2].innerText.trim();
+            var urunGrupId = row.cells[3].innerText.trim();
+
+            var url = "/Urunler/UpdateUrunler?MalzemeAciklamasi=" + encodeURIComponent(malzemeAciklamasi) +
+                "&MalzemeKodu=" + encodeURIComponent(malzemeKodu) +
+                "&UrunId=" + encodeURIComponent(urunId) +
+                "&UrunGrupId=" + encodeURIComponent(urunGrupId);
+            window.location.href = url;
+        });
+    });
+</script>

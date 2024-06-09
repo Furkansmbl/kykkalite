@@ -1,0 +1,49 @@
+﻿@model UpdateUPNvalueDto
+@{
+    ViewData["Title"] = "UpdateUPNvalue";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Ürün Parametre value Güncelleme Sayfası</h6>
+                <form method="post">
+                    <label>UpnvalueId</label>
+                    <input type="text" asp-for="UpnvalueId" class="form-control" />
+                    <br />
+                    <label>UpatamaKodu</label>
+                    <input type="text" asp-for="UpatamaKodu" class="form-control" />
+                    <br />
+                    <label>NumuneId</label>
+                    <input type="member" asp-for="NumuneId" class="form-control" />
+                    <br />
+                    <label>Value</label>
+                    <input type="text" asp-for="Value" class="form-control" />
+                    <br />
+                    <input type="hidden" class="form-control" asp-for="EklenmeTarihi" />
+                    <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
+
+                    <button class="btn btn-primary">Ürün Parametre value Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+ <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var now = new Date();
+            var formattedDate = now.toISOString().slice(0, 16);
+            document.querySelector('[name="EklenmeTarihi"]').value = formattedDate;
+        });
+ </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('UpnvalueId').value = urlParams.get('UpnvalueId');
+        document.getElementById('UpatamaKodu').value = urlParams.get('UpatamaKodu');
+        document.getElementById('NumuneId').value = urlParams.get('NumuneId');
+        document.getElementById('Value').value = urlParams.get('Value');
+    });
+</script>

@@ -1,0 +1,73 @@
+﻿@model UpdateHMnumuneDto
+@{
+    ViewData["Title"] = "UpdateHMnumune";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde Numune Güncelleme Sayfası</h6>
+                <form method="post">
+                    <label>NumuneId</label>
+                    <input type="member" asp-for="NumuneId" class="form-control" />
+                    <br />
+                    <label>HammaddeId</label>
+                    <input type="member" asp-for="HammaddeId" class="form-control" />
+                    <br />
+                    <label>SiraNo</label>
+                    <input type="member" asp-for="SiraNo" class="form-control" />
+                    <br />
+                    <label>Tarihi</label>
+                    <input type="datetime-local" class="form-control" asp-for="Tarihi" />
+                    <br />
+                    <label>IrsaliyeNo</label>
+                    <input type="text" asp-for="IrsaliyeNo" class="form-control" />
+                    <br />
+                    <label>MalzemeLotSeriNo</label>
+                    <input type="text" asp-for="MalzemeLotSeriNo" class="form-control" />
+                    <br />
+                    <label>KykbarkodNo</label>
+                    <input type="text" asp-for="KykbarkodNo" class="form-control" />
+                    <br />
+                    <label>MalzemeUretimTarihi</label>
+                    <input type="datetime" asp-for="MalzemeUretimTarihi" class="form-control" />
+                    <br />
+                    <label>MalzemeSkt</label>
+                    <input type="datetime-local" class="form-control" asp-for="MalzemeSkt" />
+                    <br />
+                    <label>MalzemeMiktarı</label>
+                    <input type="member" asp-for="MalzemeMiktarı" class="form-control" />
+                    <br />
+                    <label>MalzemeMiktarı</label>
+                    <input type="member" asp-for="MalzemeMiktarı" class="form-control" />
+                    <br /><label>MiktarBirimi</label>
+                    <input type="text" asp-for="MiktarBirimi" class="form-control" />
+                    <br /><label>Aciklama</label> 
+                    <input type="text" asp-for="Aciklama" class="form-control" />
+                    <br />
+                    <label>OnayDurumu</label>
+                    <select asp-for="OnayDurumu" class="form-select">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <br />
+                    <label>AmirOnayDurumu</label>
+                    <select asp-for="AmirOnayDurumu" class="form-select">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <br />
+                    <label>Tarihi</label>
+                    <input type="datetime-local" class="form-control" asp-for="Tarihi" />
+                    <br />
+                    <label>PersonelSicilNo</label>
+                    <input type="text" asp-for="PersonelSicilNo" class="form-control" />
+                    <br />
+                    <button class="btn btn-success">Hammadde numuneyi Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+

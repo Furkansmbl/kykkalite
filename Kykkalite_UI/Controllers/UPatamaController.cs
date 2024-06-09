@@ -1,0 +1,204 @@
+﻿using Kykkalite_UI.Dtos.CihazlarDtos;
+using Kykkalite_UI.Dtos.FabrikalarDtos;
+using Kykkalite_UI.Dtos.UPatamaDtos;
+using Kykkalite_UI.Dtos.CihazlarDtos;
+using Kykkalite_UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using System.Text;
+using Kykkalite_UI.Dtos.ParametrelerDtos;
+using Kykkalite_UI.Dtos.UrunlerDtos;
+
+namespace Kykkalite_UI.Controllers
+{
+    public class UPatamaController : Controller
+    {
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILoginService _loginService;
+        private readonly IHttpContextAccessor _contextAccessor;
+        public UPatamaController(IHttpClientFactory httpClientFactory, ILoginService loginService, IHttpContextAccessor contextAccessor)
+        {
+
+            _httpClientFactory = httpClientFactory;
+            _loginService = loginService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var user = User.Claims;
+            var userId = _loginService.GetPersonelSicilNo;
+            var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
+            if (token != null)
+            {
+                var client = _httpClientFactory.CreateClient();
+                var responseMessage = await client.GetAsync("https://localhost:44344/api/UPatama");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    var jsonData = await responseMessage.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<List<ResultUPatamaDto>>(jsonData);
+                    return View(values);
+                }
+            }
+            return View();
+        }
+        [HttpGet]
+         public async Task<IActionResult> CreateUPatama()
+        {
+            var userId = _loginService.GetPersonelSicilNo;
+            var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
+
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika");
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
+
+            List<SelectListItem> fabrikaValues = (from x in values.ToList()
+                                                  select new SelectListItem
+                                                  {
+                                                      Text = x.FabrikaAdi,
+                                                      Value = x.FabrikaID.ToString(),
+                                                  }).ToList();
+            var client2 = _httpClientFactory.CreateClient();
+            var responseMessage2 = await client2.GetAsync("https://localhost:44344/api/Cihazlar");
+
+            var jsonData2 = await responseMessage2.Content.ReadAsStringAsync();
+            var values2 = JsonConvert.DeserializeObject<List<ResultCihazlarDto>>(jsonData2);
+
+            List<SelectListItem> cihazlarValues = (from x in values2.ToList()
+                                                   select new SelectListItem
+                                                   {
+                                                       Text = x.KullanılanCihazEkipman,
+                                                       Value = x.CihazID.ToString(),
+                                                   }).ToList();
+            var client3 = _httpClientFactory.CreateClient();
+            var responseMessage3 = await client3.GetAsync("https://localhost:44344/api/Parametreler");
+
+            var jsonData3 = await responseMessage3.Content.ReadAsStringAsync();
+            var values3 = JsonConvert.DeserializeObject<List<ResultParametreDto>>(jsonData3);
+
+            List<SelectListItem> parametrelervalues = (from x in values3.ToList()
+                                                       select new SelectListItem
+                                                       {
+                                                           Text = x.KontrolParametresi,
+                                                           Value = x.ParametreKodu.ToString(),
+                                                       }).ToList();
+            var client4 = _httpClientFactory.CreateClient();
+            var responseMessage4 = await client4.GetAsync("https://localhost:44344/api/Urunler");
+
+            var jsonData4 = await responseMessage4.Content.ReadAsStringAsync();
+            var values4 = JsonConvert.DeserializeObject<List<ResultUrunlerDto>>(jsonData4);
+
+            List<SelectListItem> Urunlervalues = (from x in values4.ToList()
+                                                  select new SelectListItem
+                                                  {
+                                                      Text = x.MalzemeAciklamasi,
+                                                      Value = x.UrunId.ToString(),
+                                                  }).ToList();
+            ViewBag.u = Urunlervalues;
+            ViewBag.v = fabrikaValues;
+            ViewBag.vv = cihazlarValues;
+            ViewBag.vvv = parametrelervalues;
+
+
+            ViewBag.UserId = userId;
+            ViewBag.Token = token;
+            ViewBag.PersonelSicilNo = userId;
+
+            return View();
+        }
+    
+        [HttpPost]
+        public async Task<IActionResult> CreateUPatama(CreateUPatamaDto createUPatamaDto)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createUPatamaDto);
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await client.PostAsync("https://localhost:44344/api/UPatama", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> UpdateUPatama(int id)
+        {
+            var userId = _loginService.GetPersonelSicilNo;
+            var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
+
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika");
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
+
+            List<SelectListItem> fabrikaValues = (from x in values.ToList()
+                                                  select new SelectListItem
+                                                  {
+                                                      Text = x.FabrikaAdi,
+                                                      Value = x.FabrikaID.ToString(),
+                                                  }).ToList();
+            var client2 = _httpClientFactory.CreateClient();
+            var responseMessage2 = await client2.GetAsync("https://localhost:44344/api/Cihazlar");
+
+            var jsonData2 = await responseMessage2.Content.ReadAsStringAsync();
+            var values2 = JsonConvert.DeserializeObject<List<ResultCihazlarDto>>(jsonData);
+
+            List<SelectListItem> cihazlarValues = (from x in values2.ToList()
+                                                   select new SelectListItem
+                                                   {
+                                                       Text = x.KullanılanCihazEkipman,
+                                                       Value = x.CihazID.ToString(),
+                                                   }).ToList();
+            var client3 = _httpClientFactory.CreateClient();
+            var responseMessage3 = await client3.GetAsync("https://localhost:44344/api/Parametreler");
+
+            var jsonData3 = await responseMessage3.Content.ReadAsStringAsync();
+            var values3 = JsonConvert.DeserializeObject<List<ResultParametreDto>>(jsonData3);
+
+            List<SelectListItem> parametrelervalues = (from x in values3.ToList()
+                                                   select new SelectListItem
+                                                   {
+                                                       Text = x.KontrolParametresi,
+                                                       Value = x.ParametreKodu.ToString(),
+                                                   }).ToList();
+            var client4 = _httpClientFactory.CreateClient();
+            var responseMessage4 = await client4.GetAsync("https://localhost:44344/api/Urunler");
+
+            var jsonData4 = await responseMessage4.Content.ReadAsStringAsync();
+            var values4 = JsonConvert.DeserializeObject<List<ResultUrunlerDto>>(jsonData4);
+
+            List<SelectListItem> Urunlervalues = (from x in values4.ToList()
+                                                       select new SelectListItem
+                                                       {
+                                                           Text = x.MalzemeAciklamasi,
+                                                           Value = x.UrunId.ToString(),
+                                                       }).ToList();
+            ViewBag.u = Urunlervalues;
+            ViewBag.v = fabrikaValues;
+            ViewBag.vv = cihazlarValues;
+            ViewBag.vvv = parametrelervalues;
+
+
+            ViewBag.UserId = userId;
+            ViewBag.Token = token;
+            ViewBag.PersonelSicilNo = userId;
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateUPatama(UpdateUPatamaDto updateUPatamaDto)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(updateUPatamaDto);
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await client.PutAsync("https://localhost:44344/api/UPatama/", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+    }
+}

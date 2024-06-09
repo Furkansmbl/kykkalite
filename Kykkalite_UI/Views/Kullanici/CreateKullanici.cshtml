@@ -1,0 +1,56 @@
+﻿@model CreateKullaniciDto
+@{
+    ViewData["Title"] = "CreateKullanici";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Yeni Personel Ekleme Sayfası</h6>
+                <form method="post">
+                    <br />
+                    <label>PersonelSicilNo</label>
+                    <input type="text" asp-for="PersonelSicilNo" class="form-control" />
+                    <br />
+                    <label>PersonelAdiSoyadi</label>
+                    <input type="text" asp-for="PersonelAdiSoyadi" class="form-control" />
+                    <br />
+                    <label>Fabrikalar</label>
+                    @Html.DropDownListFor(x => x.FabrikaId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                    <br />
+                    <label>Gorevi</label>
+                    <input type="text" asp-for="Gorevi" class="form-control" />
+                    <br />
+                    <label>AdminUser</label>
+                    <select asp-for="AdminUser" class="form-select">
+                        <option value="1">Admin</option>
+                        <option value="0">User</option>
+                    </select>
+                    <br />
+                    <label>Password</label>
+                    <input type="member" asp-for="Password" class="form-control" />
+                    <br />
+                    <label>KullanımDurumu</label>
+                    <select asp-for="KullanimDurumu" class="form-select">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
+                    <br />
+                    <button class="btn btn-primary">Personeli Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var now = new Date();
+
+        var formattedDate = now.toISOString().slice(0, 16);
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+</script>

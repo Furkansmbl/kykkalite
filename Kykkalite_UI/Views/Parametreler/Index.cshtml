@@ -1,0 +1,134 @@
+﻿@model List<ResultParametreDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+<div class="bg-light rounded h-100 p-4">
+    <h6 class="mb-4">Parametreler</h6>
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+                <a href="/Parametreler/CreateParametreler/" class="btn btn-outline-info">Yeni Parametre Girişi</a>
+                <td> <a href="/Parametreler/ExportToExcel" class="btn btn-primary">Export to Excel</a></td>
+
+                <div class="mb-4">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Kontrol Parametresi ara...">
+                </div>
+                <ul class="nav nav-tabs" id="parametreTabs" role="tablist">
+                    @for (int i = 0; i < Model.Count; i += 15)
+                    {
+                        var start = i + 1;
+                        var end = Math.Min(i + 15, Model.Count);
+                        <li class="nav-item">
+                            <a class="nav-link @(i == 0 ? "active" : "")" id="tab-@(i)" data-bs-toggle="tab" href="#table-@(i)" role="tab" aria-controls="table-@(i)" aria-selected="@(i == 0 ? "true" : "false")">@(start)-@(end)</a>
+                        </li>
+                    }
+                </ul>
+
+                <div class="tab-content" id="parametreTabContent">
+                    @for (int i = 0; i < Model.Count; i += 15)
+                    {
+                        <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="table-@(i)" role="tabpanel" aria-labelledby="tab-@(i)">
+                            <div class="table-responsive">
+                                <table class="table urun-table" id="urunTable-@(i)">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ParametreKodu</th>
+                                            <th scope="col">KontrolParametresi</th>
+                                            <th scope="col">ParametreTipiOlcmeGozlem</th>
+                                            <th scope="col">Birimi</th>
+                                            <th scope="col">PersonelSicilNo</th>
+                                            <th scope="col">KullanımDurumu</th>
+                                            <th scope="col">EklenmeGuncellenmeTarihi</th>
+                                            <th scope="col">Güncelle</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int j = i; j < Math.Min(i + 15, Model.Count); j++)
+                                        {
+                                            var item = Model[j];
+                                            <tr class="urun-row">
+                                                <td>@item.ParametreKodu</td>
+                                                <td>@item.KontrolParametresi</td>
+                                                <td>@item.ParametreTipiOlcmeGozlem</td>
+                                                <td>@item.Birimi</td>
+                                                <td>@item.PersonelSicilNo</td>
+                                                <td>@item.KullanimDurumu</td>
+                                                <td>@item.EklenmeGuncellenmeTarihi</td>
+                                                <td><a href="/Parametreler/UpdateParametreler/" class="btn btn-outline-success">Güncelle</a></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <button class="btn btn-primary mt-3" id="advanceButton">İleri</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tabCount = Math.ceil(@Model.Count / 15);
+        var currentTab = 0;
+
+    document.getElementById("advanceButton").addEventListener("click", function () {
+        currentTab++;
+        if (currentTab >= tabCount) {
+            currentTab = 0;
+        }
+        document.getElementById("tab-" + (currentTab * 15)).click();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('.urun-row');
+        var found = false;
+
+        rows.forEach(function (row) {
+            var kontrolParametresi = row.cells[1].innerText.toLowerCase(); 
+            if (kontrolParametresi.includes(searchValue)) {
+                row.style.display = '';
+                found = true;
+                var tabPane = row.closest('.tab-pane');
+                if (!tabPane.classList.contains('show')) {
+                    document.querySelector('.tab-pane.show').classList.remove('show', 'active');
+                    document.querySelector('.nav-link.active').classList.remove('active');
+                    tabPane.classList.add('show', 'active');
+                    var tabId = tabPane.id;
+                    document.querySelector('a[href="#' + tabId + '"]').classList.add('active');
+                }
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (!found) {
+            var activeTab = document.querySelector('.tab-pane.show');
+            activeTab.classList.remove('show', 'active');
+            document.querySelector('.nav-link.active').classList.remove('active');
+            document.querySelector('#table-0').classList.add('show', 'active');
+            document.querySelector('#tab-0').classList.add('active');
+        }
+    });
+
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var parametreKodu = row.cells[0].innerText.trim();
+            var kontrolParametresi = row.cells[1].innerText.trim();
+            var parametreTipiOlcmeGozlem = row.cells[2].innerText.trim();
+            var birimi = row.cells[3].innerText.trim();
+
+            var url = "/Parametreler/UpdateParametreler?ParametreKodu=" + encodeURIComponent(parametreKodu) +
+                "&KontrolParametresi=" + encodeURIComponent(kontrolParametresi) +
+                "&ParametreTipiOlcmeGozlem=" + encodeURIComponent(parametreTipiOlcmeGozlem) +
+                "&Birimi=" + encodeURIComponent(birimi);
+            window.location.href = url;
+        });
+    });
+</script>

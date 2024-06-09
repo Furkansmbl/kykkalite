@@ -1,0 +1,54 @@
+﻿@model List<ResultHammaddeGruplariDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde Gruplari</h6>
+
+                <a href="/HammaddeGruplari/CreateHammaddeGruplari/" class="btn btn-outline-info">Yeni Hammadde Grubu Girişi</a>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">HammaddeGrupId</th>
+                                <th scope="col">Hammadde Grup Adı</th>
+                                <th scope="col">Güncelle</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.HammaddeGrupId</th>
+                                    <td>@item.HmgrupAdi</td>
+                                    <td><a href="/HammaddeGruplari/UpdateHammaddeGruplari/" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var hammaddeGrupId = row.cells[0].innerText.trim();
+            var hmgrupAdi = row.cells[1].innerText.trim();
+
+            var url = "/HammaddeGruplari/UpdateHammaddeGruplari?HammaddeGrupId=" + encodeURIComponent(hammaddeGrupId) +
+                "&HmgrupAdi=" + encodeURIComponent(hmgrupAdi);
+            window.location.href = url;
+        });
+    });
+</script>

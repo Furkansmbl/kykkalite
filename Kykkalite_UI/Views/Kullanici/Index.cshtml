@@ -1,0 +1,77 @@
+﻿@model List<ResultKullaniciDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Personeller</h6>
+                <a href="/Kullanici/CreateKullanici/" class="btn btn-outline-info">Yeni Personel Girişi</a>
+                <td> <a href="/Kullanici/ExportToExcel" class="btn btn-primary">Export to Excel</a></td>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">PersonelAdiSoyadi</th>
+                                <th scope="col">FabrikaId</th>
+                                <th scope="col">Gorevi</th>
+                                <th scope="col">AdminUser</th>
+                                <th scope="col">Password</th>
+                                <th scope="col">KullanimDurumu</th>
+                                <th scope="col">EklenmeGuncellenmeTarihi</th>
+                                <th scope="col">Güncelle</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.PersonelSicilNo</th>
+                                    <td>@item.PersonelAdiSoyadi</td>
+                                    <td>@item.FabrikaId</td>
+                                    <td>@item.Gorevi</td>
+                                    <td>@item.AdminUser</td>
+                                    <td>@item.Password</td>
+                                    <td>@item.KullanimDurumu</td>
+                                    <td>@item.EklenmeGuncellenmeTarihi</td>
+                                    <td><a href="/Kullanici/UpdateKullanici/" class="btn btn-outline-success">Güncelle</a></td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var personelSicilNo = row.cells[0].innerText.trim();
+            var personelAdiSoyadi = row.cells[1].innerText.trim();
+            var fabrikaId = row.cells[2].innerText.trim();
+            var gorevi = row.cells[3].innerText.trim();
+            var adminUser = row.cells[4].innerText.trim();
+            var password = row.cells[5].innerText.trim();
+            var kullanimDurumu = row.cells[6].innerText.trim();
+
+            var url = "/Kullanici/UpdateKullanici?PersonelSicilNo=" + encodeURIComponent(personelSicilNo) +
+                "&PersonelAdiSoyadi=" + encodeURIComponent(personelAdiSoyadi) +
+                "&FabrikaId=" + encodeURIComponent(fabrikaId) +
+                "&Gorevi=" + encodeURIComponent(gorevi) +
+                "&AdminUser=" + encodeURIComponent(adminUser) +
+                "&Password=" + encodeURIComponent(password) +
+                "&KullanimDurumu=" + encodeURIComponent(kullanimDurumu);
+                window.location.href = url;
+        });
+    });
+</script>

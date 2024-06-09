@@ -1,0 +1,51 @@
+﻿@model List<ResultUrunGruplarİDto>
+@{
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Ürün Grupları</h6>
+                <a href="/UrunGruplari/CreateUrunGruplari/" class="btn btn-outline-info">Yeni Ürün Grubu Girişi</a>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">UrunGrupId</th>
+                                <th scope="col">UgrupAdi</th>
+                                <th scope="col">Güncelle</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.UrunGrupId</th>
+                                    <td>@item.UgrupAdi</td>
+                                    <td><a href="/UrunGruplari/UpdateUrunGruplari/" class="btn btn-outline-success">Güncelle</a></td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var urunGrupId = row.cells[0].innerText.trim();
+            var ugrupAdi = row.cells[1].innerText.trim();
+
+            var url = "/UrunGruplari/UpdateUrunGruplari?UrunGrupId=" + encodeURIComponent(urunGrupId) +
+                "&UgrupAdi=" + encodeURIComponent(ugrupAdi);
+            window.location.href = url;
+        });
+    });
+</script>

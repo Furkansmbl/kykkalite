@@ -1,0 +1,58 @@
+﻿@model UpdateParametrelerDto
+@{
+    ViewData["Title"] = "UpdateParametreler";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4"> Parametre Güncelleme Sayfası</h6>
+                <form method="post">
+                    <label>ParametreKodu</label>
+                    <input type="H" asp-for="ParametreKodu" class="form-control" />
+                    <br />
+                    <label>KontrolParametresi</label>
+                    <input type="text" asp-for="KontrolParametresi" class="form-control" />
+                    <br />
+                    <label>ParametreTipiOlcmeGozlem</label>
+                    <select asp-for="ParametreTipiOlcmeGozlem" class="form-select">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <br />
+                    <label>Birimi</label>
+                    <input type="text" asp-for="Birimi" class="form-control" />
+                    <br />
+                    <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
+
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
+                    <label>KullanımDurumu</label>
+                    <select asp-for="KullanimDurumu" class="form-select">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <br />
+                    <button class="btn btn-primary">Parametreyi Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var now = new Date();
+        var formattedDate = now.toISOString().slice(0, 16);
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('ParametreKodu').value = urlParams.get('ParametreKodu');
+        document.getElementById('KontrolParametresi').value = urlParams.get('KontrolParametresi');
+        document.getElementById('Birimi').value = urlParams.get('Birimi');
+    });
+</script>
+

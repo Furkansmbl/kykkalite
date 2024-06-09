@@ -1,0 +1,48 @@
+﻿@model UpdateHMPNvalueDto
+@{
+    ViewData["Title"] = "UpdateHMPNvalue";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde parametre value Güncelleme Sayfası</h6>
+                <form method="post">
+                    <label>HmpnvalueId</label>
+                    <input type="member" asp-for="HmpnvalueId" class="form-control" />
+                    <br />
+                    <label>HmpatamaKodu</label>
+                    <input type="text" asp-for="HmpatamaKodu" class="form-control" />
+                    <br />
+                    <label>NumuneId</label>
+                    <input type="member" asp-for="NumuneId" class="form-control" />
+                    <br />
+                    <label>Value</label>
+                    <input type="text" asp-for="Value" class="form-control" />
+                    <br />
+                    <label>EklenmeTarihi</label>
+                    <input type="datetime" asp-for="EklenmeTarihi" class="form-control" />
+                    <br />
+                    <label>PersonelSicilNo</label>
+                    <input type="text" asp-for="PersonelSicilNo" class="form-control" />
+                    <br />
+                    <button class="btn btn-success">Hammadde parametre value Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            document.getElementById('HmpnvalueId').value = urlParams.get('HmpnvalueId');
+            document.getElementById('HmpatamaKodu').value = urlParams.get('HmpatamaKodu');
+            document.getElementById('NumuneId').value = urlParams.get('NumuneId');
+            document.getElementById('Value').value = urlParams.get('Value');
+            document.getElementById('EklenmeTarihi').value = urlParams.get('EklenmeTarihi');
+            document.getElementById('PersonelSicilNo').value = urlParams.get('PersonelSicilNo');
+
+        });
+    </script>
+

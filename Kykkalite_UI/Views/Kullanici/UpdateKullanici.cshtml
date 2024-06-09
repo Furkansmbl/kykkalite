@@ -1,0 +1,64 @@
+﻿@model UpdateKullaniciDto
+@{
+    ViewData["Title"] = "UpdateKullanici";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4"> Personel Güncelleme Sayfası</h6>
+                <form method="post">
+                    <br />
+                    <label>PersonelSicilNo</label>
+                    <input type="text" asp-for="PersonelSicilNo" class="form-control" />
+                    <br />
+                    <label>PersonelAdiSoyadi</label>
+                    <input type="text" asp-for="PersonelAdiSoyadi" class="form-control" />
+                    <br />
+                    <label>Fabrikalar</label>
+                    @Html.DropDownListFor(x => x.FabrikaId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                    <br />
+                    <label>Gorevi</label>
+                    <input type="text" asp-for="Gorevi" class="form-control" />
+                    <br />
+                    <label>AdminUser</label>
+                    <input type="member" asp-for="AdminUser" class="form-control" />
+                    <br />
+                    <label>Password</label>
+                    <input type="member" asp-for="Password" class="form-control" />
+                    <br />
+                    <label>Kullanım Durumu</label>
+                    <input type="member" asp-for="KullanimDurumu" class="form-control" />
+                    <br />
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
+                    <br />
+                    <button class="btn btn-primary">Personeli Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var now = new Date();
+
+        var formattedDate = now.toISOString().slice(0, 16);
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('PersonelSicilNo').value = urlParams.get('PersonelSicilNo');
+        document.getElementById('PersonelAdiSoyadi').value = urlParams.get('PersonelAdiSoyadi');
+        document.getElementById('FabrikaId').value = urlParams.get('FabrikaId');
+        document.getElementById('Gorevi').value = urlParams.get('Gorevi');
+        document.getElementById('AdminUser').value = urlParams.get('AdminUser');
+        document.getElementById('Password').value = urlParams.get('Password');
+        document.getElementById('KullanimDurumu').value = urlParams.get('KullanimDurumu');
+
+    });
+</script>

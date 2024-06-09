@@ -1,0 +1,63 @@
+﻿@model UpdateUrunlerDto
+@{
+    ViewData["Title"] = "UpdateUrunler";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Ürün Güncelleme Sayfası</h6>
+                <form method="post">
+                   
+                    <label>MalzemeKodu</label>
+                    <input type="text" asp-for="MalzemeKodu" class="form-control" />
+                    <br />
+                    <label>MalzemeAciklamasi</label>
+                    <input type="text" asp-for="MalzemeAciklamasi" class="form-control" />
+                    <br />
+                    <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
+                    <label>KullanımDurumu</label>
+                    <select asp-for="KullanimDurumu" class="form-select">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <input type="hidden" asp-for="UrunId" class="form-control" />
+                    <br />
+                    <label>Ürün Grupları</label>
+                    @Html.DropDownListFor(x => x.UrunGrupId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                    <br />
+
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
+
+                    <button class="btn btn-primary">Ürün Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var now = new Date();
+
+   
+        var formattedDate = now.toISOString().slice(0, 16);
+
+     
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('MalzemeAciklamasi').value = urlParams.get('MalzemeAciklamasi');
+        document.getElementById('MalzemeKodu').value = urlParams.get('MalzemeKodu');
+        document.getElementById('UrunId').value = urlParams.get('UrunId');
+        document.getElementById('UrunGrupId').value = urlParams.get('UrunGrupId');
+    });
+</script>

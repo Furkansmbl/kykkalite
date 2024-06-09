@@ -1,0 +1,100 @@
+﻿@model List<ResultUPatamaDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Ürün Parametre Atama</h6>
+                <a href="/UPatama/CreateUPatama/" class="btn btn-outline-info">Yeni Ürün Parametresi Girişi</a>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+
+                            <tr>
+                                <th scope="col">UpatamaKodu</th>
+                                <th scope="col">ParametreKritiklikSeviyesi</th>
+                                <th scope="col">KontrolDegeriNominal</th>
+                                <th scope="col">AltOnaySiniri</th>
+                                <th scope="col">UstOnaySiniri</th>
+                                <th scope="col">AltSartliKabulSiniri</th>
+                                <th scope="col">UstSartliKabulSiniri</th>
+                                <th scope="col">CihazId</th>
+                                <th scope="col">ReferansDokuman</th>
+                                <th scope="col">Aciklama</th>
+                                <th scope="col">OrneklemSikligi</th>
+                                <th scope="col">OrneklemSiklikBirim</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">EklenmeTarihi</th>
+                                <th scope="col">KullanımDurumu</th>
+                                <th scope="col">Güncelle</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.UpatamaKodu</td>
+                                    <td>@item.ParametreKritiklikSeviyesi</td>
+                                    <td>@item.KontrolDegeriNominal</td>
+                                    <td>@item.AltOnaySiniri</td>
+                                    <td>@item.UstOnaySiniri</td>
+                                    <td>@item.AltSartliKabulSiniri</td>
+                                    <td>@item.UstSartliKabulSiniri</td>
+                                    <td>@item.CihazId</td>
+                                    <td>@item.ReferansDokuman</td>
+                                    <td>@item.Aciklama</td>
+                                    <td>@item.OrneklemSikligi</td>
+                                    <td>@item.OrneklemSiklikBirim</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td>@item.EklenmeTarihi</td>
+                                    <td>@item.KullanımDurumu</td>
+                                    <td><a href="/UPatama/UpdateUPatama/" class="btn btn-outline-success">Güncelle</a></td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var UpatamaKodu = row.cells[0].innerText.trim();
+            var KontrolDegeriNominal = row.cells[2].innerText.trim();
+            var AltOnaySiniri = row.cells[3].innerText.trim();
+            var UstOnaySiniri = row.cells[4].innerText.trim();
+            var AltSartliKabulSiniri = row.cells[5].innerText.trim();
+            var UstSartliKabulSiniri = row.cells[6].innerText.trim();
+            var CihazId = row.cells[7].innerText.trim();
+            var ReferansDokuman = row.cells[8].innerText.trim();
+            var Aciklama = row.cells[9].innerText.trim();
+            var OrneklemSikligi = row.cells[10].innerText.trim();
+            var OrneklemSiklikBirim = row.cells[11].innerText.trim();
+
+
+            var url = "/UPatama/UpdateUpAtama?UpatamaKodu=" + encodeURIComponent(UpatamaKodu) +
+                "&KontrolDegeriNominal=" + encodeURIComponent(KontrolDegeriNominal) +
+                "&AltOnaySiniri=" + encodeURIComponent(AltOnaySiniri) +
+                "&UstOnaySiniri=" + encodeURIComponent(UstOnaySiniri) +
+                "&AltSartliKabulSiniri=" + encodeURIComponent(AltSartliKabulSiniri) +
+                "&UstSartliKabulSiniri=" + encodeURIComponent(UstSartliKabulSiniri) +
+                "&CihazId=" + encodeURIComponent(CihazId) +
+                "&ReferansDokuman=" + encodeURIComponent(ReferansDokuman) +
+                "&Aciklama=" + encodeURIComponent(Aciklama) +
+                "&OrneklemSikligi=" + encodeURIComponent(OrneklemSikligi) +
+                "&OrneklemSiklikBirim=" + encodeURIComponent(OrneklemSiklikBirim);
+
+            window.location.href = url;
+        });
+    });
+</script>

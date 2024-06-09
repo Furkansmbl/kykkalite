@@ -1,0 +1,123 @@
+﻿@model Kykkalite_UI.Dtos.UnumuneDtos.CreateUnumuneDto
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Template</title>
+</head>
+<body>
+    <h1>Merhaba,</h1>
+    <p>Kalite sürecini onaylama mailidir.</p>
+    <p>Ürün Adı: @Model.malzemeAciklamasi</p>
+
+    @{
+        decimal value1, alt1, ust1;
+        bool isValueInRange1 = decimal.TryParse(Model.Value1, out value1) && decimal.TryParse(Model.AltSartliKabulSiniri1, out alt1) && decimal.TryParse(Model.UstSartliKabulSiniri1, out ust1) && value1 >= alt1 && value1 <= ust1;
+        string fontWeight1 = isValueInRange1 ? "font-weight: normal;" : "font-weight: bold;";
+    }
+    <p style="@fontWeight1">
+        @Model.KontrolParametresi1: @Model.Value1 , ÜŞOS = @Model.UstSartliKabulSiniri1,ÜOS = @Model.UstOnaySiniri1,AOS = @Model.AltOnaySiniri1 , AŞOS = @Model.AltSartliKabulSiniri1
+    </p>
+
+    @{
+        decimal value2, alt2, ust2;
+        bool isValueInRange2 = decimal.TryParse(Model.Value2, out value2) && decimal.TryParse(Model.AltSartliKabulSiniri2, out alt2) && decimal.TryParse(Model.UstSartliKabulSiniri2, out ust2) && value2 >= alt2 && value2 <= ust2;
+        string fontWeight2 = isValueInRange2 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight2">
+        @Model.KontrolParametresi2: @Model.Value2 , ÜŞOS = @Model.UstSartliKabulSiniri2,ÜOS = @Model.UstOnaySiniri2,AOS = @Model.AltOnaySiniri2 , AŞOS = @Model.AltSartliKabulSiniri2
+    </p>
+
+    @{
+        decimal value3, alt3, ust3;
+        bool isValueInRange3 = decimal.TryParse(Model.Value3, out value3) && decimal.TryParse(Model.AltSartliKabulSiniri3, out alt3) && decimal.TryParse(Model.UstSartliKabulSiniri3, out ust3) && value3 >= alt3 && value3 <= ust3;
+        string fontWeight3 = isValueInRange3 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight3">
+        @Model.KontrolParametresi3: @Model.Value3 , ÜŞOS = @Model.UstSartliKabulSiniri3,ÜOS = @Model.UstOnaySiniri3,AOS = @Model.AltOnaySiniri3 , AŞOS = @Model.AltSartliKabulSiniri3
+    </p>
+
+    @{
+        decimal value4, alt4, ust4;
+        bool isValueInRange4 = decimal.TryParse(Model.Value4, out value4) && decimal.TryParse(Model.AltSartliKabulSiniri4, out alt4) && decimal.TryParse(Model.UstSartliKabulSiniri4, out ust4) && value4 >= alt4 && value4 <= ust4;
+        string fontWeight4 = isValueInRange4 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight4">
+        @Model.KontrolParametresi4: @Model.Value4 , ÜŞOS = @Model.UstSartliKabulSiniri4,ÜOS = @Model.UstOnaySiniri4,AOS = @Model.AltOnaySiniri4 , AŞOS = @Model.AltSartliKabulSiniri4
+    </p>
+
+    @{
+        decimal value5, alt5, ust5;
+        bool isValueInRange5 = decimal.TryParse(Model.Value5, out value5) && decimal.TryParse(Model.AltSartliKabulSiniri5, out alt5) && decimal.TryParse(Model.UstSartliKabulSiniri5, out ust5) && value5 >= alt5 && value5 <= ust5;
+        string fontWeight5 = isValueInRange5 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight5">
+        @Model.KontrolParametresi5: @Model.Value5 , ÜŞOS = @Model.UstSartliKabulSiniri5,ÜOS = @Model.UstOnaySiniri5,AOS = @Model.AltOnaySiniri5, AŞOS = @Model.AltSartliKabulSiniri5
+    </p>
+
+    @{
+        decimal value6, alt6, ust6;
+        bool isValueInRange6 = decimal.TryParse(Model.Value6, out value6) && decimal.TryParse(Model.AltSartliKabulSiniri6, out alt6) && decimal.TryParse(Model.UstSartliKabulSiniri6, out ust6) && value6 >= alt6 && value6 <= ust6;
+        string fontWeight6 = isValueInRange6 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight6">
+        @Model.KontrolParametresi6: @Model.Value6 , ÜŞOS = @Model.UstSartliKabulSiniri6,ÜOS = @Model.UstOnaySiniri6,AOS = @Model.AltOnaySiniri6 , AŞOS = @Model.AltSartliKabulSiniri6
+    </p>
+
+    @{
+        decimal value7, alt7, ust7;
+        bool isValueInRange7 = decimal.TryParse(Model.Value7, out value7) && decimal.TryParse(Model.AltSartliKabulSiniri7, out alt7) && decimal.TryParse(Model.UstSartliKabulSiniri7, out ust7) && value7 >= alt7 && value7 <= ust7;
+        string fontWeight7 = isValueInRange7 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight7">
+        @Model.KontrolParametresi7: @Model.Value7 , ÜŞOS = @Model.UstSartliKabulSiniri7,ÜOS = @Model.UstOnaySiniri7,AOS = @Model.AltOnaySiniri7, AŞOS = @Model.AltSartliKabulSiniri7
+    </p>
+
+    @{
+        decimal value8, alt8, ust8;
+        bool isValueInRange8 = decimal.TryParse(Model.Value8, out value8) && decimal.TryParse(Model.AltSartliKabulSiniri8, out alt8) && decimal.TryParse(Model.UstSartliKabulSiniri8, out ust8) && value8 >= alt8 && value8 <= ust8;
+        string fontWeight8 = isValueInRange8 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight8">
+        @Model.KontrolParametresi8: @Model.Value8 , ÜŞOS = @Model.UstSartliKabulSiniri8,ÜOS = @Model.UstOnaySiniri8,AOS = @Model.AltOnaySiniri8 , AŞOS = @Model.AltSartliKabulSiniri8
+    </p>
+
+    @{
+        decimal value9, alt9, ust9;
+        bool isValueInRange9 = decimal.TryParse(Model.Value9, out value9) && decimal.TryParse(Model.AltSartliKabulSiniri9, out alt9) && decimal.TryParse(Model.UstSartliKabulSiniri9, out ust9) && value9 >= alt9 && value9 <= ust9;
+        string fontWeight9 = isValueInRange9 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight9">
+        @Model.KontrolParametresi9: @Model.Value9 , ÜŞOS = @Model.UstSartliKabulSiniri9,ÜOS = @Model.UstOnaySiniri9,AOS = @Model.AltOnaySiniri9 , AŞOS = @Model.AltSartliKabulSiniri9
+    </p>
+
+    @{
+        decimal value10, alt10, ust10;
+        bool isValueInRange10 = decimal.TryParse(Model.Value10, out value10) && decimal.TryParse(Model.AltSartliKabulSiniri10, out alt10) && decimal.TryParse(Model.UstSartliKabulSiniri10, out ust10) && value10 >= alt10 && value10 <= ust10;
+        string fontWeight10 = isValueInRange10 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight10">
+        @Model.KontrolParametresi10: @Model.Value10 , ÜŞOS = @Model.UstSartliKabulSiniri10,ÜOS = @Model.UstOnaySiniri10,AOS = @Model.AltOnaySiniri10 , AŞOS = @Model.AltSartliKabulSiniri10
+    </p>
+
+    @{
+        decimal value11, alt11, ust11;
+        bool isValueInRange11 = decimal.TryParse(Model.Value11, out value11) && decimal.TryParse(Model.AltSartliKabulSiniri11, out alt11) && decimal.TryParse(Model.UstSartliKabulSiniri11, out ust11) && value11 >= alt11 && value11 <= ust11;
+        string fontWeight11 = isValueInRange11 ? "font-weight: normal;" : "font-weight: bold;";
+
+    }
+    <p style="@fontWeight11">
+        @Model.KontrolParametresi11: @Model.Value11 , ÜŞOS = @Model.UstSartliKabulSiniri11,ÜOS = @Model.UstOnaySiniri11,AOS = @Model.AltOnaySiniri11 , AŞOS = @Model.AltSartliKabulSiniri11
+    </p>
+    <a href="https://localhost:44344/UpdateAmir?token=@Model.Token">Onayla</a>
+    </body>
+

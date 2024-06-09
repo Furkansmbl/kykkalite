@@ -1,0 +1,77 @@
+﻿@model List<ResultNewDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Ürün Parametre Atama</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+
+                            <tr>
+                                <th scope="col">UpaId</th>
+                                <th scope="col">ParametreKodu</th>
+                                <th scope="col">UrunId</th>
+                                <th scope="col">NumuneId</th>
+                                <th scope="col">UpatamaKodu</th>
+                                <th scope="col">ParametreKritiklikSeviyesi</th>
+                                <th scope="col">KontrolDegeriNominal</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">AltOnaySiniri</th>
+                                <th scope="col">UstOnaySiniri</th>
+                                <th scope="col">AltSartliKabulSiniri</th>
+                                <th scope="col">UstSartliKabulSiniri</th>
+                                <th scope="col">CihazId</th>
+                                <th scope="col">ReferansDokuman</th>
+                                <th scope="col">Aciklama</th>
+                                <th scope="col">OrneklemSikligi</th>
+                                <th scope="col">OrneklemSiklikBirim</th>
+                                <th scope="col">FabrikaId</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">EklenmeTarihi</th>
+                                <th scope="col">KullanımDurumu</th>
+                                <th scope="col">Güncelle</tvdxh>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.UpaId</th>
+                                    <td>@item.ParametreKodu</td>
+                                    <td>@item.UrunId</td>
+                                    <td>@item.NumuneId</td>
+                                    <td>@item.UpatamaKodu</td>
+                                    <td>@item.ParametreKritiklikSeviyesi</td>
+                                    <td>@item.KontrolDegeriNominal</td>
+                                    <td>@item.Value</td>
+                                    <td>@item.AltOnaySiniri</td>
+                                    <td>@item.UstOnaySiniri</td>
+                                    <td>@item.AltSartliKabulSiniri</td>
+                                    <td>@item.UstSartliKabulSiniri</td>
+                                    <td>@item.CihazId</td>
+                                    <td>@item.ReferansDokuman</td>
+                                    <td>@item.Aciklama</td>
+                                    <td>@item.OrneklemSikligi</td>
+                                    <td>@item.OrneklemSiklikBirim</td>
+                                    <td>@item.FabrikaId</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td>@item.EklenmeTarihi</td>
+                                    <td>@item.KullanımDurumu</td>
+                                    <td><a href="#" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="#" class="btn btn-outline-info">Yeni Ürün Parametresi Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
