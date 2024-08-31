@@ -1,6 +1,9 @@
 ﻿using Kykkalite_UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Kykkalite_UI.Dtos.GetValueByMalzemeAciklamasiWParametreKodu;
+using Kykkalite_UI.Dtos.UrunlerDtos;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace Kykkalite_UI.Controllers
 {
@@ -20,9 +23,24 @@ namespace Kykkalite_UI.Controllers
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
+            ViewBag.v = await GetProductDescription();
             ViewBag.PersonelSicilNo = personelSicilNo;
 
             return View();
+        }
+        private async Task<List<SelectListItem>> GetProductDescription()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Urunler");
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultUrunlerDto>>(jsonData);
+            var urunGrupValues = values.Select(x => new SelectListItem
+            {
+                Text = x.MalzemeAciklamasi,
+                Value = x.MalzemeAciklamasi,
+            }).ToList();
+            return urunGrupValues;
         }
         public class QueryViewModel
         {
@@ -30,21 +48,23 @@ namespace Kykkalite_UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string malzemeAciklamasi, string kontrolParametresi)
+        public async Task<IActionResult> Index(string malzemeAciklamasi, string kontrolParametresi, string baslangicTarihi, string bitisTarihi)
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
             ViewBag.PersonelSicilNo = personelSicilNo;
-
+            ViewBag.v = await GetProductDescription();
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 var encodedMalzemeAciklamasi = Uri.EscapeDataString(malzemeAciklamasi);
                 var encodedkontrolParametresi = Uri.EscapeDataString(kontrolParametresi);
+                var encodedbaslangicTarihi = Uri.EscapeDataString(baslangicTarihi);
+                var encodedbitisTarihi = Uri.EscapeDataString(bitisTarihi);
 
 
-                var response = await client.GetAsync($"https://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu?malzemeaciklamasi={encodedMalzemeAciklamasi}&kontrolparametresi={encodedkontrolParametresi}");
+                var response = await client.GetAsync($"http://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu?malzemeaciklamasi={encodedMalzemeAciklamasi}&kontrolparametresi={encodedkontrolParametresi}&baslangicTarihi={encodedbaslangicTarihi}&bitisTarihi={encodedbitisTarihi}");
 
                 if (response.IsSuccessStatusCode)
                 {

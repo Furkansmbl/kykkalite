@@ -4,6 +4,7 @@
     {
         public int UrunGrupId { get; set; }
 
+        public DateTime EklenmeGuncellenmeTarihi { get; set; }
         public string UgrupAdi { get; set; } = null!;
     }
 }

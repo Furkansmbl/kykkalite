@@ -12,8 +12,9 @@
                 <form method="post">
                     <input type="hidden" asp-for="UretimHattiId" class="form-control" />
                     <input type="hidden" asp-for="FabrikaId" class="form-control" />
-                    <label>HatAdiAciklamasi</label>
+                    <label>Hat Adi Aciklamasi</label>
                     <input type="text" asp-for="HatAdiAciklamasi" class="form-control" />
+                    <input type="hidden" asp-for="EklenmeGuncellenmeTarihi" class="form-control" />
                     <br />
                     <button class="btn btn-primary">Uretim Hattı Güncelle</button>
                 </form>
@@ -27,5 +28,15 @@
         document.getElementById('UretimHattiId').value = urlParams.get('UretimHattiId');
         document.getElementById('FabrikaId').value = urlParams.get('FabrikaId');
         document.getElementById('HatAdiAciklamasi').value = urlParams.get('HatAdiAciklamasi');
+    });
+</script>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var now = new Date();
+
+        var formattedDate = now.toISOString().slice(0, 16);
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
     });
 </script>

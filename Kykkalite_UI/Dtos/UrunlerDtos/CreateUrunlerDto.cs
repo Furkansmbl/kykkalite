@@ -2,12 +2,10 @@
 {
     public class CreateUrunlerDto
     {
-        public int UrunId { get; set; }
 
         public int UrunGrupId { get; set; }
 
         public string MalzemeKodu { get; set; } = null!;
-
         public string MalzemeAciklamasi { get; set; } = null!;
 
         public string PersonelSicilNo { get; set; } = null!;

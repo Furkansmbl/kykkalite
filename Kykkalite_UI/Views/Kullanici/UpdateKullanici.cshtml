@@ -24,7 +24,10 @@
                     <input type="text" asp-for="Gorevi" class="form-control" />
                     <br />
                     <label>AdminUser</label>
-                    <input type="member" asp-for="AdminUser" class="form-control" />
+                    <select asp-for="AdminUser" class="form-select">
+                        <option value="1">Admin</option>
+                        <option value="0">User</option>
+                    </select>
                     <br />
                     <label>Password</label>
                     <input type="member" asp-for="Password" class="form-control" />

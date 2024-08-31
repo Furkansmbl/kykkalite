@@ -22,7 +22,11 @@
                     <label>Value</label>
                     <input type="text" asp-for="Value" class="form-control" />
                     <br />
-                    <input type="hidden" class="form-control" asp-for="EklenmeTarihi" />
+                    <label>Versiyon</label>
+                    <input type="text" asp-for="Versiyon" class="form-control" />
+                    <br />
+                    <input type="hidden" class="form-control" asp-for="OlusturmaTarihi" />
+                    <input type="hidden" class="form-control" asp-for="GuncellenmeTarihi" />
                     <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
 
                     <button class="btn btn-primary">Ürün Parametre value Güncelle</button>
@@ -35,7 +39,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var now = new Date();
             var formattedDate = now.toISOString().slice(0, 16);
-            document.querySelector('[name="EklenmeTarihi"]').value = formattedDate;
+        document.querySelector('[name="GuncellenmeTarihi"]').value = formattedDate;
         });
  </script>
 <script>
@@ -45,5 +49,7 @@
         document.getElementById('UpatamaKodu').value = urlParams.get('UpatamaKodu');
         document.getElementById('NumuneId').value = urlParams.get('NumuneId');
         document.getElementById('Value').value = urlParams.get('Value');
+        document.getElementById('Versiyon').value = urlParams.get('Versiyon');
+        document.getElementById('OlusturmaTarihi').value = urlParams.get('OlusturmaTarihi');
     });
 </script>

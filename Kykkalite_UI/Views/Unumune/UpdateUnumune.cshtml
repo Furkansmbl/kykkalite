@@ -16,35 +16,35 @@
                 <input type="member" asp-for="UrunId" class="form-control" />
                 <br />
                 <label>SiraNo</label>
-                <input type="member" asp-for="SiraNo" class="form-control" />
+                <input type="text" asp-for="SiraNo" class="form-control" />
                 <br />
-                <label>UretimTarihi</label>
-                <input type="datetime" asp-for="UretimTarihi" class="form-control" />
+                <label>Uretim Tarihi</label>
+                <input type="text" asp-for="UretimTarihi" class="form-control" />
+                    <br />
+                    <label>Kontrol Saati</label>
+                    <input type="text" asp-for="KontrolSaati" class="form-control" />
+                    <br />
+                <label>Numune SeriNo ŞarjNo</label>
+                <input type="text" asp-for="NumuneSeriNoSarjNo" class="form-control" />
                 <br />
-                <label>NumuneSeriNoSarjNo</label>
-                <input type="member" asp-for="NumuneSeriNoSarjNo" class="form-control" />
-                <br />
-                <label>MudahaleVarmi</label>
-                <select asp-for="MudahaleVarmi" class="form-select">
-                    <option value="true">Aktif</option>
-                    <option value="false">Pasif</option>
-                </select>
+                <label>Mudahale Varmi</label>
+                 <input type="text" asp-for="MudahaleVarmi" class="form-control" />
+
                 <br />
                 <label>Aciklama</label>
                 <input type="text" asp-for="Aciklama" class="form-control" />
                 <br />
-                <label>OnayDurumu</label>
-                <select asp-for="OnayDurumu" class="form-select">
-                    <option value="true">Aktif</option>
-                    <option value="false">Pasif</option>
-                </select>
+                <label>Onay Durumu</label>
+                    <input type="text" asp-for="OnayDurumu" class="form-control" />
+
                 <br />
-                <label>AmirOnayDurumu</label>
-                <input type="member" asp-for="AmirOnayDurumu" class="form-control" />
+                <label>Amir Onay Durumu</label>
+                <input type="text" asp-for="AmirOnayDurumu" class="form-control" />
                 <br />
-                <label>EklenmeTarihi</label>
-                <input type="datetime" asp-for="EklenmeTarihi" class="form-control" />
-                <br />
+                <label>Olusturma Tarihi</label>
+                    <input type="text" asp-for="OlusturmaTarihi" class="form-control" />
+                    <br />
+                    <input type="hidden" asp-for="GuncellenmeTarihi" class="form-control" />
                     <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
 
                 <button class="btn btn-success">Ürün Numune Güncelle</button>
@@ -52,7 +52,14 @@
         </div>
     </div>
 </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var now = new Date();
 
+            var formattedDate = now.toISOString().slice(0, 16);
+            document.querySelector('[name="GuncellenmeTarihi"]').value = formattedDate;
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const urlParams = new URLSearchParams(window.location.search);
@@ -60,12 +67,13 @@
             document.getElementById('UrunId').value = urlParams.get('UrunId');
             document.getElementById('SiraNo').value = urlParams.get('SiraNo');
             document.getElementById('UretimTarihi').value = urlParams.get('UretimTarihi');
+            document.getElementById('KontrolSaati').value = urlParams.get('KontrolSaati');
             document.getElementById('NumuneSeriNoSarjNo').value = urlParams.get('NumuneSeriNoSarjNo');
             document.getElementById('MudahaleVarmi').value = urlParams.get('MudahaleVarmi');
             document.getElementById('Aciklama').value = urlParams.get('Aciklama');
             document.getElementById('OnayDurumu').value = urlParams.get('OnayDurumu');
             document.getElementById('AmirOnayDurumu').value = urlParams.get('AmirOnayDurumu');
-            document.getElementById('EklenmeTarihi').value = urlParams.get('EklenmeTarihi');
+            document.getElementById('OlusturmaTarihi').value = urlParams.get('OlusturmaTarihi');
 
 
         });

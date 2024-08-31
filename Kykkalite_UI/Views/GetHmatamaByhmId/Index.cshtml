@@ -163,9 +163,8 @@
 
             <div class="form-group">
                 <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
-                <input type="text" id="malzemeAciklamasi" name="malzemeAciklamasi" required>
+                @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
             </div>
-
             <div class="form-group">
                 <button type="submit">Query</button>
             </div>
@@ -182,15 +181,15 @@
                             <th>Saat</th>
                             <th>IrsaliyeNo</th>
                             <th>MalzemeLotSeriNo</th>
-                            <th>KYKBarkodNo</th>
-                            <th>MalzemeUretimTarihi</th>
-                            <th>MalzemeSKT</th>
-                            <th>MalzemeMiktarı</th>
-                            <th>MiktarBirimi</th>
+                            <th>KYK BarkodNo</th>
+                            <th>Malzeme Uretim Tarihi</th>
+                            <th>Malzeme SKT</th>
+                            <th>Malzeme Miktarı</th>
+                            <th>Miktar Birimi</th>
                             <th>Aciklama</th>
-                            <th>OnayDurumu</th>
+                            <th>Onay Durumu</th>
                             <th>Amir OnayDurumu</th>
-                            <th>PersonelSicilNo</th>
+                            <th>Personel SicilNo</th>
                             @foreach (var item in Model.ResultSet)
                             {
                                 <th>
@@ -211,23 +210,48 @@
                     <tbody>
                         <tr>
                             <td><input type="number" name="HammaddeID" class="static" value="@Model.ResultSet[0].HammaddeId" /></td>
-                            <td><input type="number" name="SiraNo" class="static" /></td>
-                            <td><input type="datetime" name="Tarihi" class="static" /></td>
+                            <td><input type="text" name="SiraNo" class="static" /></td>
+                            <td><input type="text" name="Tarihi" class="static" /></td>
                             <td><input type="text" name="Saat" class="static" /></td>
                             <td><input type="text" name="IrsaliyeNo" class="static" /></td>
                             <td><input type="text" name="MalzemeLotSeriNo" class="static" /></td>
                             <td><input type="text" name="KYKBarkodNo" class="static" /></td>
-                            <td><input type="datetime" name="MalzemeUretimTarihi" class="static" /></td>
-                            <td><input type="datetime" name="MalzemeSKT" class="static" /></td>
-                            <td><input type="number" name="MalzemeMiktarı" class="static" /></td>
+                            <td><input type="text" name="MalzemeUretimTarihi" class="static" /></td>
+                            <td><input type="text" name="MalzemeSKT" class="static" /></td>
+                            <td><input type="text" name="MalzemeMiktarı" class="static" /></td>
                             <td><input type="text" name="MiktarBirimi" class="static" /></td>
                             <td><input type="text" name="Aciklama" class="static" /></td>
-                            <td>
-                                <input id="onay_durumu" type="hidden" name="OnayDurumu" />
+                           <td>
+                                <input id="onay_durumu" type="hidden" name="OnayDurumu"/>
                                 <p id="onay_durumu_p">Yukleniyor...</p>
-                                <input type="hidden" name="EklenmeTarihi" class="static" />
+                                <input type="hidden" name="OlusturmaTarihi" class="static" />
+                                <input type="hidden" name="red" class="static" />
+                                <input type="hidden" name="yellow" class="static" />
+                                <input type="hidden" name="green" class="static" />
+                                <input type="hidden" name="malzemeAciklamasi" class="static" value="@Model.ResultSet[0].MalzemeAciklamasi" />
+                                <input type="hidden" name="Versiyon" class="static" value="@Model.ResultSet[0].Versiyon" />
+                                @for (int i = 0; i < Model.ResultSet.Count; i++)
+                                {
+                                    <input type="hidden" name="KontrolParametresi@(i+1)" class="static" value="@Model.ResultSet[i].KontrolParametresi" />
+                                }
+                                @for (int i = 0; i < Model.ResultSet.Count; i++)
+                                {
+                                    <input type="hidden" name="AltSartliKabulSiniri@(i+1)" class="static" value="@Model.ResultSet[i].AltSartliKabulSiniri" />
+                                }
+                                @for (int i = 0; i < Model.ResultSet.Count; i++)
+                                {
+                                    <input type="hidden" name="UstSartliKabulSiniri@(i+1)" class="static" value="@Model.ResultSet[i].UstSartliKabulSiniri" />
+                                }
+                                @for (int i = 0; i < Model.ResultSet.Count; i++)
+                                {
+                                    <input type="hidden" name="AltOnaySiniri@(i+1)" class="static" value="@Model.ResultSet[i].AltOnaySiniri" />
+                                }
+                                @for (int i = 0; i < Model.ResultSet.Count; i++)
+                                {
+                                    <input type="hidden" name="UstOnaySiniri@(i+1)" class="static" value="@Model.ResultSet[i].UstOnaySiniri" />
+                                }
                             </td>
-                            <td><input type="number" name="AmirOnayDurumu" class="static" /></td>
+                            <td><input type="text" name="AmirOnayDurumu" class="static" /></td>
                             <td><input type="text" name="PersonelSicilNo" class="static" value="@ViewBag.PersonelSicilNo" /></td>
 
                             @for (int i = 0; i < Model.ResultSet.Count; i++)
@@ -270,7 +294,7 @@
 
             var formattedDate = now.toISOString().slice(0, 16);
 
-            document.querySelector('[name="EklenmeTarihi"]').value = formattedDate;
+            document.querySelector('[name="OlusturmaTarihi"]').value = formattedDate;
         });
     </script>
     <script>
@@ -323,13 +347,15 @@
 
                 if (value == 'red') {
                     count.red += 1;
-                } else if (value == 'green') {
-                    count.yellow += 1;
                 } else if (value == 'yellow') {
+                    count.yellow += 1;
+                } else if (value == 'green') {
                     count.green += 1;
                 }
             })
-
+            document.querySelector('[name="red"]').value = count.red;
+            document.querySelector('[name="yellow"]').value = count.yellow;
+            document.querySelector('[name="green"]').value = count.green;
             if (count.red > 0) {
                 document.getElementById('onay_durumu').value = 'red';
                 document.getElementById('onay_durumu_p').innerHTML = 'Üretimi Durdur!';
@@ -348,7 +374,6 @@
 
             console.log(count)
         }
-    <script>
         function toCamelCase(str) {
             return str.replace(/([-_][a-z])/gi, function ($1) {
                 return $1.toUpperCase().replace('-', '').replace('_', '');
@@ -383,6 +408,8 @@
 
             var jsonData = JSON.stringify(formdata);
 
+            console.log("Gönderilen veriler:", jsonData);
+
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/HMnumune/CreateHMnumune", true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -392,14 +419,13 @@
                         alert('Numune ve Value ekleme işlemi başarıyla tamamlandı!');
                         window.location.href = '/GetUpatamaKodlariByUrunID/Index';
                     } else {
-                        alert('Post işlemi başarısız oldu. CreateUnumune sayfasına yönlendiriliyorsunuz...');
-                        window.location.href = '/Unumune/CreateUnumune';
+                        alert('Numune ve Value ekleme işleminde bir hata oluştu.Amirinize danışınız!');
+                        window.location.href = '/GetUpatamaKodlariByUrunID/Index';
                     }
                 }
             };
             xhr.send(jsonData);
         });
-
     </script>
 </body>
 </html>

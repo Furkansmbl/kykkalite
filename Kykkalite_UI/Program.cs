@@ -4,6 +4,7 @@ using Kykkalite_UI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System.IdentityModel.Tokens.Jwt;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 var builder = WebApplication.CreateBuilder(args);
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
@@ -13,7 +14,7 @@ builder.Services.AddFluentEmail("furkansumbul1903@gmail.com").AddRazorRenderer()
 {
     Server = "smtp.gmail.com",
     User = "furkansumbul1903@gmail.com",
-    Password = "turh bhhh hjku olwk",
+    Password = "ebhr ztht ftmk wpnp",
     UseSsl = true,
     RequiresAuthentication = true,
     SocketOptions = MailKit.Security.SecureSocketOptions.StartTls,
@@ -57,7 +58,7 @@ app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Index}/{id?}");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(

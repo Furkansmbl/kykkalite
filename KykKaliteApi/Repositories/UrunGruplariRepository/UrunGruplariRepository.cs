@@ -16,9 +16,10 @@ namespace KykKaliteApi.Repositories.UrunGruplariRepository
         public async void CreateUrunGruplari(CreateUrunGruplariDto createUrunGruplariDto)
         {
 
-            string query = "insert into UrunGruplari (UgrupAdi) values (@ugrupAdi)";
+            string query = "insert into UrunGruplari (UgrupAdi,EklenmeGuncellenmeTarihi) values (@ugrupAdi , @eklenmeGuncellenmeTarihi)";
             var parameters = new DynamicParameters();
             parameters.Add("@ugrupAdi", createUrunGruplariDto.UgrupAdi);
+            parameters.Add("@eklenmeGuncellenmeTarihi", createUrunGruplariDto.EklenmeGuncellenmeTarihi);
             using (var connection = _context.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
@@ -48,9 +49,10 @@ namespace KykKaliteApi.Repositories.UrunGruplariRepository
 
         public async void UpdateUrunGruplari(UpdateUrunGruplariDto updateUrunGruplariDto)
         {
-            string query = "UPDATE UrunGruplari SET UgrupAdi = @ugrupAdi WHERE UrunGrupId = @urunGrupId";
+            string query = "UPDATE UrunGruplari SET UgrupAdi = @ugrupAdi , EklenmeGuncellenmeTarihi = @eklenmeGuncellenmeTarihi WHERE UrunGrupId = @urunGrupId";
             var parameters = new DynamicParameters();
             parameters.Add("@urunGrupId", updateUrunGruplariDto.UrunGrupId);
+            parameters.Add("@eklenmeGuncellenmeTarihi", updateUrunGruplariDto.EklenmeGuncellenmeTarihi);
             parameters.Add("@ugrupAdi", updateUrunGruplariDto.UgrupAdi);
             using (var connection = _context.CreateConnection())
             {

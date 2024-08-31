@@ -11,9 +11,10 @@ namespace KykKaliteApi.Repositories.HammaddeGruplariRepository
 
         public async void CreateHammaddeGruplari(CreateHammaddeGruplariDto createHammaddeGruplariDto)
         {
-            string query = "insert into HammaddeGruplari (HMGrupAdi) values (@hMGrupAdi)";
+            string query = "insert into HammaddeGruplari (HMGrupAdi,EklenmeGuncellenmeTarihi) values (@hMGrupAdi,@eklenmeGuncellenmeTarihi)";
             var parameters = new DynamicParameters();
             parameters.Add("@hMGrupAdi", createHammaddeGruplariDto.HMGrupAdi);
+            parameters.Add("@eklenmeGuncellenmeTarihi", createHammaddeGruplariDto.EklenmeGuncellenmeTarihi);
             using (var connection = _context.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
@@ -32,13 +33,14 @@ namespace KykKaliteApi.Repositories.HammaddeGruplariRepository
 
         public async void UpdateHammaddeGruplari(UpdateHammaddeGruplariDto updateHammaddeGruplariDto)
         {
-            string query = "Update HammaddeGruplari Set HMGrupAdi=@hMGrupAdi where HammaddeGrupID=@hammaddeGrupID";
+            string query = "UPDATE HammaddeGruplari Set HMGrupAdi = @hMGrupAdi,EklenmeGuncellenmeTarihi = @eklenmeGuncellenmeTarihi WHERE HammaddeGrupID = @hammaddeGrupID";
             var parameters = new DynamicParameters();
             parameters.Add("@hMGrupAdi", updateHammaddeGruplariDto.HMGrupAdi);
             parameters.Add("@hammaddeGrupID", updateHammaddeGruplariDto.HammaddeGrupID); 
-            using (var connectiont = _context.CreateConnection())
+            parameters.Add("@eklenmeGuncellenmeTarihi", updateHammaddeGruplariDto.EklenmeGuncellenmeTarihi);
+            using (var connection = _context.CreateConnection())
             {
-                await connectiont.ExecuteAsync(query, parameters);
+                await connection.ExecuteAsync(query, parameters);
             }
         }
     }

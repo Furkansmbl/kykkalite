@@ -1,0 +1,446 @@
+﻿@using static Kykkalite_UI.Controllers.GetRaporController
+@using System.Text.Json
+@using System.Text.Encodings.Web
+
+@model QueryViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "";
+    var initialStartDate = new DateTime(2000, 1, 1).ToString("yyyy-MM-dd");
+    var initialEndDate = DateTime.Now.ToString("yyyy-MM-dd");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 90%;
+            max-width: 1400px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+           
+            max-width: 900px;
+        }
+
+        .results-container {
+            flex: 2;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-section {
+            width: 100%; 
+            height: 675px; 
+            margin: 0; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas#pieChart {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .form-group label {
+                font-weight: bold;
+                margin-bottom: 10px; 
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="number"],
+            .form-group input[type="date"],
+            .form-group select {
+                padding: 15px; 
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                margin-top: 5px;
+                font-size: 18px; 
+                background-color: #fff;
+                transition: border-color 0.3s;
+                width: 100%; 
+            }
+
+                .form-group input:focus,
+                .form-group select:focus {
+                    border-color: #007bff;
+                    outline: none;
+                }
+
+            .form-group button {
+                padding: 12px 24px;
+                background-color: #007bff;
+                border: none;
+                color: #fff;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-size: 18px; 
+            }
+
+                .form-group button:hover {
+                    background-color: #0056b3;
+                }
+
+        table {
+            width: 100%;
+            background-color: #fff;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .results-container {
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .no-results {
+            margin-top: 20px;
+            color: #dc3545;
+            text-align: center;
+        }
+
+        .filter-buttons {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+            .filter-buttons button {
+                padding: 10px 20px;
+                margin: 0 5px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                border-radius: 8px; 
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+                .filter-buttons button:hover {
+                    background-color: #0056b3;
+                }
+
+        .percentages-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .percentages {
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+     
+        .form-group {
+            flex: 1;
+            max-width: 100%;
+        }
+
+            .form-group:nth-child(1) {
+                margin-bottom: 25px; 
+            }
+
+            .form-group:nth-child(2) {
+                margin-bottom: 25px;
+            }
+
+            .form-group:nth-child(3) {
+                margin-bottom: 25px;
+            }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Ürün Rapor</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label for="fabrikaId">Fabrika Adı:</label>
+                    <select id="fabrikaId" name="fabrikaId" required>
+                        <option value="1">ESKİŞEHİR</option>
+                        <option value="2">ADANA</option>
+                        <option value="3">DİYARBAKIR</option>
+                        <option value="4">SAMSUN</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
+                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="olusturmaTarihi">Oluşturma Tarihi:</label>
+                    <input type="date" id="olusturmaTarihi" name="olusturmaTarihi" value="@initialStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="bitisTarihi">Bitiş Tarihi:</label>
+                    <input type="date" id="bitisTarihi" name="bitisTarihi" value="@initialEndDate" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit"><i class="fas fa-search"></i> Query</button>
+                </div>
+            </form>
+        </div>
+        <div class="results-container">
+            <div class="chart-section">
+                <canvas id="pieChart"></canvas>
+            </div>
+            <div class="info-section">
+                <div class="filter-buttons">
+                    <button onclick="filterResults('Red')">Red</button>
+                    <button onclick="filterResults('SartliOnay')">Sartli Onay</button>
+                    <button onclick="filterResults('1')">1</button>
+                </div>
+                <div class="percentages-container">
+                    <div class="percentages" id="redPercentage"></div>
+                    <div class="percentages" id="sartliOnayPercentage"></div>
+                    <div class="percentages" id="onePercentage"></div>
+                </div>
+            </div>
+        </div>
+            <div class="results-container">
+            @if (Model != null && Model.ResultSet != null && Model.ResultSet.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Oluşturma Tarihi</th>
+                            <th>Amir Onay Durumu</th>
+                            <th>Kontrol Parametresi</th>
+                            <th>Malzeme Açıklaması</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultBody">
+                        @foreach (var item in Model.ResultSet)
+                        {
+                            <tr>
+                                <td>@item.OlusturmaTarihi</td>
+                                <td>@item.AmirOnayDurumu</td>
+                                <td>@item.KontrolParametresi</td>
+                                <td>@item.MalzemeAciklamasi</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+             <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        var allResults = @Html.Raw(JsonSerializer.Serialize(Model.ResultSet));
+        var filteredResults = allResults; // Initialize with all results
+        var pieChart;
+
+        var renderChart = function (data) {
+            if (pieChart) {
+                pieChart.destroy();
+            }
+            var chartData = {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: []
+                }]
+            };
+
+            var backgroundColors = [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                '#FF9F40', '#FFCD56', '#4BC0C0', '#9966FF', '#FF6384'
+            ];
+
+            var countOccurrences = function (arr) {
+                return arr.reduce(function (acc, curr) {
+                    acc[curr] = (acc[curr] || 0) + 1;
+                    return acc;
+                }, {});
+            };
+
+            var occurrences = countOccurrences(data.map(r => r.KontrolParametresi));
+            var total = data.length;
+
+            for (var key in occurrences) {
+                chartData.labels.push(key);
+                chartData.datasets[0].data.push(occurrences[key]);
+                chartData.datasets[0].backgroundColor.push(backgroundColors[chartData.labels.length % backgroundColors.length]);
+            }
+
+            pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: chartData,
+                options: {
+                    responsive: false, // Fixed size as defined in CSS
+                    plugins: {
+                        legend: {
+                            position: 'top', // Legend displayed above the chart
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    var label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.raw !== null) {
+                                        var percentage = ((context.raw / total) * 100).toFixed(2);
+                                        label += context.raw + ' (' + percentage + '%)';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    onClick: function (e, elements) {
+                        if (elements.length > 0) {
+                            var segmentIndex = elements[0].index;
+                            var label = pieChart.data.labels[segmentIndex];
+                            filterResultsByParameter(label);
+                        }
+                    }
+                }
+            });
+        };
+
+        var categorizeResults = function (data) {
+            return data.map(function (item) {
+                if (item.Value < item.AltSartliKabulSiniri || item.Value > item.UstSartliKabulSiniri) {
+                    item.AmirOnayDurumu = 'Red';
+                } else if (item.Value >= item.AltSartliKabulSiniri && item.Value <= item.UstSartliKabulSiniri &&
+                    (item.Value < item.AltOnaySiniri || item.Value > item.UstOnaySiniri)) {
+                    item.AmirOnayDurumu = 'SartliOnay';
+                } else if (item.Value >= item.AltOnaySiniri && item.Value <= item.UstOnaySiniri) {
+                    item.AmirOnayDurumu = '1';
+                }
+                return item;
+            });
+        };
+
+        var updateTable = function (data) {
+            var resultBody = document.getElementById('resultBody');
+            resultBody.innerHTML = '';
+            data.forEach(function (item) {
+                var row = '<tr>' +
+                    '<td>' + item.OlusturmaTarihi + '</td>' +
+                    '<td>' + item.AmirOnayDurumu + '</td>' +
+                    '<td>' + item.KontrolParametresi + '</td>' +
+                    '<td>' + item.MalzemeAciklamasi + '</td>' +
+                    '</tr>';
+                resultBody.innerHTML += row;
+            });
+        };
+
+        var updatePercentages = function (data) {
+            var total = data.length;
+            var counts = {
+                'Red': 0,
+                'SartliOnay': 0,
+                '1': 0
+            };
+
+            data.forEach(function (item) {
+                counts[item.AmirOnayDurumu]++;
+            });
+
+            var percentagesHtml = '<p>Red: ' + ((counts['Red'] / total) * 100).toFixed(2) + '%</p>';
+            document.getElementById('redPercentage').innerHTML = percentagesHtml;
+
+            percentagesHtml = '<p>Sartli Onay: ' + ((counts['SartliOnay'] / total) * 100).toFixed(2) + '%</p>';
+            document.getElementById('sartliOnayPercentage').innerHTML = percentagesHtml;
+
+            percentagesHtml = '<p>1: ' + ((counts['1'] / total) * 100).toFixed(2) + '%</p>';
+            document.getElementById('onePercentage').innerHTML = percentagesHtml;
+        };
+
+        window.filterResults = function (status) {
+            var categorizedResults = categorizeResults(allResults);
+            filteredResults = categorizedResults.filter(function (item) {
+                return item.AmirOnayDurumu === status;
+            });
+            renderChart(filteredResults);
+            updateTable(filteredResults);
+            updatePercentages(filteredResults);
+        };
+
+        window.filterResultsByParameter = function (parameter) {
+            var finalFilteredResults = filteredResults.filter(function (item) {
+                return item.KontrolParametresi === parameter;
+            });
+            updateTable(finalFilteredResults);
+            updatePercentages(finalFilteredResults);
+        };
+
+        // Initial rendering
+        var categorizedResults = categorizeResults(allResults);
+        renderChart(categorizedResults);
+        updateTable(categorizedResults);
+        updatePercentages(categorizedResults);
+    });
+</script>
+
+            } 
+            else
+            {
+            <p class="no-results">Sonuç bulunamadı, verileri tekrar kontrol ediniz.</p>
+            }
+        </div>
+    </div>
+</body>
+</html>

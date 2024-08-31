@@ -11,18 +11,21 @@
                 <h6 class="mb-4">Cihaz Güncelleme Sayfası</h6>
                 <form method="post">
                     <input type="hidden" asp-for="CihazID" class="form-control" />
-                    <label>CihazKodu</label>
+                    <label>Cihaz Kodu</label>
                     <input type="text" asp-for="CihazKodu" class="form-control" />
                     <br />
                     <label>Kullanılan Cihaz/Ekipman</label>
                     <input type="text" asp-for="KullanılanCihazEkipman" class="form-control" />
+                    <br />
+                    <label>Cihaz Bilgi</label>
+                    <input type="text" asp-for="CihazBilgi" class="form-control" />
                     <br />
                     <label>Fabrikalar</label>
                     @Html.DropDownListFor(x => x.FabrikaID, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
                     <br />
                     <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
                     <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
-                    <label>KullanımDurumu</label>
+                    <label>Kullanım Durumu</label>
                     <select asp-for="KullanımDurumu" class="form-select">
                         <option value="true">Aktif</option>
                         <option value="false">Pasif</option>
@@ -36,7 +39,7 @@
 </div>
 
 <script>
-    // Sayfa yüklendiğinde çalışacak olan kod
+    
     document.addEventListener('DOMContentLoaded', function () {
         // Eklenme/Güncellenme Tarihini al
         var now = new Date();
@@ -56,10 +59,11 @@
         // Parametre değerlerini form alanlarına doldur
         document.getElementById('CihazID').value = urlParams.get('CihazID');
         document.getElementById('CihazKodu').value = urlParams.get('CihazKodu');
-        document.getElementById('KullanılanCihazEkipman').value = urlParams.get('KullanılanCihazEkipman');
+        document.getElementById('KullanılanCihazEkipman').value = urlParams.get('KullanilanCihazEkipman');
         document.getElementById('FabrikaID').value = urlParams.get('FabrikaID');
         document.getElementById('PersonelSicilNo').value = urlParams.get('PersonelSicilNo');
         document.getElementById('EklenmeGuncellenmeTarihi').value = urlParams.get('EklenmeGuncellenmeTarihi');
         document.getElementById('KullanımDurumu').value = urlParams.get('KullanımDurumu');
+        document.getElementById('CihazBilgi').value = urlParams.get('CihazBilgi');
     });
 </script>

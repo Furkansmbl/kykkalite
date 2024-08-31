@@ -30,10 +30,16 @@ namespace KykKaliteApi.Controllers
             _uPatamaRepository.DeleteUPatama(id);
             return Ok("UPatama Başarılı Bir Şekilde Silindi");
         }
-        [HttpPost]
+        [HttpPost("UpdateUPatama")]
         public async Task<IActionResult> CreateUPatama(CreateUPatamaDto createUPatamaDto)
         {
             _uPatamaRepository.CreateUPatama(createUPatamaDto);
+            return Ok("Unumune Başarılı Bir Şekilde Eklendi");
+        }
+        [HttpPost("UpdateUPatamaPasif")]
+        public async Task<IActionResult> CreateUPatamaPasif(CreateUpAtamaPasifDto createUpAtamaPasifDto)
+        {
+            _uPatamaRepository.CreateUPatamaPasif(createUpAtamaPasifDto);
             return Ok("Unumune Başarılı Bir Şekilde Eklendi");
         }
         [HttpPut]

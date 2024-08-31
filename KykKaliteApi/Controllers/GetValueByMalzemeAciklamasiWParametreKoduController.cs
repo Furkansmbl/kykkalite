@@ -16,9 +16,15 @@ namespace KykKaliteApi.Controllers
             _getValueRepository = getValueRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUpatamaKodlariByUrunIDA([FromQuery] string malzemeaciklamasi,[FromQuery] string kontrolparametresi)
+        public async Task<IActionResult> GetUpatamaKodlariByUrunIDA([FromQuery] string malzemeaciklamasi,[FromQuery] string kontrolparametresi, [FromQuery] string baslangicTarihi, [FromQuery] string bitisTarihi)
         {
-            var value = await _getValueRepository.GetValueByMalzemeAciklamasiWParametreKoduAsync(malzemeaciklamasi,  kontrolparametresi);
+            var value = await _getValueRepository.GetValueByMalzemeAciklamasiWParametreKoduAsync(malzemeaciklamasi,  kontrolparametresi, baslangicTarihi, bitisTarihi);
+            return Ok(value);
+        }
+        [HttpGet("hm")]
+        public async Task<IActionResult> GetHmpatamaKodları([FromQuery] string malzemeaciklamasi, [FromQuery] string kontrolparametresi, [FromQuery] string baslangicTarihi, [FromQuery] string bitisTarihi)
+        {
+            var value = await _getValueRepository.GetValueByMalzemeAciklamasiWParametreKoduHammaddeAsync(malzemeaciklamasi, kontrolparametresi, baslangicTarihi, bitisTarihi);
             return Ok(value);
         }
     }

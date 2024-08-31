@@ -10,24 +10,30 @@
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Cihazlar</h6>
                 <a href="/Cihazlar/CreateCihazlar/" class="btn btn-outline-info">Yeni Cihaz Ekle</a>
+
+                <div class="mb-4">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Cihaz Bilgi ara...">
+                </div>
+
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table" id="cihazTable">
                         <thead>
                             <tr>
                                 <th scope="col">CihazID</th>
-                                <th scope="col">CihazKodu</th>
-                                <th scope="col">KullanılanCihazEkipman</th>
+                                <th scope="col">Cihaz Kodu</th>
+                                <th scope="col">Kullanılan Cihaz/Ekipman</th>
                                 <th scope="col">FabrikaID</th>
-                                <th scope="col">PersonelSicilNo</th>
-                                <th scope="col">EklenmeGuncellenmeTarihi</th>
-                                <th scope="col">KullanımDurumu</th>
+                                <th scope="col">Personel SicilNo</th>
+                                <th scope="col">Eklenme Guncellenme Tarihi</th>
+                                <th scope="col">Kullanım Durumu</th>
+                                <th scope="col">Cihaz Bilgi</th>
                                 <th scope="col">Güncelle</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
+                                <tr class="cihaz-row">
                                     <td>@item.CihazID</td>
                                     <td>@item.CihazKodu</td>
                                     <td>@item.KullanılanCihazEkipman</td>
@@ -35,7 +41,8 @@
                                     <td>@item.PersonelSicilNo</td>
                                     <td>@item.EklenmeGuncellenmeTarihi</td>
                                     <td>@item.KullanımDurumu</td>
-                                    <td><a href="/Cihazlar/UpdateCihazlar/@item.CihazKodu" class="btn btn-outline-success">Güncelle</a></td>
+                                    <td>@item.CihazBilgi</td>
+                                    <td><a href="/Cihazlar/UpdateCihazlar/" class="btn btn-outline-success">Güncelle</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -45,17 +52,14 @@
         </div>
     </div>
 </div>
+
 <script>
-    // Güncelleme butonlarına click event'i ekle
     document.querySelectorAll('.btn-outline-success').forEach(btn => {
         btn.addEventListener('click', function (e) {
-            // Linkin varsayılan davranışını engelle
             e.preventDefault();
 
-            // Tıklanan butonun bulunduğu satırı seç
             var row = this.closest('tr');
 
-            // Seçili satırdaki hücrelerden verileri al
             var cihazId = row.cells[0].innerText.trim();
             var cihazKodu = row.cells[1].innerText.trim();
             var kullanılanCihazEkipman = row.cells[2].innerText.trim();
@@ -63,18 +67,32 @@
             var personelSicilNo = row.cells[4].innerText.trim();
             var eklenmeGuncellenmeTarihi = row.cells[5].innerText.trim();
             var kullanımDurumu = row.cells[6].innerText.trim();
+            var cihazBilgi = row.cells[7].innerText.trim();
 
-            // Güncelleme sayfasına yönlendirme URL'sini oluştur
             var url = "/Cihazlar/UpdateCihazlar?CihazID=" + encodeURIComponent(cihazId) +
                 "&CihazKodu=" + encodeURIComponent(cihazKodu) +
                 "&KullanılanCihazEkipman=" + encodeURIComponent(kullanılanCihazEkipman) +
                 "&FabrikaID=" + encodeURIComponent(fabrikaID) +
                 "&PersonelSicilNo=" + encodeURIComponent(personelSicilNo) +
                 "&EklenmeGuncellenmeTarihi=" + encodeURIComponent(eklenmeGuncellenmeTarihi) +
-                "&KullanımDurumu=" + encodeURIComponent(kullanımDurumu);
+                "&KullanımDurumu=" + encodeURIComponent(kullanımDurumu) +
+                "&CihazBilgi=" + encodeURIComponent(cihazBilgi);
 
-            // Yönlendirme
             window.location.href = url;
+        });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('.cihaz-row');
+
+        rows.forEach(function (row) {
+            var cihazBilgi = row.cells[7].innerText.toLowerCase();
+            if (cihazBilgi.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
         });
     });
 </script>

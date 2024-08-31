@@ -10,6 +10,7 @@
 
         public int UrunId { get; set; }
 
+        public string Versiyon { get; set; }
         public string SiraNo { get; set; }
 
         public string UretimTarihi { get; set; }
@@ -29,6 +30,8 @@
         public string PersonelSicilNo { get; set; } = null!;
         public string Value { get; set; } = null!;
         public double AltOnaySiniri { get; set; }
+        public DateTime GuncellenmeTarihi { get; set; }
+
 
         public double UstOnaySiniri { get; set; }
         public double AltSartliKabulSiniri { get; set; }

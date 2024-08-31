@@ -21,9 +21,12 @@
 
         public string AmirOnayDurumu { get; set; }
 
-        public string EklenmeTarihi { get; set; }
+        public string OlusturmaTarihi { get; set; }
+        public string GuncellenmeTarihi { get; set; }
         public string Token { get; set; }
+        public string Versiyon { get; set; }
 
+        public string Trend { get; set; } 
 
         public string PersonelSicilNo { get; set; } = null!;
         public string Value { get; set; }

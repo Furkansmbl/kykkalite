@@ -5,13 +5,14 @@
         
         public string malzemeAciklamasi { get; set; }
 
+        public int NumuneId { get; set; }
+
         public int UrunId { get; set; }
 
         public string SiraNo { get; set; }
 
-        public string UretimTarihi { get; set; }
-
         public string KontrolSaati { get; set; }
+        public string UretimTarihi { get; set; }
 
         public string NumuneSeriNoSarjNo { get; set; }
 
@@ -23,10 +24,13 @@
 
         public string AmirOnayDurumu { get; set; }
 
-        public string EklenmeTarihi { get; set; }
+        public string Versiyon { get; set; }
+        public string OlusturmaTarihi { get; set; }
+        public string GuncellenmeTarihi { get; set; } = "-";
+
         public string? Token { get; set; } 
         public string PersonelSicilNo { get; set; } = null!;
-        public string Value { get; set; } = "-";
+        public string Value { get; set; } = "1";
         public string Value1 { get; set; } = "-";
         public string Value2 { get; set; } = "-";
         public string Value3 { get; set; } = "-";
@@ -42,6 +46,24 @@
         public string Value13 { get; set; } = "-";
         public string Value14 { get; set; } = "-";
         public string Value15 { get; set; } = "-";
+        public string Trend { get; set; } = "-";
+        public string Trend1 { get; set; } = "-";
+        public string Trend2 { get; set; } = "-";
+        public string Trend3 { get; set; } = "-";
+        public string Trend4 { get; set; } = "-";
+        public string Trend5 { get; set; } = "-";
+        public string Trend6 { get; set; } = "-";
+        public string Trend7 { get; set; } = "-";
+        public string Trend8 { get; set; } = "-";
+        public string Trend9 { get; set; } = "-";
+        public string Trend10 { get; set; } = "-";
+        public string Trend11 { get; set; } = "-";
+        public string Trend12 { get; set; } = "-";
+        public string Trend13 { get; set; } = "-";
+        public string Trend14 { get; set; } = "-";
+        public string Trend15 { get; set; } = "-";
+        public string TrendKontrol { get; set; } = "-";
+
         public int red { get; set; }
         public int yellow { get; set; } 
         public int green { get; set; }

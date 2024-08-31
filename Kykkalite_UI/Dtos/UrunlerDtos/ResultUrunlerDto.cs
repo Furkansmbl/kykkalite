@@ -5,6 +5,7 @@
         public int UrunId { get; set; }
 
         public int UrunGrupId { get; set; }
+        public string Hesaplama { get; set; }
 
         public string MalzemeKodu { get; set; } = null!;
 

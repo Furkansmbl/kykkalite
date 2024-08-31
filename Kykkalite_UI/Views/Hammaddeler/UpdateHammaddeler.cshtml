@@ -11,10 +11,10 @@
                 <h6 class="mb-4">Hammadde Güncelleme Sayfası</h6>
                 <form method="post">
                     <input type="hidden" asp-for="HammaddeId" class="form-control" />
-                    <label>HammaddeGrupları</label>
+                    <label>Hammadde Grupları</label>
                     @Html.DropDownListFor(x => x.HammaddeGrupId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
                     <br />
-                    <label>MalzemeKodu</label>
+                    <label>Malzeme Kodu</label>
                     <input type="text" asp-for="MalzemeKodu" class="form-control" />
                     <br />
                     <label>Malzeme Aciklamasi</label>

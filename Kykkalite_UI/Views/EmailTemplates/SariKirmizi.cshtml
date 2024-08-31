@@ -7,8 +7,11 @@
 </head>
 <body>
     <h1>Merhaba,</h1>
-    <p>Kalite sürecini onaylama mailidir.</p>
+    <p>Kalite sürecini onaylama mailidir.Eğer bir sorun olmadığını düşünüyorsanız ONAYLA butonuna basınız.Aksi taktirde red olarak kalacaktır.</p>
     <p>Ürün Adı: @Model.malzemeAciklamasi</p>
+    <p>Numune Id: @Model.SiraNo</p>
+    <p>Mudahale var mı ?: @Model.MudahaleVarmi</p>
+    <p>Aciklama: @Model.Aciklama</p>
 
     @{
         decimal value1, alt1, ust1;
@@ -118,6 +121,10 @@
     <p style="@fontWeight11">
         @Model.KontrolParametresi11: @Model.Value11 , ÜŞOS = @Model.UstSartliKabulSiniri11,ÜOS = @Model.UstOnaySiniri11,AOS = @Model.AltOnaySiniri11 , AŞOS = @Model.AltSartliKabulSiniri11
     </p>
-    <a href="https://localhost:44344/UpdateAmir?token=@Model.Token">Onayla</a>
+    <a href="https://localhost:44359/Unumune/UpdateAmir?token=@Model.Token"
+       style="display: inline-block; padding: 10px 20px; font-size: 16px; font-weight: bold; color: #fff; background-color: #007BFF; border: none; border-radius: 5px; text-decoration: none; text-align: center;">
+        Onayla
+    </a>
+
     </body>
 

@@ -12,10 +12,8 @@
     <meta content="" name="keywords">
     <meta content="" name="description">
 
-    <!-- Favicon -->
     <link href="~/dashmin-1.0.0/img/favicon.ico" rel="icon">
 
-    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -86,5 +84,15 @@
     <!-- Template Javascript -->
     <script src="~/dashmin-1.0.0/js/main.js"></script>
 </body>
-
 </html>
+<script type="text/javascript">
+    window.onload = function () {
+        if (window.history && window.history.pushState) {
+            window.history.pushState('forward', null, '');
+            window.onpopstate = function () {
+                window.history.pushState('forward', null, '');
+                window.location.href = '/Login'; // Redirect to login page
+            };
+        }
+    };
+</script>

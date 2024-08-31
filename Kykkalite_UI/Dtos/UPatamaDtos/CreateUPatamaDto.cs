@@ -6,13 +6,50 @@
 
         public string ParametreKodu { get; set; } = null!;
 
-        public int UrunId { get; set; }
+        private int urunId;
+        private int parametreId;
+        private int fabrikaId;
+        public int UrunId
+        {
+            get { return urunId; }
+            set
+            {
+                urunId = value;
+                UpdateUpatamaKodu();
+            }
+        }
+        public int ParametreId
+        {
+            get { return parametreId; }
+            set
+            {
+                parametreId = value;
+                UpdateUpatamaKodu();
+            }
+        }
+        public int FabrikaId
+        {
+            get { return fabrikaId; }
+            set
+            {
+                fabrikaId = value;
+                UpdateUpatamaKodu();
+            }
+        }
+        public string UpatamaKodu { get; private set; }
 
-        public string UpatamaKodu { get; set; } = null!;
+        private void UpdateUpatamaKodu()
+        {
+            UpatamaKodu = $"{urunId}+{ParametreId}+{fabrikaId}";
+        }
+        public string Versiyon { get; set; } = "1";
 
-        public bool ParametreKritiklikSeviyesi { get; set; }
+        public string Tolerans { get; set; }
+        public string ParametreYonu { get; set; }
 
-        public double KontrolDegeriNominal { get; set; }
+        public string ParametreKritiklikSeviyesi { get; set; }
+
+        public string KontrolDegeriNominal { get; set; }
 
         public double AltOnaySiniri { get; set; }
 
@@ -22,7 +59,7 @@
 
         public double UstSartliKabulSiniri { get; set; }
 
-        public int CihazID { get; set; }
+        public int CihazId { get; set; }
 
         public string ReferansDokuman { get; set; } = null!;
 
@@ -32,12 +69,9 @@
 
         public string OrneklemSiklikBirim { get; set; } = null!;
 
-        public int FabrikaId { get; set; }
-
         public string PersonelSicilNo { get; set; } = null!;
 
-        public DateTime EklenmeTarihi { get; set; }
+        public DateTime OlusturmaTarihi { get; set; }
 
-        public bool KullanımDurumu { get; set; }
     }
 }

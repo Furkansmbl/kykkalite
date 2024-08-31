@@ -17,13 +17,23 @@ namespace Kykkalite_UI.Controllers
             _httpClientFactory = httpClientFactory;
             _loginService = loginService;
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
+            ViewBag.v = await GetProductDescription();
+
+     
+            ViewBag.PersonelSicilNo = personelSicilNo;
+
+            return View();
+        }
+
+        private async Task<List<SelectListItem>> GetProductDescription()
+        {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Urunler");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Urunler");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultUrunlerDto>>(jsonData);
@@ -32,12 +42,9 @@ namespace Kykkalite_UI.Controllers
                 Text = x.MalzemeAciklamasi,
                 Value = x.MalzemeAciklamasi,
             }).ToList();
-
-            ViewBag.v = urunGrupValues;
-            ViewBag.PersonelSicilNo = personelSicilNo;
-
-            return View();
+            return urunGrupValues;
         }
+
         public class QueryViewModel
         {
             public List<ResultGetUpatamaKodlariByUrunIDDto> ResultSet { get; set; }
@@ -49,13 +56,13 @@ namespace Kykkalite_UI.Controllers
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
             ViewBag.PersonelSicilNo = personelSicilNo;
-
+            ViewBag.v = await GetProductDescription();
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 var encodedMalzemeAciklamasi = Uri.EscapeDataString(MalzemeAciklamasi);
-                var response = await client.GetAsync($"https://localhost:44344/api/GetUpatamaKodlariByUrunID?malzemeaciklamasi={encodedMalzemeAciklamasi}");
+                var response = await client.GetAsync($"http://localhost:44344/api/GetUpatamaKodlariByUrunID?Malzemeaciklamasi={encodedMalzemeAciklamasi}");
 
                 if (response.IsSuccessStatusCode)
                 {

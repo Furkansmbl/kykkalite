@@ -10,18 +10,21 @@
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Yeni Cihaz Ekleme Sayfası</h6>
                 <form method="post">
-                    <label>CihazKodu</label>
+                    <label>Cihaz Kodu</label>
                     <input type="text" asp-for="CihazKodu" class="form-control" />
                     <br />
-                    <label>KullanılanCihazEkipman</label>
+                    <label>Kullanılan Cihaz/Ekipman</label>
                     <input type="text" asp-for="KullanılanCihazEkipman" class="form-control" />
                     <br />
                     <label>Fabrikalar</label>
                     @Html.DropDownListFor(x => x.FabrikaID, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
                     <br />
+                    <label>Cihaz Bilgi</label>
+                    <input type="text" asp-for="CihazBilgi" class="form-control" />
+                    <br />
                     <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
                     <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
-                    <label>KullanımDurumu</label>
+                    <label>Kullanım Durumu</label>
                     <select asp-for="KullanımDurumu" class="form-select">
                         <option value="true">Aktif</option>
                         <option value="false">Pasif</option>
@@ -35,15 +38,14 @@
 </div>
 
 <script>
-    // Sayfa yüklendiğinde çalışacak olan kod
+
     document.addEventListener('DOMContentLoaded', function () {
-        // Eklenme/Güncellenme Tarihini al
+
         var now = new Date();
 
-        // YYYY-MM-DDTHH:MM formatına dönüştür
         var formattedDate = now.toISOString().slice(0, 16);
 
-        // EklenmeGuncellenmeTarihi alanını bul ve değerini güncelle
+
         document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
     });
 </script>

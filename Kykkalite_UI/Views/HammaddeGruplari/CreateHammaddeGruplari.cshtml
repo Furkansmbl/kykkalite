@@ -8,17 +8,27 @@
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Yeni Hammadde Ekleme Sayfası</h6>
+                <h6 class="mb-4">Yeni Hammadde Grubu Ekleme Sayfası</h6>
                 <form method="post">
-                    <label>HammaddeGrupId</label>
-                    <input type="member" asp-for="HammaddeGrupId" class="form-control" />
-                    <br />
                     <label>HmgrupAdi</label>
-                    <input type="text" asp-for="HmgrupAdi" class="form-control" />
+                    <input type="text" asp-for="HMGrupAdi" class="form-control" />
                     <br />
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
                     <button class="btn btn-primary">Hammaddeyi Kaydet</button>
                 </form>
             </div>
         </div>
     </div>
-</div
+</div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var now = new Date();
+
+
+        var formattedDate = now.toISOString().slice(0, 16);
+
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+</script>

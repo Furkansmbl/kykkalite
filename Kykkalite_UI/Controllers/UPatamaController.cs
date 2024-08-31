@@ -31,7 +31,7 @@ namespace Kykkalite_UI.Controllers
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
-                var responseMessage = await client.GetAsync("https://localhost:44344/api/UPatama");
+                var responseMessage = await client.GetAsync("http://localhost:44344/api/UPatama");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -48,7 +48,7 @@ namespace Kykkalite_UI.Controllers
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
 
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Fabrika");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
@@ -60,7 +60,7 @@ namespace Kykkalite_UI.Controllers
                                                       Value = x.FabrikaID.ToString(),
                                                   }).ToList();
             var client2 = _httpClientFactory.CreateClient();
-            var responseMessage2 = await client2.GetAsync("https://localhost:44344/api/Cihazlar");
+            var responseMessage2 = await client2.GetAsync("http://localhost:44344/api/Cihazlar");
 
             var jsonData2 = await responseMessage2.Content.ReadAsStringAsync();
             var values2 = JsonConvert.DeserializeObject<List<ResultCihazlarDto>>(jsonData2);
@@ -72,7 +72,7 @@ namespace Kykkalite_UI.Controllers
                                                        Value = x.CihazID.ToString(),
                                                    }).ToList();
             var client3 = _httpClientFactory.CreateClient();
-            var responseMessage3 = await client3.GetAsync("https://localhost:44344/api/Parametreler");
+            var responseMessage3 = await client3.GetAsync("http://localhost:44344/api/Parametreler");
 
             var jsonData3 = await responseMessage3.Content.ReadAsStringAsync();
             var values3 = JsonConvert.DeserializeObject<List<ResultParametreDto>>(jsonData3);
@@ -81,10 +81,10 @@ namespace Kykkalite_UI.Controllers
                                                        select new SelectListItem
                                                        {
                                                            Text = x.KontrolParametresi,
-                                                           Value = x.ParametreKodu.ToString(),
+                                                           Value = x.ParametreID.ToString(),
                                                        }).ToList();
             var client4 = _httpClientFactory.CreateClient();
-            var responseMessage4 = await client4.GetAsync("https://localhost:44344/api/Urunler");
+            var responseMessage4 = await client4.GetAsync("http://localhost:44344/api/Urunler");
 
             var jsonData4 = await responseMessage4.Content.ReadAsStringAsync();
             var values4 = JsonConvert.DeserializeObject<List<ResultUrunlerDto>>(jsonData4);
@@ -114,7 +114,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createUPatamaDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/UPatama", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/UPatama", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -128,7 +128,7 @@ namespace Kykkalite_UI.Controllers
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
 
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Fabrika");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
@@ -140,7 +140,7 @@ namespace Kykkalite_UI.Controllers
                                                       Value = x.FabrikaID.ToString(),
                                                   }).ToList();
             var client2 = _httpClientFactory.CreateClient();
-            var responseMessage2 = await client2.GetAsync("https://localhost:44344/api/Cihazlar");
+            var responseMessage2 = await client2.GetAsync("http://localhost:44344/api/Cihazlar");
 
             var jsonData2 = await responseMessage2.Content.ReadAsStringAsync();
             var values2 = JsonConvert.DeserializeObject<List<ResultCihazlarDto>>(jsonData);
@@ -152,7 +152,7 @@ namespace Kykkalite_UI.Controllers
                                                        Value = x.CihazID.ToString(),
                                                    }).ToList();
             var client3 = _httpClientFactory.CreateClient();
-            var responseMessage3 = await client3.GetAsync("https://localhost:44344/api/Parametreler");
+            var responseMessage3 = await client3.GetAsync("http://localhost:44344/api/Parametreler");
 
             var jsonData3 = await responseMessage3.Content.ReadAsStringAsync();
             var values3 = JsonConvert.DeserializeObject<List<ResultParametreDto>>(jsonData3);
@@ -164,7 +164,7 @@ namespace Kykkalite_UI.Controllers
                                                        Value = x.ParametreKodu.ToString(),
                                                    }).ToList();
             var client4 = _httpClientFactory.CreateClient();
-            var responseMessage4 = await client4.GetAsync("https://localhost:44344/api/Urunler");
+            var responseMessage4 = await client4.GetAsync("http://localhost:44344/api/Urunler");
 
             var jsonData4 = await responseMessage4.Content.ReadAsStringAsync();
             var values4 = JsonConvert.DeserializeObject<List<ResultUrunlerDto>>(jsonData4);
@@ -193,7 +193,25 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateUPatamaDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/UPatama/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/UPatama/", stringContent);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+        [HttpGet]
+        public IActionResult CreateUpAtamaPasif()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateUpAtamaPasif([FromBody]CreateUpAtamaPasifDto createUpAtamaPasifDto)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createUpAtamaPasifDto);
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/UPatama/pasif/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

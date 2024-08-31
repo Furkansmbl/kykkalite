@@ -12,8 +12,9 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">UrunGrupId</th>
-                                <th scope="col">UgrupAdi</th>
+                                <th scope="col">Urun GrupId</th>
+                                <th scope="col">Ürün Grup Adı</th>
+                                <th scope="col">Eklenme Guncellenme Tarihi</th>
                                 <th scope="col">Güncelle</th>
 
                             </tr>
@@ -24,6 +25,7 @@
                                 <tr>
                                     <th scope="row">@item.UrunGrupId</th>
                                     <td>@item.UgrupAdi</td>
+                                    <td>@item.EklenmeGuncellenmeTarihi</td>
                                     <td><a href="/UrunGruplari/UpdateUrunGruplari/" class="btn btn-outline-success">Güncelle</a></td>
 
                                 </tr>
@@ -42,9 +44,11 @@
             var row = this.closest('tr');
             var urunGrupId = row.cells[0].innerText.trim();
             var ugrupAdi = row.cells[1].innerText.trim();
+            var eklenmeGuncellenmeTarihi = row.cells[2].innerText.trim();
 
             var url = "/UrunGruplari/UpdateUrunGruplari?UrunGrupId=" + encodeURIComponent(urunGrupId) +
-                "&UgrupAdi=" + encodeURIComponent(ugrupAdi);
+                "&UgrupAdi=" + encodeURIComponent(ugrupAdi) + 
+                "&EklenmeGuncellenmeTarihi=" + encodeURIComponent(eklenmeGuncellenmeTarihi);
             window.location.href = url;
         });
     });

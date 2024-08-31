@@ -1,0 +1,67 @@
+﻿@using static Kykkalite_UI.Controllers.GetRaporController
+@using System.Text.Json
+@using System.Text.Encodings.Web
+
+@model QueryViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "";
+}
+<h2>Rapor Sorgulama</h2>
+
+<form method="get" asp-action="Index">
+    <div class="form-group">
+        <label for="fabrikaId">Fabrika ID</label>
+        <input type="number" class="form-control" id="fabrikaId" name="fabrikaId" required />
+    </div>
+    <div class="form-group">
+        <label for="urunId">Ürün ID</label>
+        <input type="number" class="form-control" id="urunId" name="urunId" required />
+    </div>
+    <div class="form-group">
+        <label for="olusturmaTarihi">Oluşturma Tarihi</label>
+        <input type="text" class="form-control" id="olusturmaTarihi" name="olusturmaTarihi" required />
+    </div>
+    <div class="form-group">
+        <label for="bitisTarihi">Bitiş Tarihi</label>
+        <input type="text" class="form-control" id="bitisTarihi" name="bitisTarihi" required />
+    </div>
+    <div class="form-group">
+        <label for="kontrolParametresi">Kontrol Parametresi</label>
+        <input type="text" class="form-control" id="kontrolParametresi" name="kontrolParametresi" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Sorgula</button>
+</form>
+
+@if (Model.ResultSet != null && Model.ResultSet.Count > 0)
+{
+    <h3>Sorgu Sonuçları</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fabrika ID</th>
+                <th>Ürün ID</th>
+                <th>Oluşturma Tarihi</th>
+                <th>Bitiş Tarihi</th>
+                <th>Kontrol Parametresi</th>
+                <!-- Diğer kolonlar burada belirtilebilir -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ResultSet)
+            {
+                <tr>
+                    <td>@item.FabrikaId</td>
+                    <td>@item.UrunId</td>
+                    <td>@item.OlusturmaTarihi</td>
+                    <td>@item.KontrolParametresi</td>
+                    <!-- Diğer kolonlar burada belirtilebilir -->
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (Model.ResultSet != null)
+{
+    <p>Rapor bulunamadı.</p>
+}

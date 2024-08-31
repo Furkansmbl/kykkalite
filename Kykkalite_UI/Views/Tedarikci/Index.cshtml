@@ -1,0 +1,61 @@
+﻿@model List<TedarikciDtos>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Tedarikçiler</h6>
+                <a href="/Tedarikci/CreateTedarikci/" class="btn btn-outline-info">Yeni Tedarikçi Ekle</a>
+
+                <div class="table-responsive">
+                    <table class="table" id="cihazTable" >
+                        <thead>
+                            <tr>
+                                <th scope="col">THMID</th>
+                                <th scope="col">MALZADI</th>
+                                <th scope="col">ISYERIADI</th>
+                                <th scope="col">UNVANI</th>
+                                <th scope="col">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr class="cihaz-row">
+                                    <td>@item.THMID</td>
+                                    <td>@item.MALZADI</td>
+                                    <td>@item.ISYERIADI</td>
+                                    <td>@item.UNVANI</td>
+                                    <td><a href="/Tedarikci/UpdateTedarikci/" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
+            var THMID = row.cells[0].innerText.trim();
+            var MALZADI = row.cells[1].innerText.trim();
+            var ISYERIADI = row.cells[2].innerText.trim();
+            var UNVANI = row.cells[3].innerText.trim();
+
+            var url = "/Tedarikci/UpdateTedarikci?THMID=" + encodeURIComponent(THMID) +
+                "&MALZADI=" + encodeURIComponent(MALZADI) +
+                "&ISYERIADI=" + encodeURIComponent(ISYERIADI) +
+                "&UNVANI=" + encodeURIComponent(UNVANI);
+
+            window.location.href = url;
+        });
+    });
+</script>

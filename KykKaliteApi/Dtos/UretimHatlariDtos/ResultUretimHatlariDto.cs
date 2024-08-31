@@ -6,6 +6,8 @@
 
         public int FabrikaId { get; set; }
 
-        public string HatAdiAciklamasi { get; set; } 
+        public string HatAdiAciklamasi { get; set; }
+        public DateTime EklenmeGuncellenmeTarihi { get; set; }
+
     }
 }

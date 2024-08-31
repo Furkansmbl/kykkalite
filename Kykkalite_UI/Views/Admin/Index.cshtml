@@ -1,44 +1,182 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
 <!DOCTYPE html>
 <html lang="en">
 
-@await Component.InvokeAsync("_adminLayoutHeadComponentPartial")
+<head>
+    @await Component.InvokeAsync("_adminLayoutHeadComponentPartial")
+    <style>
+        /* General container settings */
+        .container-xxl {
+            display: flex;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow: hidden; /* Hide scrollbar */
+        }
+
+        /* Sidebar settings */
+        .sidebar {
+            width: 275px; /* Sidebar width */
+            position: fixed; /* Fixed position */
+            top: 0;
+            left: 0;
+            height: 100vh; /* Full height */
+            z-index: 1000; /* To ensure it appears on top */
+            background-color: #f8f9fa; /* Background color */
+            transition: transform 0.3s ease; /* Transition animation */
+            overflow-y: auto; /* Content scroll */
+            padding: 3px; /* Content padding */
+            box-sizing: border-box; /* Padding and border don't affect width */
+        }
+
+            /* Sidebar closed state */
+            .sidebar.closed {
+                transform: translateX(-275px); /* Slide sidebar to the left */
+            }
+
+        /* Content section settings */
+        .content {
+            margin-left: 275px; /* Sidebar width */
+            flex: 1;
+            padding: 20px; /* Padding */
+            transition: margin-left 0.3s ease; /* Transition animation */
+        }
+
+            /* Content area without sidebar */
+            .content.fullwidth {
+                margin-left: 0;
+                width: 100%;
+            }
+
+        /* Navbar settings */
+        .navbar {
+            padding: 0;
+            margin: 0;
+            position: sticky;
+            top: 0;
+            z-index: 1001; /* To ensure it appears on top of the sidebar */
+            background-color: #fff; /* Navbar background color */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+
+        /* Back to Top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001; /* Ensure it appears on top */
+            background-color: #007bff; /* Background color */
+            color: #fff; /* Text color */
+            border-radius: 50%; /* Circular button */
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow */
+            text-decoration: none;
+        }
+
+            .back-to-top i {
+                font-size: 20px;
+            }
+
+        /* Sidebar Toggler */
+        .sidebar-toggler {
+            position: fixed;
+            top: 20px; /* Distance from top */
+            left: 20px; /* Distance from left */
+            cursor: pointer;
+            background-color: #007bff; /* Background color */
+            color: #fff; /* Text color */
+            border-radius: 50%; /* Circular button */
+            width: 40px; /* Button size */
+            height: 40px; /* Button size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow */
+            z-index: 1001; /* Ensure it appears on top */
+        }
+
+            .sidebar-toggler i {
+                font-size: 20px; /* Icon size */
+            }
+
+        .navbar-nav .nav-item {
+            margin: 5px 0; /* Spacing between items */
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: #333; /* Text color */
+            text-decoration: none;
+        }
+
+            .nav-link:hover {
+                background-color: #e9ecef; /* Hover background color */
+            }
+
+        .dropdown-menu {
+            border-radius: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+
+        table {
+            zoom: 80%;
+        }
+
+    </style>
+</head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        @await Component.InvokeAsync("_AdminLayoutSpinnerComponentPartial")
-        <!-- Spinner End -->
-        <!-- Sidebar Start -->
-        @await Component.InvokeAsync("_AdminLayoutSidebarComponentPartial")
+    <div class="container-xxl bg-light">
+        <!-- Sidebar Toggler Button -->
+        <div class="sidebar-toggler">
+            <i class="bi bi-list"></i>
+        </div>
 
+        <!-- Sidebar Start -->
+        <div class="sidebar">
+            @await Component.InvokeAsync("_AdminLayoutSidebarComponentPartial")
+        </div>
         <!-- Sidebar End -->
         <!-- Content Start -->
         <div class="content">
             <!-- Navbar Start -->
             @await Component.InvokeAsync("_AdminLayoutNavbarComponentPartial")
-
             <!-- Navbar End -->
-            <!-- Blank Start -->
+            <!-- Main Content -->
             @RenderBody()
-            <!-- Blank End -->
+
             <!-- Footer Start -->
             @await Component.InvokeAsync("_AdminLayoutFooterComponentPartial")
-
             <!-- Footer End -->
         </div>
         <!-- Content End -->
         <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <a href="#" class="back-to-top">
+            <i class="bi bi-arrow-up"></i>
+        </a>
     </div>
 
     <!-- JavaScript Libraries -->
     @await Component.InvokeAsync("_AdminLayoutScriptsComponentPartial")
 
+    <script>
+        // Sidebar toggler script
+        document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+            sidebar.classList.toggle('closed');
+            content.classList.toggle('fullwidth');
+        });
+    </script>
 </body>
 
 </html>

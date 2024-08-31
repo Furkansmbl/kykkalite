@@ -15,7 +15,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Neww");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Neww");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();

@@ -17,7 +17,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/HammaddeGruplari");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/HammaddeGruplari");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -37,7 +37,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createHammaddeGruplariDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/HammmaddeGruplari", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/HammaddeGruplari", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -48,7 +48,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> UpdateHammaddeGruplari(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:44344/api/HammaddeGruplari/{id}");
+            var responseMessage = await client.GetAsync($"http://localhost:44344/api/HammaddeGruplari/{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -63,7 +63,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateHammaddeGruplariDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/HammaddeGruplari/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/HammaddeGruplari/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

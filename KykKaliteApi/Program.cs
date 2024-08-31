@@ -19,7 +19,9 @@ using KykKaliteApi.Repositories.NewRepository;
 using KykKaliteApi.Repositories.GetUpatamaKodlariByUrunIDRepository;
 using KykKaliteApi.Repositories.GetHmpatamaByHmIdRepository;
 using KykKaliteApi.Repositories.GetValueByMalzemeAciklamasiWParametreKodu;
-using KykKaliteApi.Repositories.GetValueByMalzemeAciklamasiWParametreKodu;
+using KykKaliteApi.Repositories.GetRaporRepository;
+using KykKaliteApi.Repositories.TedarikciRepository;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +47,8 @@ builder.Services.AddTransient<INewwRepository, NewwRepository>();
 builder.Services.AddTransient<IGetUpatamaKodlariByUrunIDRepository, GetUpatamaKodlariByUrunIDRepository>();
 builder.Services.AddTransient<IGetHmpatamaByHmýdRepository, GetHmatamaByHmýdRepository>();
 builder.Services.AddTransient<IGetValueRepository, GetValueRepository>();
+builder.Services.AddTransient<IGetRaporRepository, GetRaporRepository>();
+builder.Services.AddTransient<ITedarikciRepository, TedarikciRepository>();
 
 
 builder.Services.AddControllers();
@@ -60,7 +64,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

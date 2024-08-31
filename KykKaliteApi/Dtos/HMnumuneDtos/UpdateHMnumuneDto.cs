@@ -29,6 +29,7 @@
 
         public int AmirOnayDurumu { get; set; }
 
+        public DateTime GuncellenmeTarihi { get; set; }
         public DateTime EklenmeTarihi { get; set; }
 
         public string PersonelSicilNo { get; set; } = null!;

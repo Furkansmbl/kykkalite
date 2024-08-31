@@ -13,6 +13,7 @@
                     <input type="hidden" asp-for="UrunGrupId" class="form-control" />
                     <label>Ürün Grup Adı</label>
                     <input type="text" asp-for="UgrupAdi" class="form-control" />
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
                     <br />
                     <button class="btn btn-primary">Ürün Grubu Güncelle</button>
                 </form>
@@ -24,8 +25,22 @@
     document.addEventListener('DOMContentLoaded', function () {
         const urlParams = new URLSearchParams(window.location.search);
         document.getElementById('UrunGrupId').value = urlParams.get('UrunGrupId');
+        document.getElementById('EklenmeGuncellenmeTarihi').value = urlParams.get('EklenmeGuncellenmeTarihi');
         document.getElementById('UgrupAdi').value = urlParams.get('UgrupAdi');
     });
 </script>
 
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Eklenme/Güncellenme Tarihini al
+        var now = new Date();
+
+        // YYYY-MM-DDTHH:MM formatına dönüştür
+        var formattedDate = now.toISOString().slice(0, 16);
+
+        // EklenmeGuncellenmeTarihi alanını bul ve değerini güncelle
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+</script>
 

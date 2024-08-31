@@ -42,13 +42,15 @@ namespace KykKaliteApi.Repositories.UPNvalueRepository
 
         public async void UpdateUPNvalue(UpdateUPNvalueDto updateUPNvalueDto)
         {
-            string query = "UPDATE UPNvalue SET UpatamaKodu = @upatamaKodu,NumuneId = @numuneId, Value = @value, EklenmeTarihi = @eklenmeTarihi, PersonelSicilNo = @personelSicilNo WHERE UpnvalueId = @upnvalueId";
+            string query = "UPDATE UPNvalue SET UpatamaKodu = @upatamaKodu,NumuneId = @numuneId, Value = @value, OlusturmaTarihi = @olusturmaTarihi, PersonelSicilNo = @personelSicilNo, Versiyon = @versiyon, GuncellenmeTarihi = @guncellenmeTarihi WHERE UpnvalueId = @upnvalueId";
             var parameters = new DynamicParameters();
             parameters.Add("@upnvalueId", updateUPNvalueDto.UpnvalueId);
             parameters.Add("@upatamaKodu", updateUPNvalueDto.UpatamaKodu);
             parameters.Add("@numuneId", updateUPNvalueDto.NumuneId);
             parameters.Add("@value", updateUPNvalueDto.Value);
-            parameters.Add("@eklenmeTarihi", updateUPNvalueDto.EklenmeTarihi);
+            parameters.Add("@olusturmaTarihi", updateUPNvalueDto.OlusturmaTarihi);
+            parameters.Add("@versiyon", updateUPNvalueDto.Versiyon);
+            parameters.Add("@guncellenmeTarihi", updateUPNvalueDto.GuncellenmeTarihi);
             parameters.Add("@personelSicilNo", updateUPNvalueDto.PersonelSicilNo);
             using (var connection = _context.CreateConnection())
             {

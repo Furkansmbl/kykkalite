@@ -14,6 +14,7 @@
 
         public string MalzemeLotSeriNo { get; set; } = null!;
 
+        public DateTime GuncellenmeTarihi { get; set; }
         public string KykbarkodNo { get; set; } = null!;
 
         public DateTime MalzemeUretimTarihi { get; set; }

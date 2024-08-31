@@ -26,7 +26,9 @@
                                             <th scope="col">UpatamaKodu</th>
                                             <th scope="col">NumuneId</th>
                                             <th scope="col">Value</th>
-                                            <th scope="col">EklenmeTarihi</th>
+                                            <th scope="col">Versiyon</th>
+                                            <th scope="col">Olusturma Tarihi</th>
+                                            <th scope="col">Güncellenme Tarihi</th>
                                             <th scope="col">PersonelSicilNo</th>
                                             <th scope="col">Güncelle</th>
                                         </tr>
@@ -40,7 +42,9 @@
                                                 <td>@item.UpatamaKodu</td>
                                                 <td>@item.NumuneId</td>
                                                 <td>@item.Value</td>
-                                                <td>@item.EklenmeTarihi</td>
+                                                <td>@item.Versiyon</td>
+                                                <td>@item.OlusturmaTarihi </td>
+                                                <td>@item.GuncellenmeTarihi </td>
                                                 <td>@item.PersonelSicilNo</td>
                                                 <td><a href="/UPNvalue/UpdateUPNvalue/" class="btn btn-outline-success">Güncelle</a></td>
                                             </tr>
@@ -111,12 +115,16 @@
             var upatamaKodu = row.cells[1].innerText.trim();
             var numuneId = row.cells[2].innerText.trim();
             var value = row.cells[3].innerText.trim();
+            var versiyon = row.cells[4].innerText.trim();
+            var olusturmaTarihi = row.cells[5].innerText.trim();
 
             var url = "/UPNvalue/UpdateUPNvalue?UpnvalueId=" + encodeURIComponent(upnvalueId) +
                 "&UpatamaKodu=" + encodeURIComponent(upatamaKodu) +
                 "&NumuneId=" + encodeURIComponent(numuneId) +
-                "&Value=" + encodeURIComponent(value);
-            window.location.href = url;
+                "&Value=" + encodeURIComponent(value) +
+                "&Versiyon=" + encodeURIComponent(versiyon) +
+                "&OlusturmaTarihi=" + encodeURIComponent(olusturmaTarihi) ;
+                window.location.href = url;
         });
     });
 </script>

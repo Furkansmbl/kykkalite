@@ -21,17 +21,17 @@ namespace KykKaliteApi.Repositories.UnumuneRepository
             string query = @"
         DECLARE @numuneID INT;
 
-        INSERT INTO Unumune (urunID, SiraNo, UretimTarihi, KontrolSaati, NumuneSeriNoSarjNo, MudahaleVarmi, Aciklama, OnayDurumu, AmirOnayDurumu, EklenmeTarihi, PersonelSicilNo,Token)
-        VALUES (@urunId, @siraNo, @UretimTarihi, @kontrolSaati, @numuneSeriNoSarjNo, @mudahaleVarmi, @aciklama, @onayDurumu, @amirOnayDurumu, @eklenmeTarihi, @personelSicilNo , @token);
+        INSERT INTO Unumune (urunID, SiraNo, UretimTarihi, KontrolSaati, NumuneSeriNoSarjNo, MudahaleVarmi, Aciklama, OnayDurumu, AmirOnayDurumu, OlusturmaTarihi, PersonelSicilNo, Token, Trend)
+        VALUES (@urunId, @siraNo, @UretimTarihi, @kontrolSaati, @numuneSeriNoSarjNo, @mudahaleVarmi, @aciklama, @onayDurumu, @amirOnayDurumu, @olusturmaTarihi, @personelSicilNo  ,  @token , @trend);
 
         SET @numuneID = SCOPE_IDENTITY();
 
-        INSERT INTO UPNvalue (UPAtamaKodu, NumuneID, Value, EklenmeTarihi, PersonelSicilNo)
-        SELECT UpatamaKodu, @numuneID, v.[value], @eklenmeTarihi, @personelSicilNo
+        INSERT INTO UPNvalue (UPAtamaKodu, NumuneID,Versiyon, Value, OlusturmaTarihi, PersonelSicilNo)
+        SELECT UpatamaKodu, @numuneID, @versiyon, v.[value], @olusturmaTarihi, @personelSicilNo
         FROM (
-            SELECT up.UPAtamaKodu, ROW_NUMBER() OVER (ORDER BY up.EklenmeTarihi) AS RowNum
+            SELECT up.UPAtamaKodu, ROW_NUMBER() OVER (ORDER BY up.OlusturmaTarihi) AS RowNum
             FROM urunler AS u
-            INNER JOIN upatama AS up ON u.urunID = up.urunID AND KullanımDurumu = 1
+            INNER JOIN upatamaAktif AS up ON u.urunID = up.urunID 
             WHERE u.urunID = @urunID
         ) AS upWithRowNum
         JOIN (VALUES (@value1, 1), (@value2, 2), (@value3, 3), (@value4, 4), (@value5, 5), (@value6, 6), (@value7, 7), (@value8, 8), (@value9, 9), (@value10, 10), (@value11, 11), (@value12, 12), (@value13, 13),(@value14, 14), (@value15, 15)) AS v([value], RowNum) ON upWithRowNum.RowNum = v.RowNum;
@@ -47,7 +47,8 @@ namespace KykKaliteApi.Repositories.UnumuneRepository
             parameters.Add("@aciklama", createUnumuneDto.Aciklama);
             parameters.Add("@onayDurumu", createUnumuneDto.OnayDurumu);
             parameters.Add("@amirOnayDurumu", createUnumuneDto.AmirOnayDurumu);
-            parameters.Add("@eklenmeTarihi", createUnumuneDto.EklenmeTarihi);
+            parameters.Add("@olusturmaTarihi", createUnumuneDto.OlusturmaTarihi);
+            parameters.Add("@versiyon", createUnumuneDto.Versiyon);
             parameters.Add("@personelSicilNo", createUnumuneDto.PersonelSicilNo);
             parameters.Add("@value", createUnumuneDto.Value);
             parameters.Add("@value1", createUnumuneDto.Value1);
@@ -66,6 +67,7 @@ namespace KykKaliteApi.Repositories.UnumuneRepository
             parameters.Add("@value14", createUnumuneDto.Value14);
             parameters.Add("@value15", createUnumuneDto.Value15);
             parameters.Add("@token", createUnumuneDto.Token);
+            parameters.Add("@trend", createUnumuneDto.Trend);
 
             using (var connection = _context.CreateConnection())
             {
@@ -105,7 +107,7 @@ namespace KykKaliteApi.Repositories.UnumuneRepository
 
         public async Task UpdateAmir(AmirOnayDurumuUnumuneDto amirOnayDurumuUnumuneDto)
         {
-            string query = "UPDATE Unumune SET AmirOnayDurumu = 1 WHERE Token = @token;";
+            string query = "UPDATE Unumune SET AmirOnayDurumu = 'SartliOnay' WHERE Token = @token;";
             var parameters = new DynamicParameters();
             parameters.Add("@token", amirOnayDurumuUnumuneDto.Token);         
             using (var connectiont = _context.CreateConnection())
@@ -116,18 +118,20 @@ namespace KykKaliteApi.Repositories.UnumuneRepository
 
         public async void UpdateUnumune(UpdateUnumuneDto updateUnumuneDto)
         {
-            string query = "Update HMPNvalue Set UrunId=@urunId,SiraNo=@siraNo,UretimTarihi=@uretimTarihi,NumuneSeriNoSarjNo=@numuneSeriNoSarjNo,MudahaleVarmi=@mudahaleVarmi,Aciklama=@aciklama,OnayDurumu=@onaydurumu,AmirOnayDurumu=@amirOnayDurumu,EklenmeTarihi=@eklenmeTarihi,PersonelSicilNo=@personelSicilNo where HMPNValueId=@hMPNValueId";
+            string query = "Update Unumune Set UrunId=@urunId,SiraNo=@siraNo,UretimTarihi=@uretimTarihi,KontrolSaati=@kontrolSaati,NumuneSeriNoSarjNo=@numuneSeriNoSarjNo,MudahaleVarmi=@mudahaleVarmi,Aciklama=@aciklama,OnayDurumu=@onaydurumu,AmirOnayDurumu=@amirOnayDurumu,OlusturmaTarihi=@olusturmaTarihi,GuncellenmeTarihi = @guncellenmeTarihi ,PersonelSicilNo=@personelSicilNo where NumuneId=@numuneId";
             var parameters = new DynamicParameters();
             parameters.Add("@numuneId", updateUnumuneDto.NumuneId);
             parameters.Add("@urunId", updateUnumuneDto.UrunId);
             parameters.Add("@siraNo", updateUnumuneDto.SiraNo);
             parameters.Add("@uretimTarihi", updateUnumuneDto.UretimTarihi);
+            parameters.Add("@kontrolSaati", updateUnumuneDto.KontrolSaati);
             parameters.Add("@numuneSeriNoSarjNo", updateUnumuneDto.NumuneSeriNoSarjNo);
-            parameters.Add("@mudahaleVarmi", true);
+            parameters.Add("@mudahaleVarmi", updateUnumuneDto.MudahaleVarmi);
             parameters.Add("@aciklama", updateUnumuneDto.Aciklama);
-            parameters.Add("@onayDurumu", true);
+            parameters.Add("@onayDurumu", updateUnumuneDto.OnayDurumu);
             parameters.Add("@amirOnayDurumu", updateUnumuneDto.AmirOnayDurumu);
-            parameters.Add("@eklenmeTarihi", updateUnumuneDto.EklenmeTarihi);
+            parameters.Add("@olusturmaTarihi", updateUnumuneDto.OlusturmaTarihi);
+            parameters.Add("@guncellenmeTarihi", updateUnumuneDto.GuncellenmeTarihi);
             parameters.Add("@personelSicilNo", updateUnumuneDto.PersonelSicilNo);
 
             using (var connectiont = _context.CreateConnection())

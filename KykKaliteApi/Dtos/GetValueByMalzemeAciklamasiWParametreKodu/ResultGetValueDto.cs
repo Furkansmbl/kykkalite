@@ -9,7 +9,9 @@
 
         public double UstSartliKabulSiniri { get; set; }
         public double UstOnaySiniri { get; set; }
-        public bool ParametreTipiOlcmeGozlem { get; set; }
+        public string ParametreTipiOlcmeGozlem { get; set; }
+        public string BaslanicTarihi { get; set; }
+        public string BitisTarihi { get; set; }
 
 
 

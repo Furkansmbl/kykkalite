@@ -7,7 +7,7 @@
         public int HammaddeGrupId { get; set; }
 
         public string MalzemeKodu { get; set; } = null!;
-
+        public string Hesaplama { get; set; } 
         public string MalzemeAciklamasi { get; set; } = null!;
 
         public string PersonelSicilNo { get; set; } = null!;

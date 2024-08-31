@@ -1,0 +1,39 @@
+﻿@model TedarikciDtos
+@{
+    ViewData["Title"] = "UpdateTedarikci";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Tedarikçi Güncelleme Sayfası</h6>
+                <form method="post">
+                    <label>THMID</label>
+                    <input type="member" asp-for="THMID" class="form-control" />
+                    <br />
+                    <label>MALZADI</label>
+                    <input type="text" asp-for="MALZADI" class="form-control" />
+                    <br />
+                    <label>ISYERIADI</label>
+                    <input type="text" asp-for="ISYERIADI" class="form-control" />
+                    <br />
+                    <label>UNVANI</label>
+                    <input type="text" asp-for="UNVANI" class="form-control" />
+                    <br />
+                    <button class="btn btn-success">Tedarikçiyi Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('THMID').value = urlParams.get('THMID');
+        document.getElementById('MALZADI').value = urlParams.get('MALZADI');
+        document.getElementById('ISYERIADI').value = urlParams.get('ISYERIADI');
+        document.getElementById('UNVANI').value = urlParams.get('UNVANI');
+
+    });
+</script>

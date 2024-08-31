@@ -58,16 +58,33 @@
                         <option value="true">Aktif</option>
                         <option value="false">Pasif</option>
                     </select>
+                    <br /> 
+                    <label>Eklenme Tarihi</label>
+                    <input type="datetime" class="form-control" asp-for="EklenmeTarihi" />
                     <br />
                     <label>Tarihi</label>
                     <input type="datetime-local" class="form-control" asp-for="Tarihi" />
                     <br />
                     <label>PersonelSicilNo</label>
                     <input type="text" asp-for="PersonelSicilNo" class="form-control" />
+                    <input type="hidden" class="form-control" asp-for="GuncellenmeTarihi" />
                     <br />
                     <button class="btn btn-success">Hammadde numuneyi Güncelle</button>
                 </form>
             </div>
         </div>
     </div>
+    <script>
+        // Sayfa yüklendiğinde çalışacak olan kod
+        document.addEventListener('DOMContentLoaded', function () {
+            // Eklenme/Güncellenme Tarihini al
+            var now = new Date();
+
+            // YYYY-MM-DDTHH:MM formatına dönüştür
+            var formattedDate = now.toISOString().slice(0, 16);
+
+            // EklenmeGuncellenmeTarihi alanını bul ve değerini güncelle
+            document.querySelector('[name="GuncellenmeTarihi"]').value = formattedDate;
+        });
+    </script>
 

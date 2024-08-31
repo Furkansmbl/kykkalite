@@ -28,9 +28,9 @@ namespace Kykkalite_UI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
             var content = new StringContent(JsonSerializer.Serialize(createLoginDto), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("https://localhost:44344/api/Login", content);
+            var response = await client.PostAsync("http://localhost:5185/api/Login", content);
 
-            if (response.IsSuccessStatusCode == true)
+            if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
                 var tokenModel = JsonSerializer.Deserialize<JwtResponseModel>(jsonData, new JsonSerializerOptions
@@ -55,14 +55,24 @@ namespace Kykkalite_UI.Controllers
                         };
 
                         await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProps);
-                        return RedirectToAction("Index","Urunler");
- 
+
+                        
+                        var roleClaim = claims.FirstOrDefault(c => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+                        if (roleClaim != null && roleClaim.Value == "Admin")
+                        {
+                            return RedirectToAction("Index", "Urunler"); 
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "ChooseHmOrU"); 
+                        }
                     }
                 }
-
             }
-            return View();
 
+            return View();
         }
+
+
     }
 }

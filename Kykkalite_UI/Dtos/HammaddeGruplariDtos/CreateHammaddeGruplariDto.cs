@@ -2,9 +2,8 @@
 {
     public class CreateHammaddeGruplariDto
     {
-        public int HammaddeGrupId { get; set; }
-
-        public string HmgrupAdi { get; set; } = null!;
+        public DateTime EklenmeGuncellenmeTarihi { get; set; }
+        public string HMGrupAdi { get; set; }
     }
 }
 

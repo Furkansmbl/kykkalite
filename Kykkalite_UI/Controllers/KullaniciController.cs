@@ -19,7 +19,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Kullanici");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Kullanici");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -32,7 +32,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> ExportToExcel()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Kullanici");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Kullanici");
             if (!responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -87,7 +87,7 @@ namespace Kykkalite_UI.Controllers
            
 
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Fabrika");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
@@ -108,7 +108,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createKullaniciDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/Kullanici", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/Kullanici", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -119,7 +119,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> UpdateKullanici()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Fabrika");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
@@ -139,7 +139,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateKullaniciDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/Kullanici/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/Kullanici/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

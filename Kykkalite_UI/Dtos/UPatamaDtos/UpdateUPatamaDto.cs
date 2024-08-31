@@ -7,12 +7,17 @@
         public string ParametreKodu { get; set; } = null!;
 
         public int UrunId { get; set; }
+        public int ParametreId { get; set; }
 
         public string UpatamaKodu { get; set; } = null!;
+        public string Versiyon { get; set; }
 
-        public bool ParametreKritiklikSeviyesi { get; set; }
+        public string Tolerans { get; set; }
+        public string ParametreYonu { get; set; }
 
-        public double KontrolDegeriNominal { get; set; }
+        public string ParametreKritiklikSeviyesi { get; set; }
+
+        public string KontrolDegeriNominal { get; set; }
 
         public double AltOnaySiniri { get; set; }
 
@@ -36,8 +41,8 @@
 
         public string PersonelSicilNo { get; set; } = null!;
 
-        public DateTime EklenmeTarihi { get; set; }
+        public DateTime OlusturmaTarihi { get; set; }
 
-        public bool KullanımDurumu { get; set; }
+
     }
 }

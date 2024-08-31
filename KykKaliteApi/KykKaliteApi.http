@@ -1,6 +1,6 @@
-@KykKaliteApi_HostAddress = http://localhost:5185
+@KykKaliteApi_HostAddress = http://localhost:44344
 
-GET {{KykKaliteApi_HostAddress}}/weatherforecast/
+GET {{KykKaliteApi_HostAddress}}/api/Fabrika
 Accept: application/json
 
 ###

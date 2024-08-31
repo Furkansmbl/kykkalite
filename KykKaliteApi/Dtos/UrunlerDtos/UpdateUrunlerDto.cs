@@ -8,6 +8,7 @@
 
         public string MalzemeKodu { get; set; } = null!;
 
+
         public string MalzemeAciklamasi { get; set; } = null!;
 
         public string PersonelSicilNo { get; set; } = null!;

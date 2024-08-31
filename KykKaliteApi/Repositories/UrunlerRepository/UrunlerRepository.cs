@@ -17,7 +17,7 @@ namespace KykKaliteApi.Repositories.UrunlerRepository
         public async void CreateUrunler(CreateUrunlerDto createUrunlerDto)
         {
 
-            string query = "insert into Urunler (UrunGrupId,MalzemeKodu,MalzemeAciklamasi,PersonelSicilNo,EklenmeGuncellenmeTarihi,KullanimDurumu) values (@urunGrupId,@malzemeKodu,@malzemeAciklamasi,@personelSicilNo,@EklenmeGuncellenmeTarihi,@kullanimDurumu)";
+            string query = "insert into Urunler (UrunGrupId,MalzemeKodu,MalzemeAciklamasi,PersonelSicilNo,EklenmeGuncellenmeTarihi,KullanimDurumu) values (@urunGrupId,@malzemeKodu,@malzemeAciklamasi,@personelSicilNo,@eklenmeGuncellenmeTarihi,@kullanimDurumu)";
             var parameters = new DynamicParameters();
             parameters.Add("@urunGrupId", createUrunlerDto.UrunGrupId);
             parameters.Add("@malzemeKodu", createUrunlerDto.MalzemeKodu);

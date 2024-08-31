@@ -258,6 +258,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
 </head>
 <body>
+    <div class="form-group">
+        <td><a href="/Urunler/Index" class="btn btn-outline-success">Ana Sayfaya Git</a></td>
+
+    </div>
     <div class="container">
         <div class="form-container">
             <form method="post">
@@ -267,11 +271,19 @@
                 </div>
                 <div class="form-group">
                     <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
-                    <input type="text" id="malzemeAciklamasi" name="malzemeAciklamasi" required>
+                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
                     <label for="kontrolparametresi">kontrolparametresi</label>
                     <input type="text" id="kontrolparametresi" name="kontrolparametresi" required>
+                </div>
+                <div class="form-group">
+                    <label for="baslangicTarihi">Başlangıç Tarihi</label>
+                    <input type="date" id="baslangicTarihi" name="baslangicTarihi" required value="2000-01-01">
+                </div>
+                <div class="form-group">
+                    <label for="bitisTarihi">Bitiş Tarihi</label>
+                    <input type="date" id="bitisTarihi" name="bitisTarihi" required value="@DateTime.Now.ToString("yyyy-MM-dd")">
                 </div>
                 <div class="form-group">
                     <button type="submit">Query</button>
@@ -295,23 +307,26 @@
                 var columnSigmaBeklenen = new decimal[numCols];
                 var UKS = new decimal[numCols];
                 var AKS = new decimal[numCols];
+                var GerBek = new string[numCols];
+                var columnStandartSapmalar = new decimal[numCols];
+                var columnDegisimKatsayilari = new decimal[numCols];
 
-                var firstResult = Model.ResultSet.FirstOrDefault();
+                var firstResult = resultSet.FirstOrDefault();
 
                 if (firstResult != null)
                 {
-                    decimal ustSartliOnaySiniri = ((decimal)firstResult.UstSartliKabulSiniri);
-                    decimal altSartliOnaySiniri = ((decimal)firstResult.AltSartliKabulSiniri);
-                    decimal altOnaySiniri = ((decimal)firstResult.AltOnaySiniri);
-                    decimal ustOnaySiniri = ((decimal)firstResult.UstOnaySiniri);
+                    decimal ustSartliOnaySiniri = (decimal)firstResult.UstSartliKabulSiniri;
+                    decimal altSartliOnaySiniri = (decimal)firstResult.AltSartliKabulSiniri;
+                    decimal altOnaySiniri = (decimal)firstResult.AltOnaySiniri;
+                    decimal ustOnaySiniri = (decimal)firstResult.UstOnaySiniri;
                     decimal tolerance = ustSartliOnaySiniri - altSartliOnaySiniri;
-                   
+
                     decimal sigmaBeklenen;
-                    if (firstResult.ParametreTipiOlcmeGozlem == true)
+                    if (firstResult.ParametreTipiOlcmeGozlem == "1")
                     {
-                        sigmaBeklenen = tolerance / 8; 
+                        sigmaBeklenen = tolerance / 8;
                     }
-                    else if (firstResult.ParametreTipiOlcmeGozlem == false)
+                    else if (firstResult.ParametreTipiOlcmeGozlem == "0")
                     {
                         sigmaBeklenen = tolerance / 4;
                     }
@@ -336,11 +351,21 @@
                             columnAverages[i] = columnValues[i].Average();
                             columnRanges[i] = columnValues[i].Max() - columnValues[i].Min();
                             columnRangeAverages[i] = columnValues[i].Count > 1 ? columnRanges[i] / (columnValues[i].Count - 1) : columnRanges[i];
-                             UKS[i] = columnRangeAverages[i] * 3.267m;
+                            UKS[i] = columnRangeAverages[i] * 3.267m;
                             AKS[i] = columnRangeAverages[i] * 0;
                             columnSigmaGercelesen[i] = columnRangeAverages[i] / 1.128m;
                             columnTolerances[i] = tolerance;
                             columnSigmaBeklenen[i] = sigmaBeklenen;
+                            columnStandartSapmalar[i] = (decimal)Math.Sqrt((double)columnValues[i].Sum(v => (v - columnAverages[i]) * (v - columnAverages[i])) / (columnValues[i].Count - 1));
+                            columnDegisimKatsayilari[i] = columnStandartSapmalar[i] / columnAverages[i];
+                            if (columnSigmaBeklenen[i] < columnRangeAverages[i] / 1.128m)
+                            {
+                                GerBek[i] = "Süreç değişkenliğini gerektiğinden fazladır.";
+                            }
+                            else
+                            {
+                                GerBek[i] = "Süreç değişkenliği gerektiğinden azdır.";
+                            }
                         }
                     }
                 }
@@ -352,37 +377,46 @@
                 <div class="results-layout">
                     <div class="calculated-values">
                         <div class="left-column">
-                        @for (int i = 0; i < numCols; i++)
-                        {
-                            <div class="column-metrics">
-                                <div class="metric-label">Ortalama</div>
-                                <div class="metric-value">@columnAverages[i]</div>
-
-                                <div class="metric-label">Tolerans</div>
-                                <div class="metric-value">@columnTolerances[i]</div>
-
-                                <div class="metric-label">Range</div>
-                                <div class="metric-value">@columnRanges[i]</div>
-
-                               
-                            </div>
-                        }
-                        </div> <div class="right-column">
                             @for (int i = 0; i < numCols; i++)
                             {
                                 <div class="column-metrics">
-                                   
-                                    <div class="metric-label">Range Ortalaması</div>
-                                    <div class="metric-value">@columnRangeAverages[i]</div>
+                                    <div class="metric-label">Ortalama</div>
+                                    <div class="metric-value">@columnAverages[i].ToString("F3")</div>
 
-                                    <div class="metric-label">Sigma Gerçekleşen</div>
-                                    <div class="metric-value">@columnSigmaGercelesen[i]</div>
+                                    <div class="metric-label">Tolerans</div>
+                                    <div class="metric-value">@columnTolerances[i].ToString("F3")</div>
 
-                                    <div class="metric-label">Sigma Beklenen</div>
-                                    <div class="metric-value">@columnSigmaBeklenen[i]</div>
+                                    <div class="metric-label">Range</div>
+                                    <div class="metric-value">@columnRanges[i].ToString("F3")</div>
+
+                                    <div class="metric-label">Standart Sapma</div>
+                                    <div class="metric-value">@columnStandartSapmalar[i].ToString("F3")</div>
+
+                                    <div class="metric-label">Değişim Katsayısı</div>
+                                    <div class="metric-value">@columnDegisimKatsayilari[i].ToString("F3")</div>
                                 </div>
                             }
                         </div>
+
+                        <div class="right-column">
+                            @for (int i = 0; i < numCols; i++)
+                            {
+                                <div class="column-metrics">
+                                    <div class="metric-label">Range Ortalaması</div>
+                                    <div class="metric-value">@columnRangeAverages[i].ToString("F3")</div>
+
+                                    <div class="metric-label">Sigma Gerçekleşen</div>
+                                    <div class="metric-value">@columnSigmaGercelesen[i].ToString("F3")</div>
+
+                                    <div class="metric-label">Sigma Beklenen</div>
+                                    <div class="metric-value">@columnSigmaBeklenen[i].ToString("F3")</div>
+
+                                    <div class="metric-label">Durum</div>
+                                    <div class="metric-value">@GerBek[i]</div>
+                                </div>
+                            }
+                        </div>
+
                     </div>
 
                     <html>
@@ -412,62 +446,65 @@
         var columnValues = @Html.Raw(JsonSerializer.Serialize(columnValues[0]));
         var averageValue = columnValues.reduce((sum, value) => sum + value, 0) / columnValues.length;
 
-        var spcChartData = {
-            labels: @Html.Raw(JsonSerializer.Serialize(resultSet.Select((_, index) => index + 1))),
-            datasets: [{
-                label: 'Değerler',
-                data: columnValues,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 3,
-                pointRadius: 0
-            },
-            {
-                label: 'Alt Onay Sınırı',
-                data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.AltOnaySiniri, resultSet.Count))),
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 3,
-                fill: false,
-                borderDash: [10, 5],
-                pointRadius: 0
-            },
-            {
-                label: 'Üst Onay Sınırı',
-                data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.UstOnaySiniri, resultSet.Count))),
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 3,
-                fill: false,
-                borderDash: [10, 5],
-                pointRadius: 0
-            },
-            {
-                label: 'Alt Şartlı Kabul Sınırı',
-                data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.AltSartliKabulSiniri, resultSet.Count))),
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 3,
-                fill: false,
-                borderDash: [5, 5],
-                pointRadius: 0
-            },
-            {
-                label: 'Üst Şartlı Kabul Sınırı',
-                data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.UstSartliKabulSiniri, resultSet.Count))),
-                borderColor: 'rgba(255, 159, 64, 1)',
-                borderWidth: 3,
-                fill: false,
-                borderDash: [5, 5],
-                pointRadius: 0
-            },
-            {
-                label: 'Ortalama',
-                data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(columnAverages[0], resultSet.Count))),
-                borderColor: 'rgba(255, 206, 86, 1)',
-                borderWidth: 3,
-                fill: false,
-                borderDash: [5, 5],
-                pointRadius: 0
-            }]
-        };
+            var spcChartData = {
+                labels: @Html.Raw(JsonSerializer.Serialize(resultSet.Select((_, index) => index + 1))),
+                datasets: [
+                    {
+                        label: 'Değerler',
+                        data: columnValues,
+                        borderColor: 'rgba(147, 197, 114, 1)',
+                        backgroundColor: 'rgba(147, 197, 114, 0.2)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        borderDash: []
+                    },
+                    {
+                        label: 'Alt Onay Sınırı',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.AltOnaySiniri, resultSet.Count))),
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [],
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Üst Onay Sınırı',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.UstOnaySiniri, resultSet.Count))),
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [],
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Alt Şartlı Kabul Sınırı',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.AltSartliKabulSiniri, resultSet.Count))),
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [],
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Üst Şartlı Kabul Sınırı',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(firstResult.UstSartliKabulSiniri, resultSet.Count))),
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [],
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Ortalama',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(columnAverages[0], resultSet.Count))),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [],
+                        pointRadius: 0
+                    }
+                ]
+            };
 
         var spcChartOptions = {
             scales: {
@@ -551,7 +588,6 @@
             options: xbarChartOptions
         });
 
-        // SPC Chart modal logic
         var spcChartModal = document.getElementById("spcChartModal");
         var spcChartCloseBtn = spcChartModal.getElementsByClassName("close")[0];
 
@@ -569,7 +605,6 @@
             spcChartModal.style.display = "none";
         };
 
-        // Xbar Chart modal logic
         var xbarChartModal = document.getElementById("xbarChartModal");
         var xbarChartCloseBtn = xbarChartModal.getElementsByClassName("close")[0];
 
@@ -596,9 +631,7 @@
             }
         };
     </script>
-
-
-                   
+         
 
             }
             else

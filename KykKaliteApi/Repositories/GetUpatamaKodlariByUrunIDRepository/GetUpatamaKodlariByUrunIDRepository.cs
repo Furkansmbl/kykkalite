@@ -23,26 +23,27 @@ namespace KykKaliteApi.Repositories.GetUpatamaKodlariByUrunIDRepository
         {
             {
                 string query = @"
-                    SELECT p.KontrolParametresi,
+       SELECT p.KontrolParametresi,
    up.AltOnaySiniri,
    up.UstOnaySiniri,
     u.MalzemeAciklamasi,
    u.UrunID,
    up.AltSartliKabulSiniri,
    up.UstSartliKabulSiniri,
+    up.Versiyon,
         STRING_AGG(CAST(upn.Value AS NVARCHAR(MAX)), '-') AS Value,
-    STRING_AGG(CAST(un.UretimTarihi AS NVARCHAR(MAX)), '-') AS UretimTarihi,
+    STRING_AGG(CAST(un.UretimTarihi AS NVARCHAR(MAX)), '*') AS UretimTarihi,
     STRING_AGG(CAST(un.SiraNo AS NVARCHAR(MAX)), '-') AS SiraNo,
-    STRING_AGG(CAST(un.KontrolSaati AS NVARCHAR(MAX)), '-') AS KontrolSaati,
+    STRING_AGG(CAST(un.KontrolSaati AS NVARCHAR(MAX)), '*') AS KontrolSaati,
     STRING_AGG(CAST(un.NumuneSeriNoSarjNo AS NVARCHAR(MAX)), '-') AS NumuneSeriNoSarjNo,
     STRING_AGG(CAST(un.AmirOnayDurumu AS NVARCHAR(MAX)), '-') AS AmirOnayDurumu,
     STRING_AGG(CAST(un.MudahaleVarmi AS NVARCHAR(MAX)), '-') AS MudahaleVarmi,
     STRING_AGG(CAST(un.Aciklama AS NVARCHAR(MAX)), '-') AS Aciklama,
-	  up.UPA_ID,
+      up.UpaId,
    u.malzemeAciklamasi
-   FROM upatama up
+   FROM upatamaAktif up
    INNER JOIN urunler u ON u.urunıd = up.UrunID
-   INNER JOIN Parametreler p ON p.ParametreKodu = up.ParametreKodu AND up.KullanımDurumu = 'True'
+   INNER JOIN Parametreler p ON p.ParametreKodu = up.ParametreKodu 
    INNER JOIN 
     Unumune un ON un.UrunID = u.UrunID
 INNER JOIN 
@@ -53,13 +54,14 @@ INNER JOIN
     up.AltOnaySiniri,
     up.UstOnaySiniri,
     u.UrunID,
+    up.Versiyon,
     u.MalzemeAciklamasi,
     up.AltSartliKabulSiniri,
     up.UstSartliKabulSiniri,
     up.UPAtamaKodu,
-    up.UPA_ID
+    up.UpaId
 ORDER BY 
-    up.UPA_ID ASC;";
+    up.UpaId ASC;";
 
                 var parameters = new { MalzemeAciklamasi };
                 using (var connection = _context.CreateConnection())

@@ -9,6 +9,7 @@ namespace KykKaliteApi.Repositories.UPatamaRepository
         Task<List<ResultUPatamaDto>> GetAllUPatamaAsync();
         void DeleteUPatama(int id);
         void CreateUPatama(CreateUPatamaDto createUPatamaDto);
+        void CreateUPatamaPasif(CreateUpAtamaPasifDto createUpAtamaPasifDto);
         void UpdateUPatama(UpdateUPatamaDto updateUPatamaDto);
     }
 }

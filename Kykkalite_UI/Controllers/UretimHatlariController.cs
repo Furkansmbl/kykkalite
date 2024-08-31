@@ -1,6 +1,8 @@
-﻿using Kykkalite_UI.Dtos.UretimHatlariDtos;
-using Kykkalite_UI.Dtos.UrunGruplariDtos;
+﻿using Kykkalite_UI.Dtos.FabrikalarDtos;
+using Kykkalite_UI.Dtos.UretimHatlariDtos;
+using Kykkalite_UI.Dtos.FabrikalarDtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -16,7 +18,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/UretimHatlari");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/UretimHatlari");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -26,8 +28,22 @@ namespace Kykkalite_UI.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult CreateUretimHatlari()
+        public async Task<IActionResult> CreateUretimHatlari()
         {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Fabrika");
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
+
+            List<SelectListItem> fabrikaValues = (from x in values.ToList()
+                                                  select new SelectListItem
+                                                  {
+                                                      Text = x.FabrikaAdi,
+                                                      Value = x.FabrikaID.ToString(),
+                                                  }).ToList();
+            ViewBag.v = fabrikaValues;
+
             return View();
         }
         [HttpPost]
@@ -36,7 +52,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createUretimHatlariDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/UretimHatlari", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/UretimHatlari", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -47,7 +63,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> UpdateUretimHatlari(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:44344/api/UretimHatlari/{id}");
+            var responseMessage = await client.GetAsync($"http://localhost:44344/api/UretimHatlari/{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -62,7 +78,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateUretimHatlariDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/UretimHatlari/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/UretimHatlari/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

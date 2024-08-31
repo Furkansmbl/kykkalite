@@ -6,11 +6,12 @@
 
         public int UrunId { get; set; }
 
-        public int SiraNo { get; set; }
+        public string SiraNo { get; set; }
 
-        public DateTime UretimTarihi { get; set; }
+        public string UretimTarihi { get; set; }
+        public string KontrolSaati { get; set; }
 
-        public int NumuneSeriNoSarjNo { get; set; }
+        public string NumuneSeriNoSarjNo { get; set; }
 
         public bool MudahaleVarmi { get; set; }
 
@@ -18,9 +19,10 @@
 
         public bool OnayDurumu { get; set; }
 
-        public int AmirOnayDurumu { get; set; }
+        public string AmirOnayDurumu { get; set; }
 
-        public DateTime EklenmeTarihi { get; set; }
+        public string OlusturmaTarihi { get; set; }
+        public DateTime GuncellenmeTarihi { get; set; }
 
         public string PersonelSicilNo { get; set; } = null!;
     }

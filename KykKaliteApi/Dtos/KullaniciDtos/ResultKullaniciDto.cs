@@ -10,7 +10,7 @@
 
         public string Gorevi { get; set; } = null!;
 
-        public int AdminUser { get; set; }
+        public string AdminUser { get; set; }
 
         public int Password { get; set; } 
 

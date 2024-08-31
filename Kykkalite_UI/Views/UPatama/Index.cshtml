@@ -13,25 +13,27 @@
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
-
                             <tr>
-                                <th scope="col">UpatamaKodu</th>
-                                <th scope="col">ParametreKritiklikSeviyesi</th>
-                                <th scope="col">KontrolDegeriNominal</th>
-                                <th scope="col">AltOnaySiniri</th>
-                                <th scope="col">UstOnaySiniri</th>
-                                <th scope="col">AltSartliKabulSiniri</th>
-                                <th scope="col">UstSartliKabulSiniri</th>
+                                <th scope="col">Ürün Parametre Atama Kodu</th>
+                                <th scope="col">Parametre Kritiklik Seviyesi</th>
+                                <th scope="col">Kontrol Degeri(Nominal)</th>
+                                <th scope="col">Alt Onay Siniri</th>
+                                <th scope="col">Ust Onay Siniri</th>
+                                <th scope="col">Alt Sartli Kabul Siniri</th>
+                                <th scope="col">Ust Sartli Kabul Siniri</th>
+                                <th scope="col">Parametre Yönü</th>
+                                <th scope="col">Tolerans</th>
+                                <th scope="col">Versiyon</th>
                                 <th scope="col">CihazId</th>
-                                <th scope="col">ReferansDokuman</th>
+                                <th scope="col">Referans Dokuman</th>
                                 <th scope="col">Aciklama</th>
-                                <th scope="col">OrneklemSikligi</th>
-                                <th scope="col">OrneklemSiklikBirim</th>
-                                <th scope="col">PersonelSicilNo</th>
-                                <th scope="col">EklenmeTarihi</th>
-                                <th scope="col">KullanımDurumu</th>
+                                <th scope="col">Orneklem Sikligi</th>
+                                <th scope="col">Orneklem Siklik Birim</th>
+                                <th scope="col">Personel SicilNo</th>
+                                <th scope="col">Olusturma Tarihi</th>
+                                <th scope="col">UpaId</th>
+                                <th scope="col">Parametre Kodu</th>
                                 <th scope="col">Güncelle</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -45,16 +47,19 @@
                                     <td>@item.UstOnaySiniri</td>
                                     <td>@item.AltSartliKabulSiniri</td>
                                     <td>@item.UstSartliKabulSiniri</td>
+                                    <td>@item.ParametreYonu</td>
+                                    <td>@item.Tolerans</td>
+                                    <td>@item.Versiyon</td>
                                     <td>@item.CihazId</td>
                                     <td>@item.ReferansDokuman</td>
                                     <td>@item.Aciklama</td>
                                     <td>@item.OrneklemSikligi</td>
                                     <td>@item.OrneklemSiklikBirim</td>
                                     <td>@item.PersonelSicilNo</td>
-                                    <td>@item.EklenmeTarihi</td>
-                                    <td>@item.KullanımDurumu</td>
-                                    <td><a href="/UPatama/UpdateUPatama/" class="btn btn-outline-success">Güncelle</a></td>
-
+                                    <td>@item.OlusturmaTarihi</td>
+                                    <td>@item.UpaId</td>
+                                    <td>@item.ParametreKodu</td>
+                                    <td><a href="#" class="btn btn-outline-success">Güncelle</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -64,35 +69,51 @@
         </div>
     </div>
 </div>
+
 <script>
     document.querySelectorAll('.btn-outline-success').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             var row = this.closest('tr');
-            var UpatamaKodu = row.cells[0].innerText.trim();
-            var KontrolDegeriNominal = row.cells[2].innerText.trim();
-            var AltOnaySiniri = row.cells[3].innerText.trim();
-            var UstOnaySiniri = row.cells[4].innerText.trim();
-            var AltSartliKabulSiniri = row.cells[5].innerText.trim();
-            var UstSartliKabulSiniri = row.cells[6].innerText.trim();
-            var CihazId = row.cells[7].innerText.trim();
-            var ReferansDokuman = row.cells[8].innerText.trim();
-            var Aciklama = row.cells[9].innerText.trim();
-            var OrneklemSikligi = row.cells[10].innerText.trim();
-            var OrneklemSiklikBirim = row.cells[11].innerText.trim();
+            var upatamaKodu = row.cells[0].innerText.trim();
+            var parametreKritiklikSeviyesi = row.cells[1].innerText.trim();
+            var kontrolDegeriNominal = row.cells[2].innerText.trim();
+            var altOnaySiniri = row.cells[3].innerText.trim();
+            var ustOnaySiniri = row.cells[4].innerText.trim();
+            var altSartliKabulSiniri = row.cells[5].innerText.trim();
+            var ustSartliKabulSiniri = row.cells[6].innerText.trim();
+            var parametreYonu = row.cells[7].innerText.trim();
+            var tolerans = row.cells[8].innerText.trim();
+            var versiyon = row.cells[9].innerText.trim();
+            var cihazId = row.cells[10].innerText.trim();
+            var referansDokuman = row.cells[11].innerText.trim();
+            var aciklama = row.cells[12].innerText.trim();
+            var orneklemSikligi = row.cells[13].innerText.trim();
+            var orneklemSiklikBirim = row.cells[14].innerText.trim();
+            var personelSicilNo = row.cells[15].innerText.trim();
+            var olusturmaTarihi = row.cells[16].innerText.trim();
+            var upaId = row.cells[17].innerText.trim();
+            var parametreKodu = row.cells[18].innerText.trim();
 
-
-            var url = "/UPatama/UpdateUpAtama?UpatamaKodu=" + encodeURIComponent(UpatamaKodu) +
-                "&KontrolDegeriNominal=" + encodeURIComponent(KontrolDegeriNominal) +
-                "&AltOnaySiniri=" + encodeURIComponent(AltOnaySiniri) +
-                "&UstOnaySiniri=" + encodeURIComponent(UstOnaySiniri) +
-                "&AltSartliKabulSiniri=" + encodeURIComponent(AltSartliKabulSiniri) +
-                "&UstSartliKabulSiniri=" + encodeURIComponent(UstSartliKabulSiniri) +
-                "&CihazId=" + encodeURIComponent(CihazId) +
-                "&ReferansDokuman=" + encodeURIComponent(ReferansDokuman) +
-                "&Aciklama=" + encodeURIComponent(Aciklama) +
-                "&OrneklemSikligi=" + encodeURIComponent(OrneklemSikligi) +
-                "&OrneklemSiklikBirim=" + encodeURIComponent(OrneklemSiklikBirim);
+            var url = "/UPatama/UpdateUPatama?UpatamaKodu=" + encodeURIComponent(upatamaKodu) +
+                "&ParametreKritiklikSeviyesi=" + encodeURIComponent(parametreKritiklikSeviyesi) +
+                "&KontrolDegeriNominal=" + encodeURIComponent(kontrolDegeriNominal) +
+                "&AltOnaySiniri=" + encodeURIComponent(altOnaySiniri) +
+                "&UstOnaySiniri=" + encodeURIComponent(ustOnaySiniri) +
+                "&AltSartliKabulSiniri=" + encodeURIComponent(altSartliKabulSiniri) +
+                "&UstSartliKabulSiniri=" + encodeURIComponent(ustSartliKabulSiniri) +
+                "&ParametreYonu=" + encodeURIComponent(parametreYonu) +
+                "&Tolerans=" + encodeURIComponent(tolerans) +
+                "&Versiyon=" + encodeURIComponent(versiyon) +
+                "&CihazId=" + encodeURIComponent(cihazId) +
+                "&ReferansDokuman=" + encodeURIComponent(referansDokuman) +
+                "&Aciklama=" + encodeURIComponent(aciklama) +
+                "&OrneklemSikligi=" + encodeURIComponent(orneklemSikligi) +
+                "&PersonelSicilNo=" + encodeURIComponent(personelSicilNo) +
+                "&OrneklemSiklikBirim=" + encodeURIComponent(orneklemSiklikBirim) +
+                "&OlusturmaTarihi=" + encodeURIComponent(olusturmaTarihi) +
+                "&UpaId=" + encodeURIComponent(upaId)  +
+                "&ParametreKodu=" + encodeURIComponent(parametreKodu)  ;
 
             window.location.href = url;
         });

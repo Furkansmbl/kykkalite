@@ -30,7 +30,7 @@ namespace Kykkalite_UI.Controllers
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
-                var responseMessage = await client.GetAsync("https://localhost:44344/api/Hammaddeler");
+                var responseMessage = await client.GetAsync("http://localhost:44344/api/Hammaddeler");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -44,7 +44,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> ExportToExcel()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Hammaddeler");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Hammaddeler");
             if (!responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -94,7 +94,7 @@ namespace Kykkalite_UI.Controllers
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
 
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/HammaddeGruplari");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/HammaddeGruplari");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultHammaddeGruplariDto>>(jsonData);
@@ -102,11 +102,11 @@ namespace Kykkalite_UI.Controllers
             List<SelectListItem> hammaddeGrupValues = (from x in values.ToList()
                                                    select new SelectListItem
                                                    {
-                                                       Text = x.HmgrupAdi,
-                                                       Value = x.HammaddeGrupId.ToString()
+                                                       Text = x.HMGrupAdi,
+                                                       Value = x.HammaddeGrupID.ToString()
                                                    }).ToList();
             var client2 = _httpClientFactory.CreateClient();
-            var responseMessage2 = await client2.GetAsync("https://localhost:44344/api/Hammaddeler");
+            var responseMessage2 = await client2.GetAsync("http://localhost:44344/api/Hammaddeler");
 
             var jsonData2 = await responseMessage2.Content.ReadAsStringAsync();
             var values2 = JsonConvert.DeserializeObject<List<ResultHammaddelerDto>>(jsonData2);
@@ -131,7 +131,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createHammadelerDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/Hammaddeler", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/Hammaddeler", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -145,7 +145,7 @@ namespace Kykkalite_UI.Controllers
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
 
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/HammaddeGruplari");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/HammaddeGruplari");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultHammaddeGruplariDto>>(jsonData);
@@ -153,11 +153,11 @@ namespace Kykkalite_UI.Controllers
             List<SelectListItem> hammaddeGrupValues = (from x in values.ToList()
                                                        select new SelectListItem
                                                        {
-                                                           Text = x.HmgrupAdi,
-                                                           Value = x.HammaddeGrupId.ToString()
+                                                           Text = x.HMGrupAdi,
+                                                           Value = x.HammaddeGrupID.ToString()
                                                        }).ToList();
             var client2 = _httpClientFactory.CreateClient();
-            var responseMessage2 = await client2.GetAsync("https://localhost:44344/api/Hammaddeler");
+            var responseMessage2 = await client2.GetAsync("http://localhost:44344/api/Hammaddeler");
 
             var jsonData2 = await responseMessage2.Content.ReadAsStringAsync();
             var values2 = JsonConvert.DeserializeObject<List<ResultHammaddelerDto>>(jsonData2);
@@ -182,7 +182,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateHammadelerDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/Hammaddeler/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/Hammaddeler/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

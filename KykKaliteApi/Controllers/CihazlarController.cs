@@ -1,5 +1,6 @@
 ﻿using KykKaliteApi.Dtos.CihazlarDtos;
 using KykKaliteApi.Dtos.FabrikalarDtos;
+using KykKaliteApi.Dtos.KullaniciDtos;
 using KykKaliteApi.Repositories.CihazlarRepository;
 using KykKaliteApi.Repositories.FabrikalarRepository;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +40,12 @@ namespace KykKaliteApi.Controllers
         {
             var value = await _cihazlarRepository.GetCihazlar(id); 
             return Ok(value);
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateCihazlar(UpdateCihazlarDto updateCihazlarDto )
+        {
+            _cihazlarRepository.UpdateCihazlar(updateCihazlarDto);
+            return Ok("Cihaz Başarıyla Güncellendi");
         }
     }
 }

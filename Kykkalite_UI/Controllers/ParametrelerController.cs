@@ -28,7 +28,7 @@ namespace Kykkalite_UI.Controllers
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
-                var responseMessage = await client.GetAsync("https://localhost:44344/api/Parametreler");
+                var responseMessage = await client.GetAsync("http://localhost:44344/api/Parametreler");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -42,7 +42,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> ExportToExcel()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Parametreler");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Parametreler");
             if (!responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -62,7 +62,7 @@ namespace Kykkalite_UI.Controllers
                 worksheet.Cell(currentRow, 4).Value = "Birimi";
                 worksheet.Cell(currentRow, 5).Value = "PersonelSicilNo";
                 worksheet.Cell(currentRow, 6).Value = "KullanimDurumu";
-                worksheet.Cell(currentRow, 7).Value = "EklenmeGuncellenmeTarihi";
+                worksheet.Cell(currentRow, 7).Value = "OlusturmaTarihi";
 
                 foreach (var item in values)
                 {
@@ -73,7 +73,7 @@ namespace Kykkalite_UI.Controllers
                     worksheet.Cell(currentRow, 4).Value = item.Birimi;
                     worksheet.Cell(currentRow, 5).Value = item.PersonelSicilNo;
                     worksheet.Cell(currentRow, 6).Value = item.KullanimDurumu;
-                    worksheet.Cell(currentRow, 7).Value = item.EklenmeGuncellenmeTarihi;
+                    worksheet.Cell(currentRow, 7).Value = item.OlusturmaTarihi;
                 }
 
                 using (var stream = new MemoryStream())
@@ -101,7 +101,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createParametrelerDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/Parametreler", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/Parametreler", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -114,7 +114,7 @@ namespace Kykkalite_UI.Controllers
             var userId = _loginService.GetPersonelSicilNo;
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:44344/api/Parametreler/{id}");
+            var responseMessage = await client.GetAsync($"http://localhost:44344/api/Parametreler/{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -133,7 +133,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateParametrelerDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/Parametreler/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/Parametreler/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

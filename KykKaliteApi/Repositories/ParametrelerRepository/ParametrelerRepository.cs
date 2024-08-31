@@ -16,14 +16,14 @@ namespace KykKaliteApi.Repositories.ParametrelerRepository
 
         public async void CreateParametreler(CreateParametrelerDto createParametrelerDto)
         {
-            string query = "insert into Parametreler (ParametreKodu,KontrolParametresi,ParametreTipiOlcmeGozlem,Birimi,PersonelSicilNo,EklenmeGuncellenmeTarihi,KullanimDurumu) values (@parametreKodu,@kontrolParametresi,@parametreTipiOlcmeGozlem,@birimi,@personelSicilNo,@eklenmeGuncellenmeTarihi,@kullanimDurumu)";
+            string query = "insert into Parametreler (ParametreKodu,KontrolParametresi,ParametreTipiOlcmeGozlem,Birimi,PersonelSicilNo,OlusturmaTarihi,KullanimDurumu) values (@parametreKodu,@kontrolParametresi,@parametreTipiOlcmeGozlem,@birimi,@personelSicilNo,@olusturmaTarihi,@kullanimDurumu)";
             var parameters = new DynamicParameters();
             parameters.Add("@parametreKodu", createParametrelerDto.ParametreKodu);
             parameters.Add("@kontrolParametresi", createParametrelerDto.KontrolParametresi);
             parameters.Add("@parametreTipiOlcmeGozlem", createParametrelerDto.ParametreTipiOlcmeGozlem);
             parameters.Add("@birimi", createParametrelerDto.Birimi);
             parameters.Add("@personelSicilNo", createParametrelerDto.PersonelSicilNo);
-            parameters.Add("@eklenmeGuncellenmeTarihi", createParametrelerDto.EklenmeGuncellenmeTarihi);
+            parameters.Add("@olusturmaTarihi", createParametrelerDto.OlusturmaTarihi);
             parameters.Add("@kullanimDurumu", createParametrelerDto.KullanimDurumu);
 
             using (var connection = _context.CreateConnection())
@@ -55,14 +55,15 @@ namespace KykKaliteApi.Repositories.ParametrelerRepository
 
         public async void UpdateParametreler(UpdateParametrelerDto updateParametrelerDto)
         { 
-            string query = "Update Parametreler Set ParametreKodu=@parametreKodu,KontrolParametresi=@kontrolParametresi,ParametreTipiOlcmeGozlem=@parametreTipiOlcmeGozlem,Birimi=@birimi,PersonelSicilNo=@personelSicilNo,EklenmeGuncellenmeTarihi=@eklenmeGüncellenmeTarihi,KullanimDurumu=@kullanimDurumu where ParametreKodu=@parametreKodu";
+            string query = "Update Parametreler Set ParametreKodu=@parametreKodu,KontrolParametresi=@kontrolParametresi,ParametreTipiOlcmeGozlem=@parametreTipiOlcmeGozlem,Birimi=@birimi,PersonelSicilNo=@personelSicilNo,OlusturmaTarihi=@olusturmaTarihi,GuncellenmeTarihi=@guncellenmeTarihi,KullanimDurumu=@kullanimDurumu where ParametreKodu=@parametreKodu";
             var parameters = new DynamicParameters();
             parameters.Add("@parametreKodu", updateParametrelerDto.ParametreKodu);
             parameters.Add("@kontrolParametresi", updateParametrelerDto.KontrolParametresi);
             parameters.Add("@parametreTipiOlcmeGozlem", updateParametrelerDto.ParametreTipiOlcmeGozlem);
             parameters.Add("@birimi", updateParametrelerDto.Birimi);
             parameters.Add("@personelSicilNo", updateParametrelerDto.PersonelSicilNo);
-            parameters.Add("@eklenmeGüncellenmeTarihi", updateParametrelerDto.EklenmeGuncellenmeTarihi);
+            parameters.Add("@olusturmaTarihi", updateParametrelerDto.OlusturmaTarihi);
+            parameters.Add("@guncellenmeTarihi", updateParametrelerDto.GuncellenmeTarihi);
             parameters.Add("@kullanimDurumu", true);
 
             using (var connectiont = _context.CreateConnection())

@@ -6,6 +6,7 @@
         public int NumuneId { get; set; }
 
         public int SiraNo { get; set; }
+        public DateTime GuncellenmeTarihi { get; set; }
 
         public DateTime UretimTarihi { get; set; }
 

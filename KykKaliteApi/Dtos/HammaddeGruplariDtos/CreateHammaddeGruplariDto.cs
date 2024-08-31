@@ -2,7 +2,7 @@
 {
     public class CreateHammaddeGruplariDto
     {
-        public int HammaddeGrupID { get; set; }
+        public DateTime EklenmeGuncellenmeTarihi { get; set; }
         public string HMGrupAdi { get; set; }
     }
 }

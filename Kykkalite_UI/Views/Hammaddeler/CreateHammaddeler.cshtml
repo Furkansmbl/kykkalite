@@ -14,14 +14,14 @@
                     <label>HammaddeGrupları</label>
                     @Html.DropDownListFor(x => x.HammaddeGrupId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
                     <br />
-                    <label>MalzemeKodu</label>
+                    <label>Malzeme Kodu</label>
                     <input type="text" asp-for="MalzemeKodu" class="form-control" />
                     <br />
-                    <label>MalzemeAciklamasi</label>
+                    <label>Malzeme Aciklamasi</label>
                     <input type="text" asp-for="MalzemeAciklamasi" class="form-control" />
                     <br />
                     <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
-                    <label>KullanımDurumu</label>
+                    <label>Kullanım Durumu</label>
                     <select asp-for="KullanımDurumu" class="form-select">
                         <option value="true">Aktif</option>
                         <option value="false">Pasif</option>

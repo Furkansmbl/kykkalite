@@ -11,13 +11,10 @@
                 <h6 class="mb-4">Ürün Parametre ekleme Sayfası</h6>
                 <form method="post">
                     <label>Kontrol Parametresi</label>
-                    @Html.DropDownListFor(x => x.UpatamaKodu, (List<SelectListItem>)ViewBag.vvv, new { @class = "form-control" })
+                    @Html.DropDownListFor(x => x.ParametreId, (List<SelectListItem>)ViewBag.vvv, new { @class = "form-control" })
                     <br />
                     <label>Urun Adı</label>
                     @Html.DropDownListFor(x => x.UrunId, (List<SelectListItem>)ViewBag.u, new { @class = "form-control" })
-                    <br />
-                    <label>UpatamaKodu</label>
-                    <input type="text" asp-for="UpatamaKodu" class="form-control" />
                     <br />
                     <label>ParametreKritiklikSeviyesi</label>
                     <select asp-for="ParametreKritiklikSeviyesi" class="form-select">
@@ -25,25 +22,37 @@
                         <option value="false">Pasif</option>
                     </select>
                     <br />
-                    <label>KontrolDegeriNominal</label>
-                    <input type="number" step="any" asp-for="KontrolDegeriNominal" class="form-control" />
+                    <label>Kontrol Degeri(Nominal)</label>
+                    <input type="text"  asp-for="KontrolDegeriNominal" class="form-control" />
+                    <br /> 
+                    <label>Tolerans</label>
+                    <input type="text"  asp-for="Tolerans" class="form-control" />
                     <br />
-                    <label>AltOnaySiniri</label>
+                    <label>Orneklem Sikligi</label>
+                    <input type="text" asp-for="OrneklemSikligi" class="form-control" />
+                    <br /> 
+                    <label>Parametre Kodu</label>
+                    <input type="text" asp-for="ParametreKodu" class="form-control" />
+                    <br />
+                    <label>Orneklem Sıklık Birim</label>
+                    <input type="text" asp-for="OrneklemSiklikBirim" class="form-control" />
+                    <br />
+                    <label>Alt Onay Siniri</label>
                     <input type="number" step="any" asp-for="AltOnaySiniri" class="form-control" />
                     <br />
-                    <label>UstOnaySiniri</label>
+                    <label>Ust Onay Siniri</label>
                     <input type="number" step="any" asp-for="UstOnaySiniri" class="form-control" />
                     <br />
-                    <label>AltSartliKabulSiniri</label>
+                    <label>Alt Sartli Kabul Siniri</label>
                     <input type="number" step="any" asp-for="AltSartliKabulSiniri" class="form-control" />
                     <br />
-                    <label>UstSartliKabulSiniri</label>
+                    <label>Ust Sartli Kabul Siniri</label>
                     <input type="number" step="any" asp-for="UstSartliKabulSiniri" class="form-control" />
                     <br />
                     <label>Cihazlar</label>
-                    @Html.DropDownListFor(x => x.CihazID, (List<SelectListItem>)ViewBag.vv, new { @class = "form-control" })
+                    @Html.DropDownListFor(x => x.CihazId, (List<SelectListItem>)ViewBag.vv, new { @class = "form-control" })
                     <br />
-                    <label>ReferansDokuman</label>
+                    <label>Referans Dokuman</label>
                     <input type="text" asp-for="ReferansDokuman" class="form-control" />
                     <br />
                     <label>Aciklama</label>
@@ -53,13 +62,7 @@
                     @Html.DropDownListFor(x => x.FabrikaId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
                     <br />
                     <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
-                    <input type="hidden" class="form-control" asp-for="EklenmeTarihi" />
-
-                    <label>KullanımDurumu</label>
-                    <select asp-for="KullanımDurumu" class="form-select">
-                        <option value="true">Aktif</option>
-                        <option value="false">Pasif</option>
-                    </select>
+                    <input type="hidden" class="form-control" asp-for="OlusturmaTarihi" />
                     <br />
                     <button class="btn btn-success">Ürün Parametre ekle</button>
                 </form>
@@ -70,7 +73,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var now = new Date();
             var formattedDate = now.toISOString().slice(0, 16);
-            document.querySelector('[name="EklenmeTarihi"]').value = formattedDate;
+            document.querySelector('[name="OlusturmaTarihi"]').value = formattedDate;
         });
     </script>
 

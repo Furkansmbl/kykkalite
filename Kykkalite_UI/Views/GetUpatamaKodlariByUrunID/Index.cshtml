@@ -129,7 +129,7 @@
         }
 
         table {
-            box-shadow: none; /* Gölgeleri kaldır */
+            box-shadow: none; 
         }
 
         input {
@@ -144,14 +144,24 @@
 </head>
 <body>
     <div class="form-group">
+        <td><a href="/ChooseHmOrU/Index" class="btn btn-outline-success">Ana Sayfaya Git</a></td>
+
+    </div>
+
+    <div class="form-group">
         <td><a href="/GetHmatamaByhmId/Index" class="btn btn-outline-success">Hammadde Sayfasına Git</a></td>
 
     </div>
     <div class="container-fluid">
         <form method="post">
             <div class="form-group">
-                <label for="fabrikaAdi">Fabrika Adı:</label>
-                <input type="text" id="fabrikaAdi" name="FabrikAdı" required>
+                <label for="fabrikaId">Fabrika Adı:</label>
+                <select id="fabrikaId" name="fabrikaId" required>
+                    <option value="1">ESKİŞEHİR</option>
+                    <option value="2">ADANA</option>
+                    <option value="3">DİYARBAKIR</option>
+                    <option value="4">SAMSUN</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -162,9 +172,7 @@
 
             <div class="form-group">
                 <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
-                <input type="text" id="malzemeAciklamasi" name="malzemeAciklamasi" required>
-
-
+                @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
             </div>
 
             <div class="form-group">
@@ -188,6 +196,7 @@
                             <th>Onay Durumu</th>
                             <th>Amir Onay Durumu</th>
                             <th>Personel Sicil No</th>
+
                             @foreach (var item in Model.ResultSet)
                             {
                                 <th>
@@ -220,8 +229,6 @@
                                    @Html.Raw("0");
                                 }}" />
                             </td>
-
-                            ``
                             <td><input type="text" name="UretimTarihi" class="static" /></td>
                             <td><input type="text" name="KontrolSaati" class="static" /></td>
                             <td><input type="text" name="NumuneSeriNoSarjNo" class="static" /></td>
@@ -235,12 +242,20 @@
                             <td>
                                 <input id="onay_durumu" type="hidden" name="OnayDurumu"/>
                                 <p id="onay_durumu_p">Yukleniyor...</p>
-                                <input type="hidden" name="EklenmeTarihi" class="static" />
+                                <input type="hidden" name="OlusturmaTarihi" class="static" />
                                 <input type="hidden" name="red" class="static" />
                                 <input type="hidden" name="yellow" class="static" />
                                 <input type="hidden" name="green" class="static" />
                                 <input type="hidden" name="malzemeAciklamasi" class="static" value="@Model.ResultSet[0].MalzemeAciklamasi" />
-
+                                <input type="hidden" name="Versiyon" class="static" value="@Model.ResultSet[0].Versiyon" />
+                                @for (int i = 0; i < Model.ResultSet.Count; i++)
+                                {
+                                    var originalValue = Model.ResultSet[i].Value;
+                                    var segments = originalValue.Split('-');
+                                    var last13Segments = segments.Skip(Math.Max(0, segments.Length - 13));
+                                    var concatenatedValue = string.Join("-", last13Segments);
+                                    <input type="hidden" name="Trend@(i+1)" class="static" value="@concatenatedValue" />
+                                }
                                 @for (int i = 0; i < Model.ResultSet.Count; i++)
                                 {
                                     <input type="hidden" name="KontrolParametresi@(i+1)" class="static" value="@Model.ResultSet[i].KontrolParametresi" />
@@ -283,7 +298,7 @@
                     <thead>
                         <tr>
                             <th>Ürün ID</th>
-                            <th>Sıra No</th>
+                            <th>Nümune ID</th>
                             <th>Üretim Tarihi</th>
                             <th>Kontrol Saati</th>
                             <th>Numune Seri No Sarj No</th>
@@ -311,87 +326,66 @@
                     <tbody>
                     <tbody>
                             @{
-                                if (Model.ResultSet.Count == 1)
+                                     if (Model.ResultSet.Count == 1)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<List<string>>();
+                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string>>>();
 
                                     var firstResult = Model.ResultSet[0];
+
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
                                     var AmirOnayDurumu = firstResult.AmirOnayDurumu.Split('-');
                                     var splitDataValue = firstResult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    mudahale >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    dataValue >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count)
-                                    {
-                                        var row = new List<string>
-                    {
-                    SiraNo[siraNo],
-                    UretimTarihi[uretimTarihi],
-                    KontrolSaati[kontrolSaati],
-                    NumuneSeriNo[numuneSeriNo],
-                    Mudahale[mudahale],
-                    splitDataAciklama[dataAciklama],
-                    AmirOnayDurumu[amirOnayDurumu],
-                    splitDataValue[dataValue]
-                    };
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length }.Max();
 
-                                        rowData.Add(row);
-                                        rowIndex++;
+                                    for (int i = maxLength - 1; i >= 0; i--)
+                                    {
+                                        rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string>>(
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        Tuple.Create(
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty
+                                        )
+                                        ));
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    for (int i = 0; i < last50Rows.Count; i++)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i][0]</td>
-                                        <td>@rowData[i][1]</td>
-                                        <td>@rowData[i][2]</td>
-                                        <td>@rowData[i][3]</td>
-                                        <td>@rowData[i][4]</td>
-                                        <td>@rowData[i][5]</td>
-                                        <td>@rowData[i][6]</td>
-                                        <td>@rowData[i][7]</td>
+                                        <td>@last50Rows[i].Item1</td>
+                                        <td>@last50Rows[i].Item2</td>
+                                        <td>@last50Rows[i].Item3</td>
+                                        <td>@last50Rows[i].Item4</td>
+                                        <td>@last50Rows[i].Item5</td>
+                                        <td>@last50Rows[i].Item6</td>
+                                        <td>@last50Rows[i].Item7</td>
+                                        <td>@last50Rows[i].Rest.Item1</td>
                                     </tr>
                                     }
                                 }
                                 else if (Model.ResultSet.Count == 2)
                                 {
-                                    int rowIndex = 0;
                                     var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string>>>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
+
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
@@ -399,552 +393,390 @@
                                     var splitDataValue = firstResult.Value.Split('-');
                                     var splitDataValue2 = secondResult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    mudahale >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    dataValue >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length }.Max();
+
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
                                         rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string>>(
-                                        SiraNo[siraNo],
-                                        UretimTarihi[uretimTarihi],
-                                        KontrolSaati[kontrolSaati],
-                                        NumuneSeriNo[numuneSeriNo],
-                                        Mudahale[mudahale],
-                                        splitDataAciklama[dataAciklama],
-                                        AmirOnayDurumu[amirOnayDurumu],
-                                        Tuple.Create(splitDataValue[dataValue], splitDataValue2[dataValue2])
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        Tuple.Create(
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty
+                                        )
                                         ));
-                                        rowIndex++;
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    for (int i = 0; i < last50Rows.Count; i++)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i].Item1</td>
-                                        <td>@rowData[i].Item2</td>
-                                        <td>@rowData[i].Item3</td>
-                                        <td>@rowData[i].Item4</td>
-                                        <td>@rowData[i].Item5</td>
-                                        <td>@rowData[i].Item6</td>
-                                        <td>@rowData[i].Item7</td>
-                                        <td>@rowData[i].Rest.Item1</td>
-                                        <td>@rowData[i].Rest.Item2</td>
-
-                                        </tr>
+                                        <td>@last50Rows[i].Item1</td>
+                                        <td>@last50Rows[i].Item2</td>
+                                        <td>@last50Rows[i].Item3</td>
+                                        <td>@last50Rows[i].Item4</td>
+                                        <td>@last50Rows[i].Item5</td>
+                                        <td>@last50Rows[i].Item6</td>
+                                        <td>@last50Rows[i].Item7</td>
+                                        <td>@last50Rows[i].Rest.Item1</td>
+                                        <td>@last50Rows[i].Rest.Item2</td>
+                                    </tr>
                                     }
                                 }
                                 else if (Model.ResultSet.Count == 3)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string,string>>>();
+                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string>>>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
-                                    var thirthresult = Model.ResultSet[2];
+                                    var thirdResult = Model.ResultSet[2];
+
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
                                     var AmirOnayDurumu = firstResult.AmirOnayDurumu.Split('-');
                                     var splitDataValue = firstResult.Value.Split('-');
                                     var splitDataValue2 = secondResult.Value.Split('-');
-                                    var splitDataValue3 = thirthresult.Value.Split('-');
+                                    var splitDataValue3 = thirdResult.Value.Split('-');
 
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length }.Max();
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    mudahale >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    dataValue >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count)
-
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string,string>>(
-                                        SiraNo[siraNo],
-                                        UretimTarihi[uretimTarihi],
-                                        KontrolSaati[kontrolSaati],
-                                        NumuneSeriNo[numuneSeriNo],
-                                        Mudahale[mudahale],
-                                        splitDataAciklama[dataAciklama],
-                                        AmirOnayDurumu[amirOnayDurumu],
-                                        Tuple.Create(splitDataValue[dataValue], splitDataValue2[dataValue2],splitDataValue3[dataValue3])
+                                        rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string, string>>(
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        Tuple.Create(
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty
+                                        )
                                         ));
-                                        rowIndex++;
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    for (int i = 0; i < last50Rows.Count; i++)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i].Item1</td>
-                                        <td>@rowData[i].Item2</td>
-                                        <td>@rowData[i].Item3</td>
-                                        <td>@rowData[i].Item4</td>
-                                        <td>@rowData[i].Item5</td>
-                                        <td>@rowData[i].Item6</td>
-                                        <td>@rowData[i].Item7</td>
-                                        <td>@rowData[i].Rest.Item1</td>
-                                        <td>@rowData[i].Rest.Item2</td>
-                                        <td>@rowData[i].Rest.Item3</td>
-
+                                        <td>@last50Rows[i].Item1</td>
+                                        <td>@last50Rows[i].Item2</td>
+                                        <td>@last50Rows[i].Item3</td>
+                                        <td>@last50Rows[i].Item4</td>
+                                        <td>@last50Rows[i].Item5</td>
+                                        <td>@last50Rows[i].Item6</td>
+                                        <td>@last50Rows[i].Item7</td>
+                                        <td>@last50Rows[i].Rest.Item1</td>
+                                        <td>@last50Rows[i].Rest.Item2</td>
+                                        <td>@last50Rows[i].Rest.Item3</td>
                                     </tr>
                                     }
-                                } 
+                                }
                                 else if (Model.ResultSet.Count == 4)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string,string>>>();
+                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string>>>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
-                                    var thirthresult = Model.ResultSet[2];
-                                    var fourthresult = Model.ResultSet[3];
+                                    var thirdResult = Model.ResultSet[2];
+                                    var fourthResult = Model.ResultSet[3];
+
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
                                     var AmirOnayDurumu = firstResult.AmirOnayDurumu.Split('-');
                                     var splitDataValue = firstResult.Value.Split('-');
                                     var splitDataValue2 = secondResult.Value.Split('-');
-                                    var splitDataValue3 = thirthresult.Value.Split('-');
-                                    var splitDataValue4 = fourthresult.Value.Split('-');
+                                    var splitDataValue3 = thirdResult.Value.Split('-');
+                                    var splitDataValue4 = fourthResult.Value.Split('-');
 
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length }.Max();
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    mudahale >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    dataValue >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count)
-
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string, string,string>>(
-                                        SiraNo[siraNo],
-                                        UretimTarihi[uretimTarihi],
-                                        KontrolSaati[kontrolSaati],
-                                        NumuneSeriNo[numuneSeriNo],
-                                        Mudahale[mudahale],
-                                        splitDataAciklama[dataAciklama],
-                                        AmirOnayDurumu[amirOnayDurumu],
-                                        Tuple.Create(splitDataValue[dataValue], splitDataValue2[dataValue2], splitDataValue3[dataValue3], splitDataValue4[dataValue4])
+                                        rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string>>(
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        Tuple.Create(
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty
+                                        )
                                         ));
-                                        rowIndex++;
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.ToList();
+
+                                    for (int i = 0; i < last50Rows.Count; i++)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i].Item1</td>
-                                        <td>@rowData[i].Item2</td>
-                                        <td>@rowData[i].Item3</td>
-                                        <td>@rowData[i].Item4</td>
-                                        <td>@rowData[i].Item5</td>
-                                        <td>@rowData[i].Item6</td>
-                                        <td>@rowData[i].Item7</td>
-                                        <td>@rowData[i].Rest.Item1</td>
-                                        <td>@rowData[i].Rest.Item2</td>
-                                        <td>@rowData[i].Rest.Item3</td>
-                                        <td>@rowData[i].Rest.Item4</td>
-
+                                        <td>@last50Rows[i].Item1</td>
+                                        <td>@last50Rows[i].Item2</td>
+                                        <td>@last50Rows[i].Item3</td>
+                                        <td>@last50Rows[i].Item4</td>
+                                        <td>@last50Rows[i].Item5</td>
+                                        <td>@last50Rows[i].Item6</td>
+                                        <td>@last50Rows[i].Item7</td>
+                                        <td>@last50Rows[i].Rest.Item1</td>
+                                        <td>@last50Rows[i].Rest.Item2</td>
+                                        <td>@last50Rows[i].Rest.Item3</td>
+                                        <td>@last50Rows[i].Rest.Item4</td>
                                     </tr>
                                     }
                                 }
                                 else if (Model.ResultSet.Count == 5)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string,string>>>();
+                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string, string>>>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
-                                    var thirthresult = Model.ResultSet[2];
-                                    var fourthresult = Model.ResultSet[3];
-                                    var fifththresult = Model.ResultSet[4];
+                                    var thirdResult = Model.ResultSet[2];
+                                    var fourthResult = Model.ResultSet[3];
+                                    var fifthResult = Model.ResultSet[4];
+
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
                                     var AmirOnayDurumu = firstResult.AmirOnayDurumu.Split('-');
                                     var splitDataValue = firstResult.Value.Split('-');
                                     var splitDataValue2 = secondResult.Value.Split('-');
-                                    var splitDataValue3 = thirthresult.Value.Split('-');
-                                    var splitDataValue4 = fourthresult.Value.Split('-');
-                                    var splitDataValue5 = fifththresult.Value.Split('-');
+                                    var splitDataValue3 = thirdResult.Value.Split('-');
+                                    var splitDataValue4 = fourthResult.Value.Split('-');
+                                    var splitDataValue5 = fifthResult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    mudahale >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    dataValue >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length }.Max();
 
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string,string>>(
-                                        SiraNo[siraNo],
-                                        UretimTarihi[uretimTarihi],
-                                        KontrolSaati[kontrolSaati],
-                                        NumuneSeriNo[numuneSeriNo],
-                                        Mudahale[mudahale],
-                                        splitDataAciklama[dataAciklama],
-                                        AmirOnayDurumu[amirOnayDurumu],
-                                        Tuple.Create(splitDataValue[dataValue], splitDataValue2[dataValue2], splitDataValue3[dataValue3], splitDataValue4[dataValue4], splitDataValue5[dataValue5])
+                                        rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string, string>>(
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        Tuple.Create(
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty
+                                        )
                                         ));
-                                        rowIndex++;
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    for (int i = 0; i < last50Rows.Count; i++)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i].Item1</td>
-                                        <td>@rowData[i].Item2</td>
-                                        <td>@rowData[i].Item3</td>
-                                        <td>@rowData[i].Item4</td>
-                                        <td>@rowData[i].Item5</td>
-                                        <td>@rowData[i].Item6</td>
-                                        <td>@rowData[i].Item7</td>
-                                        <td>@rowData[i].Rest.Item1</td>
-                                        <td>@rowData[i].Rest.Item2</td>
-                                        <td>@rowData[i].Rest.Item3</td>
-                                        <td>@rowData[i].Rest.Item4</td>
-                                        <td>@rowData[i].Rest.Item5</td>
-
+                                        <td>@last50Rows[i].Item1</td>
+                                        <td>@last50Rows[i].Item2</td>
+                                        <td>@last50Rows[i].Item3</td>
+                                        <td>@last50Rows[i].Item4</td>
+                                        <td>@last50Rows[i].Item5</td>
+                                        <td>@last50Rows[i].Item6</td>
+                                        <td>@last50Rows[i].Item7</td>
+                                        <td>@last50Rows[i].Rest.Item1</td>
+                                        <td>@last50Rows[i].Rest.Item2</td>
+                                        <td>@last50Rows[i].Rest.Item3</td>
+                                        <td>@last50Rows[i].Rest.Item4</td>
+                                        <td>@last50Rows[i].Rest.Item5</td>
                                     </tr>
                                     }
                                 }
                                 else if (Model.ResultSet.Count == 6)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string, string,string>>>();
+                                    var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string, string, string>>>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
-                                    var thirthresult = Model.ResultSet[2];
-                                    var fourthresult = Model.ResultSet[3];
-                                    var fifththresult = Model.ResultSet[4];
-                                    var sixthresult = Model.ResultSet[5];
+                                    var thirdResult = Model.ResultSet[2];
+                                    var fourthResult = Model.ResultSet[3];
+                                    var fifthResult = Model.ResultSet[4];
+                                    var sixresult = Model.ResultSet[5];
+
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
                                     var AmirOnayDurumu = firstResult.AmirOnayDurumu.Split('-');
                                     var splitDataValue = firstResult.Value.Split('-');
                                     var splitDataValue2 = secondResult.Value.Split('-');
-                                    var splitDataValue3 = thirthresult.Value.Split('-');
-                                    var splitDataValue4 = fourthresult.Value.Split('-');
-                                    var splitDataValue5 = fifththresult.Value.Split('-');
-                                    var splitDataValue6 = sixthresult.Value.Split('-');
+                                    var splitDataValue3 = thirdResult.Value.Split('-');
+                                    var splitDataValue4 = fourthResult.Value.Split('-');
+                                    var splitDataValue5 = fifthResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    mudahale >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    dataValue >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length }.Max();
 
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
                                         rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string, string,string>>(
-                                        SiraNo[siraNo],
-                                        UretimTarihi[uretimTarihi],
-                                        KontrolSaati[kontrolSaati],
-                                        NumuneSeriNo[numuneSeriNo],
-                                        Mudahale[mudahale],
-                                        splitDataAciklama[dataAciklama],
-                                        AmirOnayDurumu[amirOnayDurumu],
-                                        Tuple.Create(splitDataValue[dataValue], splitDataValue2[dataValue2], splitDataValue3[dataValue3], splitDataValue4[dataValue4], splitDataValue5[dataValue5], splitDataValue6[dataValue6])
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        Tuple.Create(
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty
+
+                                        )
                                         ));
-                                        rowIndex++;
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    for (int i = 0; i < last50Rows.Count; i++)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i].Item1</td>
-                                        <td>@rowData[i].Item2</td>
-                                        <td>@rowData[i].Item3</td>
-                                        <td>@rowData[i].Item4</td>
-                                        <td>@rowData[i].Item5</td>
-                                        <td>@rowData[i].Item6</td>
-                                        <td>@rowData[i].Item7</td>
-                                        <td>@rowData[i].Rest.Item1</td>
-                                        <td>@rowData[i].Rest.Item2</td>
-                                        <td>@rowData[i].Rest.Item3</td>
-                                        <td>@rowData[i].Rest.Item4</td>
-                                        <td>@rowData[i].Rest.Item5</td>
-                                        <td>@rowData[i].Rest.Item6</td>
-
+                                        <td>@last50Rows[i].Item1</td>
+                                        <td>@last50Rows[i].Item2</td>
+                                        <td>@last50Rows[i].Item3</td>
+                                        <td>@last50Rows[i].Item4</td>
+                                        <td>@last50Rows[i].Item5</td>
+                                        <td>@last50Rows[i].Item6</td>
+                                        <td>@last50Rows[i].Item7</td>
+                                        <td>@last50Rows[i].Rest.Item1</td>
+                                        <td>@last50Rows[i].Rest.Item2</td>
+                                        <td>@last50Rows[i].Rest.Item3</td>
+                                        <td>@last50Rows[i].Rest.Item4</td>
+                                        <td>@last50Rows[i].Rest.Item5</td>
+                                        <td>@last50Rows[i].Rest.Item6</td>
                                     </tr>
                                     }
                                 }
                                 else if (Model.ResultSet.Count == 7)
                                 {
-                                    int rowIndex = 0;
                                     var rowData = new List<Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string, string, string,string>>>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
-                                    var thirthresult = Model.ResultSet[2];
-                                    var fourthresult = Model.ResultSet[3];
-                                    var fifththresult = Model.ResultSet[4];
-                                    var sixthresult = Model.ResultSet[5];
+                                    var thirdResult = Model.ResultSet[2];
+                                    var fourthResult = Model.ResultSet[3];
+                                    var fifthResult = Model.ResultSet[4];
+                                    var sixresult = Model.ResultSet[5];
                                     var sevenresult = Model.ResultSet[6];
+
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
                                     var AmirOnayDurumu = firstResult.AmirOnayDurumu.Split('-');
                                     var splitDataValue = firstResult.Value.Split('-');
                                     var splitDataValue2 = secondResult.Value.Split('-');
-                                    var splitDataValue3 = thirthresult.Value.Split('-');
-                                    var splitDataValue4 = fourthresult.Value.Split('-');
-                                    var splitDataValue5 = fifththresult.Value.Split('-');
-                                    var splitDataValue6 = sixthresult.Value.Split('-');
+                                    var splitDataValue3 = thirdResult.Value.Split('-');
+                                    var splitDataValue4 = fourthResult.Value.Split('-');
+                                    var splitDataValue5 = fifthResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
                                     var splitDataValue7 = sevenresult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue7 = splitDataValue7.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    dataValue7 >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    mudahale >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    dataValue >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count,
-                                    dataValue7 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length }.Max();
 
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
                                         rowData.Add(new Tuple<string, string, string, string, string, string, string, Tuple<string, string, string, string, string, string,string>>(
-                                        SiraNo[siraNo],
-                                        UretimTarihi[uretimTarihi],
-                                        KontrolSaati[kontrolSaati],
-                                        NumuneSeriNo[numuneSeriNo],
-                                        Mudahale[mudahale],
-                                        splitDataAciklama[dataAciklama],
-                                        AmirOnayDurumu[amirOnayDurumu],
-                                        Tuple.Create(splitDataValue[dataValue], splitDataValue2[dataValue2], splitDataValue3[dataValue3], splitDataValue4[dataValue4], splitDataValue5[dataValue5], splitDataValue6[dataValue6], splitDataValue7[dataValue7])
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        Tuple.Create(
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty
+                                        )
                                         ));
-                                        rowIndex++;
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    for (int i = 0; i < last50Rows.Count; i++)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i].Item1</td>
-                                        <td>@rowData[i].Item2</td>
-                                        <td>@rowData[i].Item3</td>
-                                        <td>@rowData[i].Item4</td>
-                                        <td>@rowData[i].Item5</td>
-                                        <td>@rowData[i].Item6</td>
-                                        <td>@rowData[i].Item7</td>
-                                        <td>@rowData[i].Rest.Item1</td>
-                                        <td>@rowData[i].Rest.Item2</td>
-                                        <td>@rowData[i].Rest.Item3</td>
-                                        <td>@rowData[i].Rest.Item4</td>
-                                        <td>@rowData[i].Rest.Item5</td>
-                                        <td>@rowData[i].Rest.Item6</td>
-                                        <td>@rowData[i].Rest.Item7</td>
-
+                                        <td>@last50Rows[i].Item1</td>
+                                        <td>@last50Rows[i].Item2</td>
+                                        <td>@last50Rows[i].Item3</td>
+                                        <td>@last50Rows[i].Item4</td>
+                                        <td>@last50Rows[i].Item5</td>
+                                        <td>@last50Rows[i].Item6</td>
+                                        <td>@last50Rows[i].Item7</td>
+                                        <td>@last50Rows[i].Rest.Item1</td>
+                                        <td>@last50Rows[i].Rest.Item2</td>
+                                        <td>@last50Rows[i].Rest.Item3</td>
+                                        <td>@last50Rows[i].Rest.Item4</td>
+                                        <td>@last50Rows[i].Rest.Item5</td>
+                                        <td>@last50Rows[i].Rest.Item6</td>
+                                        <td>@last50Rows[i].Rest.Item7</td>
                                     </tr>
                                     }
                                 }
                                 else if (Model.ResultSet.Count == 8)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<List<string>>();
+                                    var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, string))>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
                                     var thirdResult = Model.ResultSet[2];
                                     var fourthResult = Model.ResultSet[3];
                                     var fifthResult = Model.ResultSet[4];
-                                    var sixthResult = Model.ResultSet[5];
-                                    var seventhResult = Model.ResultSet[6];
-                                    var eighthResult = Model.ResultSet[7];
+                                    var sixresult = Model.ResultSet[5];
+                                    var sevenresult = Model.ResultSet[6];
+                                    var eightresult = Model.ResultSet[7];
 
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
@@ -954,119 +786,76 @@
                                     var splitDataValue3 = thirdResult.Value.Split('-');
                                     var splitDataValue4 = fourthResult.Value.Split('-');
                                     var splitDataValue5 = fifthResult.Value.Split('-');
-                                    var splitDataValue6 = sixthResult.Value.Split('-');
-                                    var splitDataValue7 = seventhResult.Value.Split('-');
-                                    var splitDataValue8 = eighthResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
+                                    var splitDataValue7 = sevenresult.Value.Split('-');
+                                    var splitDataValue8 = eightresult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue7 = splitDataValue7.Length - 1,
-                                    dataValue8 = splitDataValue8.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    mudahale >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    dataValue >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    dataValue7 >= 0 &&
-                                    dataValue8 >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count,
-                                    dataValue7 -= Model.ResultSet.Count,
-                                    dataValue8 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length }.Max();
+
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        var row = new List<string>
-                    {
-                    SiraNo[siraNo],
-                    UretimTarihi[uretimTarihi],
-                    KontrolSaati[kontrolSaati],
-                    NumuneSeriNo[numuneSeriNo],
-                    Mudahale[mudahale],
-                    splitDataAciklama[dataAciklama],
-                    AmirOnayDurumu[amirOnayDurumu],
-                    splitDataValue[dataValue],
-                    splitDataValue2[dataValue2],
-                    splitDataValue3[dataValue3],
-                    splitDataValue4[dataValue4],
-                    splitDataValue5[dataValue5],
-                    splitDataValue6[dataValue6],
-                    splitDataValue7[dataValue7],
-                    splitDataValue8[dataValue8]
-                    };
-
-                                        rowData.Add(row);
-                                        rowIndex++;
+                                        rowData.Add((
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        (
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                        i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty
+                                        )
+                                        ));
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
-                                    {
-                                    <tr>
-                                        <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i][0]</td>
-                                        <td>@rowData[i][1]</td>
-                                        <td>@rowData[i][2]</td>
-                                        <td>@rowData[i][3]</td>
-                                        <td>@rowData[i][4]</td>
-                                        <td>@rowData[i][5]</td>
-                                        <td>@rowData[i][6]</td>
-                                        <td>@rowData[i][7]</td>
-                                        <td>@rowData[i][8]</td>
-                                        <td>@rowData[i][9]</td>
-                                        <td>@rowData[i][10]</td>
-                                        <td>@rowData[i][11]</td>
-                                        <td>@rowData[i][12]</td>
-                                        <td>@rowData[i][13]</td>
-                                        <td>@rowData[i][14]</td>
-                                    </tr>
-                                    }
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                            foreach (var row in last50Rows)
+                                            {
+                                            <tr>
+                                                <td>@Model.ResultSet[0].UrunId</td>
+                                                <td>@row.Item1</td>
+                                                <td>@row.Item2</td>
+                                                <td>@row.Item3</td>
+                                                <td>@row.Item4</td>
+                                                <td>@row.Item5</td>
+                                                <td>@row.Item6</td>
+                                                <td>@row.Item7</td>
+                                                <td>@row.Item8.Item1</td>
+                                                <td>@row.Item8.Item2</td>
+                                                <td>@row.Item8.Item3</td>
+                                                <td>@row.Item8.Item4</td>
+                                                <td>@row.Item8.Item5</td>
+                                                <td>@row.Item8.Item6</td>
+                                                <td>@row.Item8.Item7</td>
+                                                <td>@row.Item8.Item8</td>
+                                            </tr>
+                                            }
                                 }
                                 else if (Model.ResultSet.Count == 9)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<List<string>>();
+                                    var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string)))>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
                                     var thirdResult = Model.ResultSet[2];
                                     var fourthResult = Model.ResultSet[3];
                                     var fifthResult = Model.ResultSet[4];
-                                    var sixthResult = Model.ResultSet[5];
-                                    var seventhResult = Model.ResultSet[6];
-                                    var eighthResult = Model.ResultSet[7];
-                                    var nineResult = Model.ResultSet[8];
+                                    var sixresult = Model.ResultSet[5];
+                                    var sevenresult = Model.ResultSet[6];
+                                    var eightresult = Model.ResultSet[7];
+                                    var nineresult = Model.ResultSet[8];
 
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
@@ -1076,126 +865,83 @@
                                     var splitDataValue3 = thirdResult.Value.Split('-');
                                     var splitDataValue4 = fourthResult.Value.Split('-');
                                     var splitDataValue5 = fifthResult.Value.Split('-');
-                                    var splitDataValue6 = sixthResult.Value.Split('-');
-                                    var splitDataValue7 = seventhResult.Value.Split('-');
-                                    var splitDataValue8 = eighthResult.Value.Split('-');
-                                    var splitDataValue9 = nineResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
+                                    var splitDataValue7 = sevenresult.Value.Split('-');
+                                    var splitDataValue8 = eightresult.Value.Split('-');
+                                    var splitDataValue9 = nineresult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue7 = splitDataValue7.Length - 1,
-                                    dataValue8 = splitDataValue8.Length - 1,
-                                    dataValue9 = splitDataValue9.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    mudahale >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    dataValue >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    dataValue7 >= 0 &&
-                                    dataValue8 >= 0 &&
-                                    dataValue9 >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count,
-                                    dataValue7 -= Model.ResultSet.Count,
-                                    dataValue8 -= Model.ResultSet.Count,
-                                    dataValue9 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length }.Max();
+
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        var row = new List<string>
-                    {
-                    SiraNo[siraNo],
-                    UretimTarihi[uretimTarihi],
-                    KontrolSaati[kontrolSaati],
-                    NumuneSeriNo[numuneSeriNo],
-                    Mudahale[mudahale],
-                    splitDataAciklama[dataAciklama],
-                    AmirOnayDurumu[amirOnayDurumu],
-                    splitDataValue[dataValue],
-                    splitDataValue2[dataValue2],
-                    splitDataValue3[dataValue3],
-                    splitDataValue4[dataValue4],
-                    splitDataValue5[dataValue5],
-                    splitDataValue6[dataValue6],
-                    splitDataValue7[dataValue7],
-                    splitDataValue8[dataValue8],
-                    splitDataValue9[dataValue9]
-                    };
-
-                                        rowData.Add(row);
-                                        rowIndex++;
+                                        rowData.Add((
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        (
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                        (
+                                        i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                        i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty
+                                        )
+                                        )
+                                        ));
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    @foreach (var row in last50Rows)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i][0]</td>
-                                        <td>@rowData[i][1]</td>
-                                        <td>@rowData[i][2]</td>
-                                        <td>@rowData[i][3]</td>
-                                        <td>@rowData[i][4]</td>
-                                        <td>@rowData[i][5]</td>
-                                        <td>@rowData[i][6]</td>
-                                        <td>@rowData[i][7]</td>
-                                        <td>@rowData[i][8]</td>
-                                        <td>@rowData[i][9]</td>
-                                        <td>@rowData[i][10]</td>
-                                        <td>@rowData[i][11]</td>
-                                        <td>@rowData[i][12]</td>
-                                        <td>@rowData[i][13]</td>
-                                        <td>@rowData[i][14]</td>
-                                        <td>@rowData[i][15]</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
                                     </tr>
                                     }
+
                                 }
                                 else if (Model.ResultSet.Count == 10)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<List<string>>();
+                                    var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string)))>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
                                     var thirdResult = Model.ResultSet[2];
                                     var fourthResult = Model.ResultSet[3];
                                     var fifthResult = Model.ResultSet[4];
-                                    var sixthResult = Model.ResultSet[5];
-                                    var seventhResult = Model.ResultSet[6];
-                                    var eighthResult = Model.ResultSet[7];
-                                    var nineResult = Model.ResultSet[8];
-                                    var tenResult = Model.ResultSet[9];
+                                    var sixresult = Model.ResultSet[5];
+                                    var sevenresult = Model.ResultSet[6];
+                                    var eightresult = Model.ResultSet[7];
+                                    var nineresult = Model.ResultSet[8];
+                                    var tenresult = Model.ResultSet[9];
 
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
@@ -1205,134 +951,87 @@
                                     var splitDataValue3 = thirdResult.Value.Split('-');
                                     var splitDataValue4 = fourthResult.Value.Split('-');
                                     var splitDataValue5 = fifthResult.Value.Split('-');
-                                    var splitDataValue6 = sixthResult.Value.Split('-');
-                                    var splitDataValue7 = seventhResult.Value.Split('-');
-                                    var splitDataValue8 = eighthResult.Value.Split('-');
-                                    var splitDataValue9 = nineResult.Value.Split('-');
-                                    var splitDataValue10 = tenResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
+                                    var splitDataValue7 = sevenresult.Value.Split('-');
+                                    var splitDataValue8 = eightresult.Value.Split('-');
+                                    var splitDataValue9 = nineresult.Value.Split('-');
+                                    var splitDataValue10 = tenresult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue7 = splitDataValue7.Length - 1,
-                                    dataValue8 = splitDataValue8.Length - 1,
-                                    dataValue9 = splitDataValue9.Length - 1,
-                                    dataValue10 = splitDataValue10.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    mudahale >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    dataValue >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    dataValue7 >= 0 &&
-                                    dataValue8 >= 0 &&
-                                    dataValue9 >= 0 &&
-                                    dataValue10 >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count,
-                                    dataValue7 -= Model.ResultSet.Count,
-                                    dataValue8 -= Model.ResultSet.Count,
-                                    dataValue9 -= Model.ResultSet.Count,
-                                    dataValue10 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length }.Max();
+
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        var row = new List<string>
-                    {
-                    SiraNo[siraNo],
-                    UretimTarihi[uretimTarihi],
-                    KontrolSaati[kontrolSaati],
-                    NumuneSeriNo[numuneSeriNo],
-                    Mudahale[mudahale],
-                    splitDataAciklama[dataAciklama],
-                    AmirOnayDurumu[amirOnayDurumu],
-                    splitDataValue[dataValue],
-                    splitDataValue2[dataValue2],
-                    splitDataValue3[dataValue3],
-                    splitDataValue4[dataValue4],
-                    splitDataValue5[dataValue5],
-                    splitDataValue6[dataValue6],
-                    splitDataValue7[dataValue7],
-                    splitDataValue8[dataValue8],
-                    splitDataValue9[dataValue9],
-                    splitDataValue10[dataValue10]
-                    };
-
-                                        rowData.Add(row);
-                                        rowIndex++;
+                                        rowData.Add((
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        (
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                        (
+                                        i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                        i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                        i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty
+                                        )
+                                        )
+                                        ));
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    @foreach (var row in last50Rows)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i][0]</td>
-                                        <td>@rowData[i][1]</td>
-                                        <td>@rowData[i][2]</td>
-                                        <td>@rowData[i][3]</td>
-                                        <td>@rowData[i][4]</td>
-                                        <td>@rowData[i][5]</td>
-                                        <td>@rowData[i][6]</td>
-                                        <td>@rowData[i][7]</td>
-                                        <td>@rowData[i][8]</td>
-                                        <td>@rowData[i][9]</td>
-                                        <td>@rowData[i][10]</td>
-                                        <td>@rowData[i][11]</td>
-                                        <td>@rowData[i][12]</td>
-                                        <td>@rowData[i][13]</td>
-                                        <td>@rowData[i][14]</td>
-                                        <td>@rowData[i][15]</td>
-                                        <td>@rowData[i][16]</td>
-
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
                                     </tr>
                                     }
+
                                 }
                                 else if (Model.ResultSet.Count == 11)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<List<string>>();
+                                    var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string)))>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
                                     var thirdResult = Model.ResultSet[2];
                                     var fourthResult = Model.ResultSet[3];
                                     var fifthResult = Model.ResultSet[4];
-                                    var sixthResult = Model.ResultSet[5];
-                                    var seventhResult = Model.ResultSet[6];
-                                    var eighthResult = Model.ResultSet[7];
-                                    var nineResult = Model.ResultSet[8];
-                                    var tenResult = Model.ResultSet[9];
-                                    var elevenResult = Model.ResultSet[10];
+                                    var sixresult = Model.ResultSet[5];
+                                    var sevenresult = Model.ResultSet[6];
+                                    var eightresult = Model.ResultSet[7];
+                                    var nineresult = Model.ResultSet[8];
+                                    var tenresult = Model.ResultSet[9];
+                                    var elevenresult = Model.ResultSet[10];
 
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
@@ -1342,143 +1041,91 @@
                                     var splitDataValue3 = thirdResult.Value.Split('-');
                                     var splitDataValue4 = fourthResult.Value.Split('-');
                                     var splitDataValue5 = fifthResult.Value.Split('-');
-                                    var splitDataValue6 = sixthResult.Value.Split('-');
-                                    var splitDataValue7 = seventhResult.Value.Split('-');
-                                    var splitDataValue8 = eighthResult.Value.Split('-');
-                                    var splitDataValue9 = nineResult.Value.Split('-');
-                                    var splitDataValue10 = tenResult.Value.Split('-');
-                                    var splitDataValue11 = elevenResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
+                                    var splitDataValue7 = sevenresult.Value.Split('-');
+                                    var splitDataValue8 = eightresult.Value.Split('-');
+                                    var splitDataValue9 = nineresult.Value.Split('-');
+                                    var splitDataValue10 = tenresult.Value.Split('-');
+                                    var splitDataValue11 = elevenresult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue7 = splitDataValue7.Length - 1,
-                                    dataValue8 = splitDataValue8.Length - 1,
-                                    dataValue9 = splitDataValue9.Length - 1,
-                                    dataValue10 = splitDataValue10.Length - 1,
-                                    dataValue11 = splitDataValue11.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    mudahale >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    dataValue >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    dataValue7 >= 0 &&
-                                    dataValue8 >= 0 &&
-                                    dataValue9 >= 0 &&
-                                    dataValue10 >= 0 &&
-                                    dataValue11 >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count,
-                                    dataValue7 -= Model.ResultSet.Count,
-                                    dataValue8 -= Model.ResultSet.Count,
-                                    dataValue9 -= Model.ResultSet.Count,
-                                    dataValue10 -= Model.ResultSet.Count,
-                                    dataValue11 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length, splitDataValue11.Length }.Max();
+
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        var row = new List<string>
-                    {
-                    SiraNo[siraNo],
-                    UretimTarihi[uretimTarihi],
-                    KontrolSaati[kontrolSaati],
-                    NumuneSeriNo[numuneSeriNo],
-                    Mudahale[mudahale],
-                    splitDataAciklama[dataAciklama],
-                    AmirOnayDurumu[amirOnayDurumu],
-                    splitDataValue[dataValue],
-                    splitDataValue2[dataValue2],
-                    splitDataValue3[dataValue3],
-                    splitDataValue4[dataValue4],
-                    splitDataValue5[dataValue5],
-                    splitDataValue6[dataValue6],
-                    splitDataValue7[dataValue7],
-                    splitDataValue8[dataValue8],
-                    splitDataValue9[dataValue9],
-                    splitDataValue10[dataValue10],
-                    splitDataValue11[dataValue11]
-
-                    };
-
-                                        rowData.Add(row);
-                                        rowIndex++;
+                                        rowData.Add((
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        (
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                        (
+                                        i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                        i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                        i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty,
+                                        i < splitDataValue11.Length ? splitDataValue11[i] : string.Empty
+                                        )
+                                        )
+                                        ));
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
-                                    {
-                                    <tr>
-                                        <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i][0]</td>
-                                        <td>@rowData[i][1]</td>
-                                        <td>@rowData[i][2]</td>
-                                        <td>@rowData[i][3]</td>
-                                        <td>@rowData[i][4]</td>
-                                        <td>@rowData[i][5]</td>
-                                        <td>@rowData[i][6]</td>
-                                        <td>@rowData[i][7]</td>
-                                        <td>@rowData[i][8]</td>
-                                        <td>@rowData[i][9]</td>
-                                        <td>@rowData[i][10]</td>
-                                        <td>@rowData[i][11]</td>
-                                        <td>@rowData[i][12]</td>
-                                        <td>@rowData[i][13]</td>
-                                        <td>@rowData[i][14]</td>
-                                        <td>@rowData[i][15]</td>
-                                        <td>@rowData[i][16]</td>
-                                        <td>@rowData[i][17]</td>
+                                    var last50Rows = rowData.TakeLast(50).ToList();
 
-                                    </tr>
-                                    }
+                                            @foreach (var row in last50Rows)
+                                            {
+                                            <tr>
+                                                <td>@Model.ResultSet[0].UrunId</td>
+                                                <td>@row.Item1</td>
+                                                <td>@row.Item2</td>
+                                                <td>@row.Item3</td>
+                                                <td>@row.Item4</td>
+                                                <td>@row.Item5</td>
+                                                <td>@row.Item6</td>
+                                                <td>@row.Item7</td>
+                                                <td>@row.Item8.Item1</td>
+                                                <td>@row.Item8.Item2</td>
+                                                <td>@row.Item8.Item3</td>
+                                                <td>@row.Item8.Item4</td>
+                                                <td>@row.Item8.Item5</td>
+                                                <td>@row.Item8.Item6</td>
+                                                <td>@row.Item8.Item7</td>
+                                                <td>@row.Item8.Item8.Item1</td>
+                                                <td>@row.Item8.Item8.Item2</td>
+                                                <td>@row.Item8.Item8.Item3</td>
+                                                <td>@row.Item8.Item8.Item4</td>
+                                            </tr>
+                                            }
+
                                 }
                                 else if (Model.ResultSet.Count == 12)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<List<string>>();
+                                    var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string,string)))>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
                                     var thirdResult = Model.ResultSet[2];
                                     var fourthResult = Model.ResultSet[3];
                                     var fifthResult = Model.ResultSet[4];
-                                    var sixthResult = Model.ResultSet[5];
-                                    var seventhResult = Model.ResultSet[6];
-                                    var eighthResult = Model.ResultSet[7];
-                                    var nineResult = Model.ResultSet[8];
-                                    var tenResult = Model.ResultSet[9];
-                                    var elevenResult = Model.ResultSet[10];
-                                    var twelveResult = Model.ResultSet[11];
-
+                                    var sixresult = Model.ResultSet[5];
+                                    var sevenresult = Model.ResultSet[6];
+                                    var eightresult = Model.ResultSet[7];
+                                    var nineresult = Model.ResultSet[8];
+                                    var tenresult = Model.ResultSet[9];
+                                    var elevenresult = Model.ResultSet[10];
+                                    var twelveresult = Model.ResultSet[11];
 
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
@@ -1488,152 +1135,95 @@
                                     var splitDataValue3 = thirdResult.Value.Split('-');
                                     var splitDataValue4 = fourthResult.Value.Split('-');
                                     var splitDataValue5 = fifthResult.Value.Split('-');
-                                    var splitDataValue6 = sixthResult.Value.Split('-');
-                                    var splitDataValue7 = seventhResult.Value.Split('-');
-                                    var splitDataValue8 = eighthResult.Value.Split('-');
-                                    var splitDataValue9 = nineResult.Value.Split('-');
-                                    var splitDataValue10 = tenResult.Value.Split('-');
-                                    var splitDataValue11 = elevenResult.Value.Split('-');
-                                    var splitDataValue12 = twelveResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
+                                    var splitDataValue7 = sevenresult.Value.Split('-');
+                                    var splitDataValue8 = eightresult.Value.Split('-');
+                                    var splitDataValue9 = nineresult.Value.Split('-');
+                                    var splitDataValue10 = tenresult.Value.Split('-');
+                                    var splitDataValue11 = elevenresult.Value.Split('-');
+                                    var splitDataValue12 = twelveresult.Value.Split('-');
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue7 = splitDataValue7.Length - 1,
-                                    dataValue8 = splitDataValue8.Length - 1,
-                                    dataValue9 = splitDataValue9.Length - 1,
-                                    dataValue10 = splitDataValue10.Length - 1,
-                                    dataValue11 = splitDataValue11.Length - 1,
-                                    dataValue12 = splitDataValue12.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    mudahale >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    dataValue >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    dataValue7 >= 0 &&
-                                    dataValue8 >= 0 &&
-                                    dataValue9 >= 0 &&
-                                    dataValue10 >= 0 &&
-                                    dataValue11 >= 0 &&
-                                    dataValue12 >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count,
-                                    dataValue7 -= Model.ResultSet.Count,
-                                    dataValue8 -= Model.ResultSet.Count,
-                                    dataValue9 -= Model.ResultSet.Count,
-                                    dataValue10 -= Model.ResultSet.Count,
-                                    dataValue11 -= Model.ResultSet.Count,
-                                    dataValue12 -= Model.ResultSet.Count)
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length, splitDataValue11.Length,splitDataValue12.Length }.Max();
+
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        var row = new List<string>
-                    {
-                    SiraNo[siraNo],
-                    UretimTarihi[uretimTarihi],
-                    KontrolSaati[kontrolSaati],
-                    NumuneSeriNo[numuneSeriNo],
-                    Mudahale[mudahale],
-                    splitDataAciklama[dataAciklama],
-                    AmirOnayDurumu[amirOnayDurumu],
-                    splitDataValue[dataValue],
-                    splitDataValue2[dataValue2],
-                    splitDataValue3[dataValue3],
-                    splitDataValue4[dataValue4],
-                    splitDataValue5[dataValue5],
-                    splitDataValue6[dataValue6],
-                    splitDataValue7[dataValue7],
-                    splitDataValue8[dataValue8],
-                    splitDataValue9[dataValue9],
-                    splitDataValue10[dataValue10],
-                    splitDataValue11[dataValue11],
-                    splitDataValue12[dataValue12]
-
-
-                    };
-
-                                        rowData.Add(row);
-                                        rowIndex++;
+                                        rowData.Add((
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        (
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                        (
+                                        i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                        i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                        i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty,
+                                        i < splitDataValue11.Length ? splitDataValue11[i] : string.Empty,
+                                        i < splitDataValue12.Length ? splitDataValue12[i] : string.Empty
+                                        )
+                                        )
+                                        ));
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    @foreach (var row in last50Rows)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i][0]</td>
-                                        <td>@rowData[i][1]</td>
-                                        <td>@rowData[i][2]</td>
-                                        <td>@rowData[i][3]</td>
-                                        <td>@rowData[i][4]</td>
-                                        <td>@rowData[i][5]</td>
-                                        <td>@rowData[i][6]</td>
-                                        <td>@rowData[i][7]</td>
-                                        <td>@rowData[i][8]</td>
-                                        <td>@rowData[i][9]</td>
-                                        <td>@rowData[i][10]</td>
-                                        <td>@rowData[i][11]</td>
-                                        <td>@rowData[i][12]</td>
-                                        <td>@rowData[i][13]</td>
-                                        <td>@rowData[i][14]</td>
-                                        <td>@rowData[i][15]</td>
-                                        <td>@rowData[i][16]</td>
-                                        <td>@rowData[i][17]</td>
-                                        <td>@rowData[i][18]</td>
-
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
                                     </tr>
                                     }
+
                                 }
-                                else if (Model.ResultSet.Count == 13 
-                                )
+                                else if (Model.ResultSet.Count == 13)
                                 {
-                                    int rowIndex = 0;
-                                    var rowData = new List<List<string>>();
+                                    var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string,string)))>();
 
                                     var firstResult = Model.ResultSet[0];
                                     var secondResult = Model.ResultSet[1];
                                     var thirdResult = Model.ResultSet[2];
                                     var fourthResult = Model.ResultSet[3];
                                     var fifthResult = Model.ResultSet[4];
-                                    var sixthResult = Model.ResultSet[5];
-                                    var seventhResult = Model.ResultSet[6];
-                                    var eighthResult = Model.ResultSet[7];
-                                    var nineResult = Model.ResultSet[8];
-                                    var tenResult = Model.ResultSet[9];
-                                    var elevenResult = Model.ResultSet[10];
-                                    var twelveResult = Model.ResultSet[11];
-                                    var thirteenResult = Model.ResultSet[12];
-
+                                    var sixresult = Model.ResultSet[5];
+                                    var sevenresult = Model.ResultSet[6];
+                                    var eightresult = Model.ResultSet[7];
+                                    var nineresult = Model.ResultSet[8];
+                                    var tenresult = Model.ResultSet[9];
+                                    var elevenresult = Model.ResultSet[10];
+                                    var twelveresult = Model.ResultSet[11];
+                                    var thirteenresult = Model.ResultSet[12];
 
                                     var SiraNo = firstResult.SiraNo.Split('-');
-                                    var UretimTarihi = firstResult.UretimTarihi.Split('-');
-                                    var KontrolSaati = firstResult.KontrolSaati.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
                                     var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
                                     var Mudahale = firstResult.MudahaleVarmi.Split('-');
                                     var splitDataAciklama = firstResult.Aciklama.Split('-');
@@ -1643,131 +1233,184 @@
                                     var splitDataValue3 = thirdResult.Value.Split('-');
                                     var splitDataValue4 = fourthResult.Value.Split('-');
                                     var splitDataValue5 = fifthResult.Value.Split('-');
-                                    var splitDataValue6 = sixthResult.Value.Split('-');
-                                    var splitDataValue7 = seventhResult.Value.Split('-');
-                                    var splitDataValue8 = eighthResult.Value.Split('-');
-                                    var splitDataValue9 = nineResult.Value.Split('-');
-                                    var splitDataValue10 = tenResult.Value.Split('-');
-                                    var splitDataValue11 = elevenResult.Value.Split('-');
-                                    var splitDataValue12 = twelveResult.Value.Split('-');
-                                    var splitDataValue13 = thirteenResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
+                                    var splitDataValue7 = sevenresult.Value.Split('-');
+                                    var splitDataValue8 = eightresult.Value.Split('-');
+                                    var splitDataValue9 = nineresult.Value.Split('-');
+                                    var splitDataValue10 = tenresult.Value.Split('-');
+                                    var splitDataValue11 = elevenresult.Value.Split('-');
+                                    var splitDataValue12 = twelveresult.Value.Split('-');
+                                    var splitDataValue13 = thirteenresult.Value.Split('-');
 
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length, splitDataValue11.Length, splitDataValue12.Length, splitDataValue13.Length }.Max();
 
-                                    for (int uretimTarihi = UretimTarihi.Length - 1,
-                                    siraNo = SiraNo.Length - 1,
-                                    kontrolSaati = KontrolSaati.Length - 1,
-                                    dataAciklama = splitDataAciklama.Length - 1,
-                                    mudahale = Mudahale.Length - 1,
-                                    numuneSeriNo = NumuneSeriNo.Length - 1,
-                                    amirOnayDurumu = AmirOnayDurumu.Length - 1,
-                                    dataValue = splitDataValue.Length - 1,
-                                    dataValue2 = splitDataValue2.Length - 1,
-                                    dataValue3 = splitDataValue3.Length - 1,
-                                    dataValue4 = splitDataValue4.Length - 1,
-                                    dataValue5 = splitDataValue5.Length - 1,
-                                    dataValue6 = splitDataValue6.Length - 1,
-                                    dataValue7 = splitDataValue7.Length - 1,
-                                    dataValue8 = splitDataValue8.Length - 1,
-                                    dataValue9 = splitDataValue9.Length - 1,
-                                    dataValue10 = splitDataValue10.Length - 1,
-                                    dataValue11 = splitDataValue11.Length - 1,
-                                    dataValue12 = splitDataValue12.Length - 1,
-                                    dataValue13 = splitDataValue13.Length - 1;
-                                    uretimTarihi >= 0 &&
-                                    siraNo >= 0 &&
-                                    kontrolSaati >= 0 &&
-                                    dataAciklama >= 0 &&
-                                    mudahale >= 0 &&
-                                    numuneSeriNo >= 0 &&
-                                    amirOnayDurumu >= 0 &&
-                                    dataValue >= 0 &&
-                                    dataValue2 >= 0 &&
-                                    dataValue3 >= 0 &&
-                                    dataValue4 >= 0 &&
-                                    dataValue5 >= 0 &&
-                                    dataValue6 >= 0 &&
-                                    dataValue7 >= 0 &&
-                                    dataValue8 >= 0 &&
-                                    dataValue9 >= 0 &&
-                                    dataValue10 >= 0 &&
-                                    dataValue11 >= 0 &&
-                                    dataValue12 >= 0 &&
-                                    dataValue13 >= 0;
-                                    siraNo -= Model.ResultSet.Count,
-                                    kontrolSaati -= Model.ResultSet.Count,
-                                    uretimTarihi -= Model.ResultSet.Count,
-                                    dataAciklama -= Model.ResultSet.Count,
-                                    mudahale -= Model.ResultSet.Count,
-                                    numuneSeriNo -= Model.ResultSet.Count,
-                                    amirOnayDurumu -= Model.ResultSet.Count,
-                                    dataValue -= Model.ResultSet.Count,
-                                    dataValue2 -= Model.ResultSet.Count,
-                                    dataValue3 -= Model.ResultSet.Count,
-                                    dataValue4 -= Model.ResultSet.Count,
-                                    dataValue5 -= Model.ResultSet.Count,
-                                    dataValue6 -= Model.ResultSet.Count,
-                                    dataValue7 -= Model.ResultSet.Count,
-                                    dataValue8 -= Model.ResultSet.Count,
-                                    dataValue9 -= Model.ResultSet.Count,
-                                    dataValue10 -= Model.ResultSet.Count,
-                                    dataValue11 -= Model.ResultSet.Count,
-                                    dataValue12 -= Model.ResultSet.Count)
+                                    for (int i = maxLength - 1; i >= 0; i--)
                                     {
-                                        var row = new List<string>
-                    {
-                    SiraNo[siraNo],
-                    UretimTarihi[uretimTarihi],
-                    KontrolSaati[kontrolSaati],
-                    NumuneSeriNo[numuneSeriNo],
-                    Mudahale[mudahale],
-                    splitDataAciklama[dataAciklama],
-                    AmirOnayDurumu[amirOnayDurumu],
-                    splitDataValue[dataValue],
-                    splitDataValue2[dataValue2],
-                    splitDataValue3[dataValue3],
-                    splitDataValue4[dataValue4],
-                    splitDataValue5[dataValue5],
-                    splitDataValue6[dataValue6],
-                    splitDataValue7[dataValue7],
-                    splitDataValue8[dataValue8],
-                    splitDataValue9[dataValue9],
-                    splitDataValue10[dataValue10],
-                    splitDataValue11[dataValue11],
-                    splitDataValue12[dataValue12]
+                                        rowData.Add((
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        (
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                        (
+                                        i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                        i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                        i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty,
+                                        i < splitDataValue11.Length ? splitDataValue11[i] : string.Empty,
+                                        i < splitDataValue12.Length ? splitDataValue12[i] : string.Empty,
+                                        i < splitDataValue13.Length ? splitDataValue13[i] : string.Empty
 
-
-                    };
-
-                                        rowData.Add(row);
-                                        rowIndex++;
+                                        )
+                                        )
+                                        ));
                                     }
 
-                                    for (int i = 0; i < rowData.Count && i < 50; i++)
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    @foreach (var row in last50Rows)
                                     {
                                     <tr>
                                         <td>@Model.ResultSet[0].UrunId</td>
-                                        <td>@rowData[i][0]</td>
-                                        <td>@rowData[i][1]</td>
-                                        <td>@rowData[i][2]</td>
-                                        <td>@rowData[i][3]</td>
-                                        <td>@rowData[i][4]</td>
-                                        <td>@rowData[i][5]</td>
-                                        <td>@rowData[i][6]</td>
-                                        <td>@rowData[i][7]</td>
-                                        <td>@rowData[i][8]</td>
-                                        <td>@rowData[i][9]</td>
-                                        <td>@rowData[i][10]</td>
-                                        <td>@rowData[i][11]</td>
-                                        <td>@rowData[i][12]</td>
-                                        <td>@rowData[i][13]</td>
-                                        <td>@rowData[i][14]</td>
-                                        <td>@rowData[i][15]</td>
-                                        <td>@rowData[i][16]</td>
-                                        <td>@rowData[i][17]</td>
-                                        <td>@rowData[i][18]</td>
-
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
                                     </tr>
                                     }
+
+                                }
+                                else if (Model.ResultSet.Count == 14)
+                                {
+                                    var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string,string)))>();
+
+                                    var firstResult = Model.ResultSet[0];
+                                    var secondResult = Model.ResultSet[1];
+                                    var thirdResult = Model.ResultSet[2];
+                                    var fourthResult = Model.ResultSet[3];
+                                    var fifthResult = Model.ResultSet[4];
+                                    var sixresult = Model.ResultSet[5];
+                                    var sevenresult = Model.ResultSet[6];
+                                    var eightresult = Model.ResultSet[7];
+                                    var nineresult = Model.ResultSet[8];
+                                    var tenresult = Model.ResultSet[9];
+                                    var elevenresult = Model.ResultSet[10];
+                                    var twelveresult = Model.ResultSet[11];
+                                    var thirteenresult = Model.ResultSet[12];
+                                    var fourteenresult = Model.ResultSet[13];
+
+                                    var SiraNo = firstResult.SiraNo.Split('-');
+                                    var UretimTarihi = firstResult.UretimTarihi.Split('*');
+                                    var KontrolSaati = firstResult.KontrolSaati.Split('*');
+                                    var NumuneSeriNo = firstResult.NumuneSeriNoSarjNo.Split('-');
+                                    var Mudahale = firstResult.MudahaleVarmi.Split('-');
+                                    var splitDataAciklama = firstResult.Aciklama.Split('-');
+                                    var AmirOnayDurumu = firstResult.AmirOnayDurumu.Split('-');
+                                    var splitDataValue = firstResult.Value.Split('-');
+                                    var splitDataValue2 = secondResult.Value.Split('-');
+                                    var splitDataValue3 = thirdResult.Value.Split('-');
+                                    var splitDataValue4 = fourthResult.Value.Split('-');
+                                    var splitDataValue5 = fifthResult.Value.Split('-');
+                                    var splitDataValue6 = sixresult.Value.Split('-');
+                                    var splitDataValue7 = sevenresult.Value.Split('-');
+                                    var splitDataValue8 = eightresult.Value.Split('-');
+                                    var splitDataValue9 = nineresult.Value.Split('-');
+                                    var splitDataValue10 = tenresult.Value.Split('-');
+                                    var splitDataValue11 = elevenresult.Value.Split('-');
+                                    var splitDataValue12 = twelveresult.Value.Split('-');
+                                    var splitDataValue13 = thirteenresult.Value.Split('-');
+                                    var splitDataValue14 = fourteenresult.Value.Split('-');
+
+                                    int maxLength = new[] { SiraNo.Length, UretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length, splitDataValue11.Length, splitDataValue12.Length, splitDataValue13.Length, splitDataValue14.Length }.Max();
+
+                                    for (int i = maxLength - 1; i >= 0; i--)
+                                    {
+                                        rowData.Add((
+                                        i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                        i < UretimTarihi.Length ? UretimTarihi[i] : string.Empty,
+                                        i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                        i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                        i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                        i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                        i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                        (
+                                        i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                        i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                        i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                        i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                        i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                        i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                        i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                        (
+                                        i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                        i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                        i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty,
+                                        i < splitDataValue11.Length ? splitDataValue11[i] : string.Empty,
+                                        i < splitDataValue12.Length ? splitDataValue12[i] : string.Empty,
+                                        i < splitDataValue13.Length ? splitDataValue13[i] : string.Empty,
+                                        i < splitDataValue14.Length ? splitDataValue14[i] : string.Empty
+
+
+                                        )
+                                        )
+                                        ));
+                                    }
+
+                                    var last50Rows = rowData.TakeLast(50).ToList();
+
+                                    @foreach (var row in last50Rows)
+                                    {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].UrunId</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                        <td>@row.Item8.Item8.Item7</td>
+                                    </tr>
+                                    }
+
                                 }
                                 
                                         }
@@ -1782,6 +1425,7 @@
             }
 
         </div>
+
     </div>
     <script>
 
@@ -1792,7 +1436,7 @@
 
             var formattedDate = now.toISOString().slice(0, 16);
 
-            document.querySelector('[name="EklenmeTarihi"]').value = formattedDate;
+            document.querySelector('[name="OlusturmaTarihi"]').value = formattedDate;
         });
     </script>
     <script>
@@ -1918,7 +1562,7 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         alert('Numune ve Value ekleme işlemi başarıyla tamamlandı!');
-                        window.location.href = '/GetUpatamaKodlariByUrunID/Index';
+                        clearForm();
                     } else {
                         alert('Numune ve Value ekleme işleminde bir hata oluştu.Amirinize danışınız!');
                         window.location.href = '/GetUpatamaKodlariByUrunID/Index';

@@ -12,11 +12,26 @@
                 <form method="post">
                     <label>Ürün Grup Adı</label>
                     <input type="text" asp-for="UgrupAdi" class="form-control" />
-                    <br />
+                    <br />  
+                    <input type="hidden" class="form-control" asp-for="EklenmeGuncellenmeTarihi" />
                     <button class="btn btn-primary">Ürün Grubu Kaydet</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var now = new Date();
+
+        var formattedDate = now.toISOString().slice(0, 16);
+
+
+        document.querySelector('[name="EklenmeGuncellenmeTarihi"]').value = formattedDate;
+    });
+</script>
+
 

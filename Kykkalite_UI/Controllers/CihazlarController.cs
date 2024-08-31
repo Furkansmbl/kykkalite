@@ -30,7 +30,7 @@ namespace Kykkalite_UI.Controllers
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
-                var responseMessage = await client.GetAsync("https://localhost:44344/api/Cihazlar");
+                var responseMessage = await client.GetAsync("http://localhost:44344/api/Cihazlar");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -46,7 +46,7 @@ namespace Kykkalite_UI.Controllers
             var userId = _loginService.GetPersonelSicilNo;
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Fabrika");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
@@ -70,7 +70,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createCihazlarDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/Cihazlar", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/Cihazlar", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -83,7 +83,7 @@ namespace Kykkalite_UI.Controllers
             var userId = _loginService.GetPersonelSicilNo;
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/Fabrika/");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Fabrika/");
 
             var jsonData = await responseMessage.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<ResultFabrikalarDto>>(jsonData);
@@ -107,7 +107,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateCihazlarDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/Cihazlar/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/Cihazlar/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

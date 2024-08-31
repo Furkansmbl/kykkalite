@@ -16,7 +16,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/UrunGruplari");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/UrunGruplari");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -36,7 +36,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createUrunGruplari);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/UrunGruplari", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/UrunGruplari", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -47,7 +47,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> UpdateUrunGruplari(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:44344/api/UrunGruplari/{id}");
+            var responseMessage = await client.GetAsync($"http://localhost:44344/api/UrunGruplari/{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -62,7 +62,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateUrunGruplariDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/UrunGruplari/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/UrunGruplari/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

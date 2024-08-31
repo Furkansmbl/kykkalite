@@ -17,7 +17,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/HMPNvalue");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/HMPNvalue");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -30,7 +30,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> ExportToExcel()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:44344/api/HMPNvalue");
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/HMPNvalue");
             if (!responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -82,7 +82,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createHMPNvalue);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:44344/api/HMPNvalue", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/HMPNvalue", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -93,7 +93,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> UpdateHMPNvalue(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"https://localhost:44344/api/HMPNvalue/{id}");
+            var responseMessage = await client.GetAsync($"http://localhost:44344/api/HMPNvalue/{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -108,7 +108,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateHMPNvalueDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("https://localhost:44344/api/HMPNvalue/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/HMPNvalue/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

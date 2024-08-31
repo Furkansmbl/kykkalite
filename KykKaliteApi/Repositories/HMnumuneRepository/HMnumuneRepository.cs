@@ -19,19 +19,20 @@ namespace KykKaliteApi.Repositories.HMnumuneRepository
             string query = @"
        DECLARE @numuneID INT;
 
-INSERT INTO HMnumune(HammaddeID, SiraNo, Tarihi, Saat, IrsaliyeNo, MalzemeLotSeriNo, KYKBarkodNo, MalzemeUretimTarihi, MalzemeSKT, MalzemeMiktarı, MiktarBirimi,Aciklama,OnayDurumu,AmirOnayDurumu,EklenmeTarihi,PersonelSicilNo)
-VALUES (@hammaddeID, @siraNo, @tarihi, @saat, @irsaliyeNo, @malzemeLotSeriNo,@kYKBarkodNo, @malzemeUretimTarihi, @malzemeSKT, @malzemeMiktarı, @miktarBirimi, @aciklama, @onayDurumu, @amirOnayDurumu, @eklenmeTarihi, @personelSicilNo);
+INSERT INTO HMnumune(HammaddeID, SiraNo, Tarihi, Saat, IrsaliyeNo, MalzemeLotSeriNo, KYKBarkodNo, MalzemeUretimTarihi, MalzemeSKT, MalzemeMiktarı, MiktarBirimi,Aciklama,OnayDurumu,AmirOnayDurumu,OlusturmaTarihi,PersonelSicilNo)
+VALUES (@hammaddeID, @siraNo, @tarihi, @saat, @irsaliyeNo, @malzemeLotSeriNo,@kYKBarkodNo, @malzemeUretimTarihi, @malzemeSKT, @malzemeMiktarı, @miktarBirimi, @aciklama, @onayDurumu, @amirOnayDurumu, @olusturmaTarihi, @personelSicilNo);
 
 SET @numuneID = SCOPE_IDENTITY();
-INSERT INTO HMPNvalue(HMPAtamaKodu, NumuneID, Value, EklenmeTarihi, PersonelSicilNo)
-SELECT HMPAtamaKodu, @numuneID, v.[value], @eklenmeTarihi, @personelSicilNo
+INSERT INTO HMPNvalue(HMPAtamaKodu, NumuneID,Versiyon, Value, OlusturmaTarihi, PersonelSicilNo)
+SELECT HMPAtamaKodu, @numuneID, v.[value],@versiyon, @olusturmaTarihi, @personelSicilNo
 FROM (
-    SELECT hp.HMPAtamaKodu, ROW_NUMBER() OVER (ORDER BY hp.EklenmeTarihi) AS RowNum
+    SELECT hp.HMPAtamaKodu, ROW_NUMBER() OVER (ORDER BY hp.OlusturmaTarihi) AS RowNum
     FROM Hammaddeler AS h
-    INNER JOIN HMPatama AS hp ON h.HammaddeID = hp.HammaddeID AND KullanımDurumu = 1
+    INNER JOIN HMPatamaAktif AS hp ON h.HammaddeID = hp.HammaddeID 
     WHERE h.HammaddeID = @hammaddeID
 ) AS upWithRowNum
-JOIN (VALUES (@value1, 1), (@value2, 2), (@value3, 3)) AS v([value], RowNum) ON upWithRowNum.RowNum = v.RowNum;
+        JOIN (VALUES (@value1, 1), (@value2, 2), (@value3, 3), (@value4, 4), (@value5, 5), (@value6, 6), (@value7, 7), (@value8, 8), (@value9, 9), (@value10, 10), (@value11, 11), (@value12, 12), (@value13, 13),(@value14, 14), (@value15, 15)) AS v([value], RowNum) ON upWithRowNum.RowNum = v.RowNum;
+
     ";
             var parameters = new DynamicParameters();
             parameters.Add("@hammaddeId", createHMnumuneDto.HammaddeId);
@@ -46,14 +47,27 @@ JOIN (VALUES (@value1, 1), (@value2, 2), (@value3, 3)) AS v([value], RowNum) ON 
             parameters.Add("@malzemeMiktarı", createHMnumuneDto.MalzemeMiktarı);
             parameters.Add("@miktarBirimi", createHMnumuneDto.MiktarBirimi);
             parameters.Add("@aciklama", createHMnumuneDto.Aciklama);
-            parameters.Add("@onayDurumu", true);
-            parameters.Add("@amirOnayDurumu", true);
-            parameters.Add("@eklenmeTarihi", createHMnumuneDto.EklenmeTarihi);
+            parameters.Add("@onayDurumu", createHMnumuneDto.OnayDurumu);
+            parameters.Add("@amirOnayDurumu", createHMnumuneDto.AmirOnayDurumu);
+            parameters.Add("@olusturmaTarihi", createHMnumuneDto.OlusturmaTarihi);
+            parameters.Add("@versiyon", createHMnumuneDto.Versiyon);
             parameters.Add("@personelSicilNo", createHMnumuneDto.PersonelSicilNo);
             parameters.Add("@value", createHMnumuneDto.Value);
             parameters.Add("@value1", createHMnumuneDto.Value1);
             parameters.Add("@value2", createHMnumuneDto.Value2);
             parameters.Add("@value3", createHMnumuneDto.Value3);
+            parameters.Add("@value4", createHMnumuneDto.Value4);
+            parameters.Add("@value5", createHMnumuneDto.Value5);
+            parameters.Add("@value6", createHMnumuneDto.Value6);
+            parameters.Add("@value7", createHMnumuneDto.Value7);
+            parameters.Add("@value8", createHMnumuneDto.Value8);
+            parameters.Add("@value9", createHMnumuneDto.Value9);
+            parameters.Add("@value10", createHMnumuneDto.Value10);
+            parameters.Add("@value11", createHMnumuneDto.Value11);
+            parameters.Add("@value12", createHMnumuneDto.Value12);
+            parameters.Add("@value13", createHMnumuneDto.Value13);
+            parameters.Add("@value14", createHMnumuneDto.Value14);
+            parameters.Add("@value15", createHMnumuneDto.Value15);
             using (var connection = _context.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
@@ -97,7 +111,8 @@ JOIN (VALUES (@value1, 1), (@value2, 2), (@value3, 3)) AS v([value], RowNum) ON 
                         Aciklama = @aciklama,
                         AmirOnayDurumu = @amirOnayDurumu,
                         EklenmeTarihi = @eklenmeTarihi,
-                        PersonelSicilNo = @personelSicilNo
+                        PersonelSicilNo = @personelSicilNo,
+                        GuncellenmeTarihi = @guncellenmeTarihi
                      WHERE 
                         HammaddeId = @hammaddeId";
 
@@ -116,6 +131,7 @@ JOIN (VALUES (@value1, 1), (@value2, 2), (@value3, 3)) AS v([value], RowNum) ON 
             parameters.Add("@eklenmeTarihi", updateHMnumuneDto.EklenmeTarihi);
             parameters.Add("@personelSicilNo", updateHMnumuneDto.PersonelSicilNo);
             parameters.Add("@hammaddeId", updateHMnumuneDto.HammaddeId);
+            parameters.Add("@guncellenmeTarihi", updateHMnumuneDto.GuncellenmeTarihi);
 
             using (var connection = _context.CreateConnection())
             {

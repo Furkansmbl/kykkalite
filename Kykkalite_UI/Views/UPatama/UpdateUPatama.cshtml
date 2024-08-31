@@ -10,40 +10,43 @@
                 <h6 class="mb-4">Ürün Parametre Güncelleme Sayfası</h6>
                 <form method="post">
                     <label>UpaId</label>
-                    <input type="member" asp-for="UpaId" class="form-control" />
-                    <br />
-                    <label>ParametreKodu</label>
-                    <input type="text" asp-for="ParametreKodu" class="form-control" />
-                    <br />
-                    <label>UrunId</label>
-                    <input type="member" asp-for="UrunId" class="form-control" />
+                    <input type="text" asp-for="UpaId" class="form-control" />
                     <br />
                     <label>UpatamaKodu</label>
                     <input type="text" asp-for="UpatamaKodu" class="form-control" />
                     <br />
                     <label>ParametreKritiklikSeviyesi</label>
-                    <select asp-for="ParametreKritiklikSeviyesi" class="form-select">
-                        <option value="true">Aktif</option>
-                        <option value="false">Pasif</option>
-                    </select>
+                    <input type="text" asp-for="ParametreKritiklikSeviyesi" class="form-control" />
                     <br />
                     <label>KontrolDegeriNominal</label>
-                    <input type="number" step="any" asp-for="KontrolDegeriNominal" class="form-control" />
+                    <input type="text" asp-for="KontrolDegeriNominal" class="form-control" />
                     <br />
                     <label>AltOnaySiniri</label>
-                    <input type="number" step="any" asp-for="AltOnaySiniri" class="form-control" />
-                    <br />
+                    <input type="text" asp-for="AltOnaySiniri" class="form-control" />
+                    <br /> <br />
                     <label>UstOnaySiniri</label>
-                    <input type="number" step="any" asp-for="UstOnaySiniri" class="form-control" />
+                    <input type="text" asp-for="UstOnaySiniri" class="form-control" />
                     <br />
                     <label>AltSartliKabulSiniri</label>
-                    <input type="number" step="any" asp-for="AltSartliKabulSiniri" class="form-control" />
+                    <input type="text" asp-for="AltSartliKabulSiniri" class="form-control" />
                     <br />
                     <label>UstSartliKabulSiniri</label>
-                    <input type="number" step="any" asp-for="UstSartliKabulSiniri" class="form-control" />
+                    <input type="text" asp-for="UstSartliKabulSiniri" class="form-control" />
+                    <br />
+                    <label>ParametreYonu</label>
+                    <input type="text" asp-for="ParametreYonu" class="form-control" />
+                    <br />  
+                    <label>ParametreKodu</label>
+                    <input type="text" asp-for="ParametreKodu" class="form-control" />
+                    <br />
+                    <label>Tolerans</label>
+                    <input type="text" asp-for="Tolerans" class="form-control" />
+                    <br />
+                    <label>Versiyon</label>
+                    <input type="text" asp-for="Versiyon" class="form-control" />
                     <br />
                     <label>CihazId</label>
-                    <input type="member" asp-for="CihazId" class="form-control" />
+                    <input type="text" asp-for="CihazId" class="form-control" />
                     <br />
                     <label>ReferansDokuman</label>
                     <input type="text" asp-for="ReferansDokuman" class="form-control" />
@@ -51,18 +54,17 @@
                     <label>Aciklama</label>
                     <input type="text" asp-for="Aciklama" class="form-control" />
                     <br />
-                    <label>FabrikaId</label>
-                    <input type="member" asp-for="FabrikaId" class="form-control" />
+                    <label>OrneklemSikligi</label>
+                    <input type="text" asp-for="OrneklemSikligi" class="form-control" />
+                    <br />
+                    <label>OrneklemSiklikBirim</label>
+                    <input type="text" asp-for="OrneklemSiklikBirim" class="form-control" />
                     <br />
                     <label>PersonelSicilNo</label>
                     <input type="text" asp-for="PersonelSicilNo" class="form-control" />
-                    <input type="hidden" class="form-control" asp-for="EklenmeTarihi" />
                     <br />
-                    <label>KullanımDurumu</label>
-                    <select asp-for="KullanımDurumu" class="form-select">
-                        <option value="true">Aktif</option>
-                        <option value="false">Pasif</option>
-                    </select>
+                    <label>OlusturmaTarihi</label>
+                    <input type="text" asp-for="OlusturmaTarihi" class="form-control" />
                     <br />
                     <button class="btn btn-success">Ürün Parametre Güncelle</button>
                 </form>
@@ -72,34 +74,34 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var now = new Date();
-            var formattedDate = now.toISOString().slice(0, 16);
-            var eklenmeGuncellenmeTarihiInput = document.querySelector('[name="EklenmeTarihi"]');
-            if (eklenmeGuncellenmeTarihiInput) {
-                eklenmeGuncellenmeTarihiInput.value = formattedDate;
-            }
-
             const urlParams = new URLSearchParams(window.location.search);
-            var elementsToUpdate = [
-                { id: 'UPatamaKodu', param: 'UPatamaKodu' },
-                { id: 'KontrolDegeriNominal', param: 'KontrolDegeriNominal' },
-                { id: 'AltOnaySiniri', param: 'AltOnaySiniri' },
-                { id: 'UstOnaySiniri', param: 'UstOnaySiniri' },
-                { id: 'AltSartliKabulSiniri', param: 'AltSartliKabulSiniri' },
-                { id: 'UstSartliKabulSiniri', param: 'UstSartliKabulSiniri' },
-                { id: 'CihazId', param: 'CihazId' },
-                { id: 'ReferansDokuman', param: 'ReferansDokuman' },
-                { id: 'Aciklama', param: 'Aciklama' },
-                { id: 'OrneklemSikligi', param: 'OrneklemSikligi' },
-                { id: 'OrneklemSiklikBirim', param: 'OrneklemSiklikBirim' }
-            ];
+            document.querySelector('input[name="UpaId"]').value = urlParams.get('UpaId');
+            document.querySelector('input[name="UpatamaKodu"]').value = urlParams.get('UpatamaKodu');
+            document.querySelector('input[name="ParametreKritiklikSeviyesi"]').value = urlParams.get('ParametreKritiklikSeviyesi');
+            document.querySelector('input[name="KontrolDegeriNominal"]').value = urlParams.get('KontrolDegeriNominal');
+            document.querySelector('input[name="AltOnaySiniri"]').value = urlParams.get('AltOnaySiniri');
+            document.querySelector('input[name="UstOnaySiniri"]').value = urlParams.get('UstOnaySiniri');
+            document.querySelector('input[name="AltSartliKabulSiniri"]').value = urlParams.get('AltSartliKabulSiniri');
+            document.querySelector('input[name="UstSartliKabulSiniri"]').value = urlParams.get('UstSartliKabulSiniri');
+            document.querySelector('input[name="ParametreYonu"]').value = urlParams.get('ParametreYonu');
+            document.querySelector('input[name="Versiyon"]').value = urlParams.get('Versiyon');
+            document.querySelector('input[name="Tolerans"]').value = urlParams.get('Tolerans');
+            document.querySelector('input[name="CihazId"]').value = urlParams.get('CihazId');
+            document.querySelector('input[name="ReferansDokuman"]').value = urlParams.get('ReferansDokuman');
+            document.querySelector('input[name="Aciklama"]').value = urlParams.get('Aciklama');
+            document.querySelector('input[name="OrneklemSikligi"]').value = urlParams.get('OrneklemSikligi');
+            document.querySelector('input[name="PersonelSicilNo"]').value = urlParams.get('PersonelSicilNo');
+            document.querySelector('input[name="OrneklemSiklikBirim"]').value = urlParams.get('OrneklemSiklikBirim');
+            document.querySelector('input[name="OlusturmaTarihi"]').value = urlParams.get('OlusturmaTarihi');
+            document.querySelector('input[name="ParametreKodu"]').value = urlParams.get('ParametreKodu');
 
-            elementsToUpdate.forEach(function (element) {
-                var targetElement = document.getElementById(element.id);
-                if (targetElement) {
-                    targetElement.value = urlParams.get(element.param);
-                }
-            });
+            const toleransValue = parseFloat(urlParams.get('Versiyon'));
+            if (!isNaN(toleransValue)) {
+                document.querySelector('input[name="Versiyon"]').value = toleransValue + 1;
+            } else {
+                document.querySelector('input[name="Versiyon"]').value = '';
+            }
         });
     </script>
 
+</div>

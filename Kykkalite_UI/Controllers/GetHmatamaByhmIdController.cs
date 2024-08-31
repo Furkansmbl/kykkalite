@@ -1,6 +1,10 @@
-﻿using Kykkalite_UI.Dtos.GetHmatamaByHmıdDtos;
+﻿using Kykkalite_UI.Dtos.HammaddelerDtos;
+using Kykkalite_UI.Dtos.GetHmatamaByHmıdDtos;
+
 using Kykkalite_UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace Kykkalite_UI.Controllers
 {
@@ -15,13 +19,29 @@ namespace Kykkalite_UI.Controllers
             _loginService = loginService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
+            ViewBag.v = await GetProductDescription();
             ViewBag.PersonelSicilNo = personelSicilNo;
 
             return View();
+        }
+        private async Task<List<SelectListItem>> GetProductDescription()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/Hammaddeler");
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultHammaddelerDto>>(jsonData);
+            var urunGrupValues = values.Select(x => new SelectListItem
+            {
+                Text = x.MalzemeAciklamasi,
+                Value = x.MalzemeAciklamasi,
+            }).ToList();
+            return urunGrupValues;
         }
         public class QueryViewModel
         {
@@ -33,7 +53,9 @@ namespace Kykkalite_UI.Controllers
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
+            
             ViewBag.PersonelSicilNo = personelSicilNo;
+            ViewBag.v = await GetProductDescription();
 
             if (token != null)
             {
@@ -41,7 +63,7 @@ namespace Kykkalite_UI.Controllers
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
                 var encodedMalzemeAciklamasi = Uri.EscapeDataString(MalzemeAciklamasi);
 
-                var response = await client.GetAsync($"https://localhost:44344/api/GetHmpatamaByhmid?malzemeaciklamasi={encodedMalzemeAciklamasi}");
+                var response = await client.GetAsync($"http://localhost:44344/api/GetHmpatamaByhmid?MalzemeAciklamasi={encodedMalzemeAciklamasi}");
 
                 if (response.IsSuccessStatusCode)
                 {
