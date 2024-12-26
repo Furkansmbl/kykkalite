@@ -1,0 +1,38 @@
+﻿@model List<ResultHammaddeGruplariDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde Gruplari</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">HammaddeGrupId</th>
+                                <th scope="col">HmgrupAdi</th>
+                                <th scope="col">Güncelle</tvdxh>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.HammaddeGrupId</th>
+                                    <td>@item.HmgrupAdi</td>
+                                    <td><a href="/HammaddeGruplari/UpdateHammaddeGruplari/" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/HammaddeGruplari/CreateHammaddeGruplari/" class="btn btn-outline-info">Yeni Hammadde Grubu Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

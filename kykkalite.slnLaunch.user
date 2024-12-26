@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Yeni Profil",
+    "Projects": [
+      {
+        "Name": "Kykkalite_UI\\Kykkalite_UI.csproj",
+        "Action": "Start"
+      },
+      {
+        "Name": "KykKaliteApi\\KykKaliteApi.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

@@ -1,0 +1,43 @@
+﻿@model List<ResultUrunlerDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Ürünler</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        </td><a href="/Urunler/UpdateUrunler/" class="btn btn-outline-success">Güncelle</a>
+                        </td> <a href="/Urunler/CreateUrunler/" class="btn btn-outline-info">Ürün ekle </a>
+                            <tr>
+                                <th scope="col">UrunId</th>
+                                <th scope="col">UrunGrupId</th>
+                                <th scope="col">MalzemeKodu</th>
+                                <th scope="col">MalzemeAciklamasi</th>
+                                <th scope="col">PersonelSicilNo</th>
+                            </tr> 
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.UrunId</th>
+                                    <td>@item.UrunGrupId</td>
+                                    <td>@item.MalzemeKodu</td>
+                                    <td>@item.MalzemeAciklamasi</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

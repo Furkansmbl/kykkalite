@@ -1,0 +1,53 @@
+﻿@model CreateUnumuneDto
+@{
+    ViewData["Title"] = "CreateUnumune";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Yeni Ürün Numune Ekleme Sayfası</h6>
+                <form method="post">
+                    <label>UrunId</label>
+                    <input type="text" asp-for="UrunId" class="form-control" />
+                    <br />
+                    <label>SiraNo</label>
+                    <input type="text" asp-for="SiraNo" class="form-control" />
+                    <br />
+                    <label>UretimTarihi</label>
+                    <input type="text" asp-for="UretimTarihi" class="form-control" />
+                    <br />
+                    <label>NumuneSeriNoSarjNo</label>
+                    <input type="text" asp-for="NumuneSeriNoSarjNo" class="form-control" />
+                    <br />
+                    <label>MudahaleVarmi</label>
+                    <input type="text" asp-for="MudahaleVarmi" class="form-control" />
+                    <br />
+                    <label>Aciklama</label>
+                    <input type="text" asp-for="Aciklama" class="form-control" />
+                    <br />
+                     <label>OnayDurumu</label>
+                    <input type="text" asp-for="OnayDurumu" class="form-control" />
+                    <br />
+                    <label>AmirOnayDurumu</label>
+                    <input type="text" asp-for="AmirOnayDurumu" class="form-control" />
+                    <br /> 
+                    <label>EklenmeTarihi</label>
+                    <input type="text" asp-for="EklenmeTarihi" class="form-control" />
+                    <br /> 
+                    <label>PersonelSicilNo</label>
+                     <input type="text" asp-for="PersonelSicilNo" class="form-control" />
+                    <br />
+                    <button class="btn btn-primary">Ürün Numuneyi Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div
+
+
+
+

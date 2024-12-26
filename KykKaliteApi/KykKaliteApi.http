@@ -1,0 +1,6 @@
+@KykKaliteApi_HostAddress = http://localhost:5185
+
+GET {{KykKaliteApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

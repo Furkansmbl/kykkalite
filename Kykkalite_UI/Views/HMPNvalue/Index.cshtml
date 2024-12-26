@@ -1,0 +1,47 @@
+﻿@model List<ResultHMPNvalueDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde Değer</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">HmpnvalueId</th>
+                                <th scope="col">HmpatamaKodu</th>
+                                <th scope="col">NumuneId</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">EklenmeTarihi</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.HmpnvalueId</th>
+                                    <td>@item.HmpatamaKodu</td>
+                                    <td>@item.NumuneId</td>
+                                    <td>@item.Value</td>
+                                    <td>@item.EklenmeTarihi</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td><a href="/HMPNvalue/UpdateHMPNvalue/" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/HMPNvalue/CreateHMPNvalue/" class="btn btn-outline-info">Yeni Hammadde Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

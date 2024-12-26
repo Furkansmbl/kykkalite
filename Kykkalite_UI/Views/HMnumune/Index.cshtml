@@ -1,0 +1,65 @@
+﻿@model List<ResultHMnumuneDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammadde Numune</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+
+                            <tr>
+                                <th scope="col">NumuneId</th>
+                                <th scope="col">HammaddeId</th>
+                                <th scope="col">SiraNo</th>
+                                <th scope="col">Tarihi</th>
+                                <th scope="col">IrsaliyeNo</th>
+                                <th scope="col">MalzemeLotSeriNo</th>
+                                <th scope="col">KykbarkodNo</th>
+                                <th scope="col">MalzemeUretimTarihi</th>
+                                <th scope="col">MalzemeSkt</th>
+                                <th scope="col">MalzemeMiktarı</th>
+                                <th scope="col">MiktarBirimi</th>
+                                <th scope="col">Aciklama</th>
+                                <th scope="col">OnayDurumu</th>
+                                <th scope="col">AmirOnayDurumu</th>
+                                <th scope="col">EklenmeTarihi</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.NumuneId</th>
+                                    <td>@item.HammaddeId</td>
+                                    <td>@item.SiraNo</td>
+                                    <td>@item.Tarihi</td>
+                                    <td>@item.IrsaliyeNo</td>
+                                    <td>@item.MalzemeLotSeriNo</td>
+                                    <td>@item.KykbarkodNo</td>
+                                    <td>@item.MalzemeUretimTarihi</td>
+                                    <td>@item.MalzemeSkt</td>
+                                    <td>@item.MalzemeMiktarı</td>
+                                    <td>@item.MiktarBirimi</td>
+                                    <td>@item.Aciklama</td>
+                                    <td>@item.OnayDurumu</td>
+                                    <td>@item.AmirOnayDurumu</td>
+                                    <td>@item.EklenmeTarihi</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td><a href="/HMnumune/UpdateHMnumune/" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/HMnumune/CreateHMnumune/" class="btn btn-outline-info">Yeni Hammadde Numune giriş</a>
+                </div>
+            </div>
+        </div>
+    </div>

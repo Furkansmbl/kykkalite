@@ -1,0 +1,50 @@
+﻿@model List<ResultParametreDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Parametreler</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <a href="/Parametreler/CreateParametreler/" class="btn btn-outline-info">Yeni Parametre Girişi</a>
+                            <tr>
+                                <th scope="col">ParametreKodu</th>
+                                <th scope="col">KontrolParametresi</th>
+                                <th scope="col">ParametreTipiOlcmeGozlem</th>
+                                <th scope="col">Birimi</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">EklenmeGuncellenmeTarihi</th>
+                                <th scope="col">KullanımDurumu</th>
+                                <th scope="col">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.ParametreKodu</th>
+                                    <td>@item.KontrolParametresi</td>
+                                    <th scope="row">@item.ParametreTipiOlcmeGozlem</th>
+                                    <th scope="row">@item.Birimi</th>
+                                    <th scope="row">@item.PersonelSicilNo</th>
+                                    <th scope="row">@item.EklenmeGuncellenmeTarihi</th>
+                                    <th scope="col">@item.KullanimDurumu</th>
+
+                                    <td><a href="#" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

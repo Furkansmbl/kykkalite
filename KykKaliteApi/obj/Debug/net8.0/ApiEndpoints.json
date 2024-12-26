@@ -1,0 +1,780 @@
+[
+  {
+    "ContainingType": "KykKaliteApi.Controllers.CihazlarController",
+    "Method": "CihazlarList",
+    "RelativePath": "api/Cihazlar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.CihazlarController",
+    "Method": "CreateCihazlar",
+    "RelativePath": "api/Cihazlar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createCihazlarDto",
+        "Type": "KykKaliteApi.Dtos.CihazlarDtos.CreateCihazlarDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.CihazlarController",
+    "Method": "DeleteCihazlar",
+    "RelativePath": "api/Cihazlar/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.CihazlarController",
+    "Method": "GetCihazlar",
+    "RelativePath": "api/Cihazlar/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.FabrikaController",
+    "Method": "FabrikalarList",
+    "RelativePath": "api/Fabrika",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.FabrikaController",
+    "Method": "CreateFabrika",
+    "RelativePath": "api/Fabrika",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createFabrikaDTO",
+        "Type": "KykKaliteApi.Dtos.FabrikalarDtos.CreateFabrikaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.FabrikaController",
+    "Method": "Updatefabrika",
+    "RelativePath": "api/Fabrika",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateFabrikaDto",
+        "Type": "KykKaliteApi.Dtos.FabrikalarDtos.UpdateFabrikaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.FabrikaController",
+    "Method": "DeleteFabrika",
+    "RelativePath": "api/Fabrika/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HammaddeGruplariController",
+    "Method": "HammaddeGruplariList",
+    "RelativePath": "api/HammaddeGruplari",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HammaddeGruplariController",
+    "Method": "CreateHammaddeGruplari",
+    "RelativePath": "api/HammaddeGruplari",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createHammaddeGruplariDto",
+        "Type": "KykKaliteApi.Dtos.HammaddeGruplariDtos.CreateHammaddeGruplariDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HammaddeGruplariController",
+    "Method": "UpdateHammaddeGruplari",
+    "RelativePath": "api/HammaddeGruplari",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateHammaddeGruplariDto",
+        "Type": "KykKaliteApi.Dtos.HammaddeGruplariDtos.UpdateHammaddeGruplariDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HammaddelerController",
+    "Method": "HammaddelerList",
+    "RelativePath": "api/Hammaddeler",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HammaddelerController",
+    "Method": "UpdateHammaddeler",
+    "RelativePath": "api/Hammaddeler",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateHammaddelerDto",
+        "Type": "KykKaliteApi.Dtos.HammaddelerDtos.UpdateHammaddelerDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMnumuneController",
+    "Method": "HMnumuneList",
+    "RelativePath": "api/HMnumune",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMnumuneController",
+    "Method": "CreateHMnumune",
+    "RelativePath": "api/HMnumune",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createHMnumuneDto",
+        "Type": "KykKaliteApi.Dtos.HMnumuneDtos.CreateHMnumuneDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMnumuneController",
+    "Method": "DeleteHMnumune",
+    "RelativePath": "api/HMnumune/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMPatamaController",
+    "Method": "HMPatamaList",
+    "RelativePath": "api/HMPatama",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMPatamaController",
+    "Method": "CreateHMPatama",
+    "RelativePath": "api/HMPatama",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createHMPatamaDto",
+        "Type": "KykKaliteApi.Dtos.HMPatamaDtos.CreateHMPatamaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMPatamaController",
+    "Method": "UpdateHMPatama",
+    "RelativePath": "api/HMPatama",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateHMPatamaDto",
+        "Type": "KykKaliteApi.Dtos.HMPatamaDtos.UpdateHMPatamaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMPNvalueController",
+    "Method": "HMPNvalueList",
+    "RelativePath": "api/HMPNvalue",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMPNvalueController",
+    "Method": "CreateHMPNvalue",
+    "RelativePath": "api/HMPNvalue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createHMPNvalueDto",
+        "Type": "KykKaliteApi.Dtos.HMPNvalueDtos.CreateHMPNvalueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMPNvalueController",
+    "Method": "UpdateHMPNvalue",
+    "RelativePath": "api/HMPNvalue",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateHMPNvalueDto",
+        "Type": "KykKaliteApi.Dtos.HMPNvalueDtos.UpdateHMPNvalueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.HMPNvalueController",
+    "Method": "DeleteHMPNValue",
+    "RelativePath": "api/HMPNvalue/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.KullaniciController",
+    "Method": "KullaniciList",
+    "RelativePath": "api/Kullanici",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.KullaniciController",
+    "Method": "CreateKullanici",
+    "RelativePath": "api/Kullanici",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createKullaniciDto",
+        "Type": "KykKaliteApi.Dtos.KullaniciDtos.CreateKullaniciDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.KullaniciController",
+    "Method": "DeleteKullanici",
+    "RelativePath": "api/Kullanici/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.LoginController",
+    "Method": "SignIn",
+    "RelativePath": "api/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createLoginDto",
+        "Type": "KykKaliteApi.Dtos.LoginDtos.CreateLoginDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.NewwController",
+    "Method": "NewList",
+    "RelativePath": "api/Neww",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.ParametrelerController",
+    "Method": "ParametrelerList",
+    "RelativePath": "api/Parametreler",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.ParametrelerController",
+    "Method": "CreateParametreler",
+    "RelativePath": "api/Parametreler",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createParametrelerDto",
+        "Type": "KykKaliteApi.Dtos.ParametrelerDtos.CreateParametrelerDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.ParametrelerController",
+    "Method": "DeleteParametreler",
+    "RelativePath": "api/Parametreler/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UnumuneController",
+    "Method": "UnumuneList",
+    "RelativePath": "api/Unumune",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UnumuneController",
+    "Method": "CreateUnumune",
+    "RelativePath": "api/Unumune",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createUnumuneDto",
+        "Type": "KykKaliteApi.Dtos.UnumuneDtos.CreateUnumuneDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UnumuneController",
+    "Method": "UpdateUnumune",
+    "RelativePath": "api/Unumune",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateUnumuneDto",
+        "Type": "KykKaliteApi.Dtos.UnumuneDtos.UpdateUnumuneDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UnumuneController",
+    "Method": "DeleteUnumune",
+    "RelativePath": "api/Unumune/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UPatamaController",
+    "Method": "UPatamaList",
+    "RelativePath": "api/UPatama",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UPatamaController",
+    "Method": "CreateUPatama",
+    "RelativePath": "api/UPatama",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createUPatamaDto",
+        "Type": "KykKaliteApi.Dtos.UPatamaDtos.CreateUPatamaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UPatamaController",
+    "Method": "UpdateUPatama",
+    "RelativePath": "api/UPatama",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateUPatamaDto",
+        "Type": "KykKaliteApi.Dtos.UPatamaDtos.UpdateUPatamaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UPatamaController",
+    "Method": "DeleteUPatama",
+    "RelativePath": "api/UPatama/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UPNvalueController",
+    "Method": "UPNvalueList",
+    "RelativePath": "api/UPNvalue",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UPNvalueController",
+    "Method": "CreateUPNvalue",
+    "RelativePath": "api/UPNvalue",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createUPNvalueDto",
+        "Type": "KykKaliteApi.Dtos.UPNvalueDtos.CreateUPNvalueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UPNvalueController",
+    "Method": "UpdateUPNvalue",
+    "RelativePath": "api/UPNvalue",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateUPNvalueDto",
+        "Type": "KykKaliteApi.Dtos.UPNvalueDtos.UpdateUPNvalueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UretimHatlariController",
+    "Method": "UretimHatlarList",
+    "RelativePath": "api/UretimHatlari",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UretimHatlariController",
+    "Method": "CreateUrunHatlari",
+    "RelativePath": "api/UretimHatlari",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createUretimHatlariDto",
+        "Type": "KykKaliteApi.Dtos.UretimHatlariDtos.CreateUretimHatlariDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UretimHatlariController",
+    "Method": "UpdateUrunHatlari",
+    "RelativePath": "api/UretimHatlari",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateUretimHatlariDto",
+        "Type": "KykKaliteApi.Dtos.UretimHatlariDtos.UpdateUretimHatlariDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UretimHatlariController",
+    "Method": "DeleteUretimHatlari",
+    "RelativePath": "api/UretimHatlari/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunGruplariController",
+    "Method": "UrunGruplariList",
+    "RelativePath": "api/UrunGruplari",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunGruplariController",
+    "Method": "UpdateUrunGruplari",
+    "RelativePath": "api/UrunGruplari",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateUrunGruplariDto",
+        "Type": "KykKaliteApi.Dtos.UrunGruplariDtos.UpdateUrunGruplariDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunGruplariController",
+    "Method": "CreateUrunGruplari",
+    "RelativePath": "api/UrunGruplari",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createUrunGruplariDto",
+        "Type": "KykKaliteApi.Dtos.UrunGruplariDtos.CreateUrunGruplariDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunGruplariController",
+    "Method": "DeleteUrunGruplari",
+    "RelativePath": "api/UrunGruplari/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunlerController",
+    "Method": "UrunlerList",
+    "RelativePath": "api/Urunler",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunlerController",
+    "Method": "UpdateUrunler",
+    "RelativePath": "api/Urunler",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "updateUrunlerDto",
+        "Type": "KykKaliteApi.Dtos.UrunlerDtos.UpdateUrunlerDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunlerController",
+    "Method": "CreateUrunler",
+    "RelativePath": "api/Urunler",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "createUrunlerDto",
+        "Type": "KykKaliteApi.Dtos.UrunlerDtos.CreateUrunlerDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "KykKaliteApi.Controllers.UrunlerController",
+    "Method": "GetUpatamaKodlariByUrunIDA",
+    "RelativePath": "api/Urunler/{urunId,malzemeAciklamasi}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "urunId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "malzemeAciklamasi",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "urunId,malzemeAciklamasi",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

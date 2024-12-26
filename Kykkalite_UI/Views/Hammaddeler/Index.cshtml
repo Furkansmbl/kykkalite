@@ -1,0 +1,46 @@
+﻿@model List<ResultHammaddelerDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Hammaddeler</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">HammaddeId</th>
+                                <th scope="col">HammaddeGrupId</th>
+                                <th scope="col">MalzemeKodu</th>
+                                <th scope="col">MalzemeAciklamasi</th>
+                                <th scope="col">PersonelSicilNo</th>
+                                <th scope="col">EklenmeGuncellenmeTarihi</th>
+                                <th scope="col">KullanımDurumu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.HammaddeId</th>
+                                    <td>@item.HammaddeGrupId</td>
+                                    <td>@item.MalzemeKodu</td>
+                                    <td>@item.MalzemeAciklamasi</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td>@item.EklenmeGuncellenmeTarihi</td>
+                                    <td>@item.KullanımDurumu</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/Hammaddeler/CreateHammaddeler/" class="btn btn-outline-info">Yeni Hammadde Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

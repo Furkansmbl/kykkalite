@@ -1,0 +1,186 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\user\\Desktop\\kykkalite\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkalite_ui\\dtos\\getupatamakodlaribyuruniddtos\\resultgetupatamakodlaribyuruniddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|solutionrelative:kykkalite_ui\\dtos\\getupatamakodlaribyuruniddtos\\resultgetupatamakodlaribyuruniddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkalite_ui\\views\\getupatamakodlaribyurunid\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|solutionrelative:kykkalite_ui\\views\\getupatamakodlaribyurunid\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkaliteapi\\controllers\\getupatamakodlaribyurunidcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|solutionrelative:kykkaliteapi\\controllers\\getupatamakodlaribyurunidcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkaliteapi\\controllers\\cihazlarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|solutionrelative:kykkaliteapi\\controllers\\cihazlarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkaliteapi\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|solutionrelative:kykkaliteapi\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkalite_ui\\views\\login\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|solutionrelative:kykkalite_ui\\views\\login\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkaliteapi\\dtos\\logindtos\\createlogindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|solutionrelative:kykkaliteapi\\dtos\\logindtos\\createlogindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkaliteapi\\repositories\\getupatamakodlaribyurunidrepository\\getupatamakodlaribyurunidrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|solutionrelative:kykkaliteapi\\repositories\\getupatamakodlaribyurunidrepository\\getupatamakodlaribyurunidrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkaliteapi\\repositories\\getupatamakodlaribyurunidrepository\\igetupatamakodlaribyurunidrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7754DB8-1123-46FF-890D-F6DA25EB9C16}|KykKaliteApi\\KykKaliteApi.csproj|solutionrelative:kykkaliteapi\\repositories\\getupatamakodlaribyurunidrepository\\igetupatamakodlaribyurunidrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|c:\\users\\user\\desktop\\kykkalite\\kykkalite_ui\\controllers\\getupatamakodlaribyurunidcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BB322EF6-EE8E-4D0F-B752-CA12180D59D9}|Kykkalite_UI\\Kykkalite_UI.csproj|solutionrelative:kykkalite_ui\\controllers\\getupatamakodlaribyurunidcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ResultGetUpatamaKodlariByUrunIDDto.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Dtos\\GetUpatamaKodlariByUrunIDDtos\\ResultGetUpatamaKodlariByUrunIDDto.cs",
+              "RelativeDocumentMoniker": "Kykkalite_UI\\Dtos\\GetUpatamaKodlariByUrunIDDtos\\ResultGetUpatamaKodlariByUrunIDDto.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Dtos\\GetUpatamaKodlariByUrunIDDtos\\ResultGetUpatamaKodlariByUrunIDDto.cs",
+              "RelativeToolTip": "Kykkalite_UI\\Dtos\\GetUpatamaKodlariByUrunIDDtos\\ResultGetUpatamaKodlariByUrunIDDto.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-07T07:58:39.675Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CihazlarController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Controllers\\CihazlarController.cs",
+              "RelativeDocumentMoniker": "KykKaliteApi\\Controllers\\CihazlarController.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Controllers\\CihazlarController.cs",
+              "RelativeToolTip": "KykKaliteApi\\Controllers\\CihazlarController.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAQwBkAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-02T08:20:20.967Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Views\\GetUpatamaKodlariByUrunID\\Index.cshtml",
+              "RelativeDocumentMoniker": "Kykkalite_UI\\Views\\GetUpatamaKodlariByUrunID\\Index.cshtml",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Views\\GetUpatamaKodlariByUrunID\\Index.cshtml",
+              "RelativeToolTip": "Kykkalite_UI\\Views\\GetUpatamaKodlariByUrunID\\Index.cshtml",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAAA4AAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-05-01T11:09:41.865Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IGetUpatamaKodlariByUrunIDRepository.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\IGetUpatamaKodlariByUrunIDRepository.cs",
+              "RelativeDocumentMoniker": "KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\IGetUpatamaKodlariByUrunIDRepository.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\IGetUpatamaKodlariByUrunIDRepository.cs",
+              "RelativeToolTip": "KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\IGetUpatamaKodlariByUrunIDRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-01T12:03:04.291Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GetUpatamaKodlariByUrunIDController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "RelativeDocumentMoniker": "Kykkalite_UI\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "RelativeToolTip": "Kykkalite_UI\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-01T11:09:47.208Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GetUpatamaKodlariByUrunIDController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "RelativeDocumentMoniker": "KykKaliteApi\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "RelativeToolTip": "KykKaliteApi\\Controllers\\GetUpatamaKodlariByUrunIDController.cs",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAuwBIAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-01T11:09:36.103Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Views\\Login\\Index.cshtml",
+              "RelativeDocumentMoniker": "Kykkalite_UI\\Views\\Login\\Index.cshtml",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\Kykkalite_UI\\Views\\Login\\Index.cshtml",
+              "RelativeToolTip": "Kykkalite_UI\\Views\\Login\\Index.cshtml",
+              "ViewState": "AQIAACEAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-05-01T12:03:58.458Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CreateLoginDto.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Dtos\\LoginDtos\\CreateLoginDto.cs",
+              "RelativeDocumentMoniker": "KykKaliteApi\\Dtos\\LoginDtos\\CreateLoginDto.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Dtos\\LoginDtos\\CreateLoginDto.cs",
+              "RelativeToolTip": "KykKaliteApi\\Dtos\\LoginDtos\\CreateLoginDto.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-01T12:04:08.151Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "LoginController.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Controllers\\LoginController.cs",
+              "RelativeDocumentMoniker": "KykKaliteApi\\Controllers\\LoginController.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Controllers\\LoginController.cs",
+              "RelativeToolTip": "KykKaliteApi\\Controllers\\LoginController.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAAwBsAAABqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-01T12:04:14.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "GetUpatamaKodlariByUrunIDRepository.cs",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\GetUpatamaKodlariByUrunIDRepository.cs",
+              "RelativeDocumentMoniker": "KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\GetUpatamaKodlariByUrunIDRepository.cs",
+              "ToolTip": "C:\\Users\\user\\Desktop\\kykkalite\\KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\GetUpatamaKodlariByUrunIDRepository.cs",
+              "RelativeToolTip": "KykKaliteApi\\Repositories\\GetUpatamaKodlariByUrunIDRepository\\GetUpatamaKodlariByUrunIDRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAwA8AAABuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-01T11:09:14.095Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

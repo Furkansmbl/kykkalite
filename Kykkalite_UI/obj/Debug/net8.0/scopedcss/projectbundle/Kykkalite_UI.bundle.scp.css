@@ -1,0 +1,49 @@
+/* _content/Kykkalite_UI/Views/Shared/_Layout.cshtml.rz.scp.css */
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand[b-cwwdtw1xyk] {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+a[b-cwwdtw1xyk] {
+  color: #0077cc;
+}
+
+.btn-primary[b-cwwdtw1xyk] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active[b-cwwdtw1xyk], .nav-pills .show > .nav-link[b-cwwdtw1xyk] {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.border-top[b-cwwdtw1xyk] {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom[b-cwwdtw1xyk] {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow[b-cwwdtw1xyk] {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy[b-cwwdtw1xyk] {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer[b-cwwdtw1xyk] {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}

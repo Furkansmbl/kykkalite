@@ -1,0 +1,275 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Kykkalite_UI
+build_property.RootNamespace = Kykkalite_UI
+build_property.ProjectDir = C:\Users\user\Desktop\kykkalite\Kykkalite_UI\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\user\Desktop\kykkalite\Kykkalite_UI
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Admin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Cihazlar/CreateCihazlar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2loYXpsYXJcQ3JlYXRlQ2loYXpsYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Cihazlar/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2loYXpsYXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Cihazlar/UpdateCihazlar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2loYXpsYXJcVXBkYXRlQ2loYXpsYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Fabrikalar/CreateFabrikalar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmFicmlrYWxhclxDcmVhdGVGYWJyaWthbGFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Fabrikalar/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmFicmlrYWxhclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Fabrikalar/UpdateFabrikalar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmFicmlrYWxhclxVcGRhdGVGYWJyaWthbGFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/GetUpatamaKodlariByUrunID/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2V0VXBhdGFtYUtvZGxhcmlCeVVydW5JRFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HammaddeGruplari/CreateHammaddeGruplari.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFtbWFkZGVHcnVwbGFyaVxDcmVhdGVIYW1tYWRkZUdydXBsYXJpLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HammaddeGruplari/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFtbWFkZGVHcnVwbGFyaVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HammaddeGruplari/UpdateHammaddeGruplari.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFtbWFkZGVHcnVwbGFyaVxVcGRhdGVIYW1tYWRkZUdydXBsYXJpLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Hammaddeler/CreateHammaddeler.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFtbWFkZGVsZXJcQ3JlYXRlSGFtbWFkZGVsZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Hammaddeler/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFtbWFkZGVsZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Hammaddeler/UpdateHammaddeler.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFtbWFkZGVsZXJcVXBkYXRlSGFtbWFkZGVsZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMnumune/CreateHMnumune.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1udW11bmVcQ3JlYXRlSE1udW11bmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMnumune/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1udW11bmVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMnumune/UpdateHMnumune.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1udW11bmVcVXBkYXRlSE1udW11bmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMPatama/CreateHMPatama.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1QYXRhbWFcQ3JlYXRlSE1QYXRhbWEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMPatama/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1QYXRhbWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMPatama/UpdateHMPatama.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1QYXRhbWFcVXBkYXRlSE1QYXRhbWEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMPNvalue/CreateHMPNvalue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1QTnZhbHVlXENyZWF0ZUhNUE52YWx1ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMPNvalue/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1QTnZhbHVlXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/HMPNvalue/UpdateHMPNvalue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSE1QTnZhbHVlXFVwZGF0ZUhNUE52YWx1ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Login/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/New/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmV3XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/New/NewController.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmV3XE5ld0NvbnRyb2xsZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Parametreler/CreateParametreler.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJlbGVyXENyZWF0ZVBhcmFtZXRyZWxlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Parametreler/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJlbGVyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Profile/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/Components/_AdminLayoutFooterComponentPartial/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcX0FkbWluTGF5b3V0Rm9vdGVyQ29tcG9uZW50UGFydGlhbFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/Components/_adminLayoutHeadComponentPartial/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcX2FkbWluTGF5b3V0SGVhZENvbXBvbmVudFBhcnRpYWxcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/Components/_AdminLayoutNavbarComponentPartial/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcX0FkbWluTGF5b3V0TmF2YmFyQ29tcG9uZW50UGFydGlhbFxEZWZhdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/Components/_AdminLayoutScriptsComponentPartial/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcX0FkbWluTGF5b3V0U2NyaXB0c0NvbXBvbmVudFBhcnRpYWxcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/Components/_AdminLayoutSidebarComponentPartial/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcX0FkbWluTGF5b3V0U2lkZWJhckNvbXBvbmVudFBhcnRpYWxcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/Components/_AdminLayoutSpinnerComponentPartial/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcX0FkbWluTGF5b3V0U3Bpbm5lckNvbXBvbmVudFBhcnRpYWxcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/_DefaultLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9EZWZhdWx0TGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/_UserLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Vc2VyTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Unumune/CreateUnumune.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW51bXVuZVxDcmVhdGVVbnVtdW5lLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Unumune/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW51bXVuZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Unumune/UpdateUnumune.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW51bXVuZVxVcGRhdGVVbnVtdW5lLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UPatama/CreateUPatama.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVVBhdGFtYVxDcmVhdGVVUGF0YW1hLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UPatama/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVVBhdGFtYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UPatama/UpdateUPatama.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVVBhdGFtYVxVcGRhdGVVUGF0YW1hLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UPNvalue/CreateUPNvalue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVVBOdmFsdWVcQ3JlYXRlVVBOdmFsdWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UPNvalue/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVVBOdmFsdWVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UPNvalue/UpdateUPNvalue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVVBOdmFsdWVcVXBkYXRlVVBOdmFsdWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UretimHatlari/CreateUretimHatlari.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJldGltSGF0bGFyaVxDcmVhdGVVcmV0aW1IYXRsYXJpLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UretimHatlari/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJldGltSGF0bGFyaVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UretimHatlari/UpdateUretimHatlari.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJldGltSGF0bGFyaVxVcGRhdGVVcmV0aW1IYXRsYXJpLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UrunGruplari/CreateUrunGruplari.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJ1bkdydXBsYXJpXENyZWF0ZVVydW5HcnVwbGFyaS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UrunGruplari/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJ1bkdydXBsYXJpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/UrunGruplari/UpdateUrunGruplari.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJ1bkdydXBsYXJpXFVwZGF0ZVVydW5HcnVwbGFyaS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Urunler/CreateUrunler.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJ1bmxlclxDcmVhdGVVcnVubGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Urunler/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJ1bmxlclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Urunler/UpdateUrunler.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJ1bmxlclxVcGRhdGVVcnVubGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/Desktop/kykkalite/Kykkalite_UI/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-cwwdtw1xyk

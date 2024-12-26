@@ -1,0 +1,66 @@
+﻿@using static Kykkalite_UI.Controllers.GetUpatamaKodlariByUrunIDController
+@model QueryViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Query Page</title>
+</head>
+<body>
+    <h1>Değer Girme Sayfası</h1>
+    <form method="post">
+        <label for="numuneId">Numune ID:</label>
+        <input type="number" id="numuneId" name="numuneId" required>
+        <br>
+        <label for="urunId">Urun ID:</label>
+        <input type="number" id="urunId" name="urunId" required>
+        <br>
+        <button type="submit">Query</button>
+    </form>
+
+    @if (Model != null && Model.ResultSet != null && Model.ResultSet.Any())
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>UrunID</th>
+                    <th>NumuneID</th>
+                    @foreach (var item in Model.ResultSet)
+                    {
+                        foreach (var code in item.UpatamaKodu.ToString().Split("-"))
+                        {
+                            <th>@code</th>
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Her bir sütuna bağlı veriler için hücreler oluştur -->
+                @foreach (var item in Model.ResultSet)
+                {
+                    <tr>
+                        <td>@item.UrunId</td>
+                        <td>@item.NumuneId</td>
+                        @foreach (var code in item.UpatamaKodu.ToString().Split(" "))
+                        {
+                            <td><input type="number" value="@code" /></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    else
+    {
+        <p>Sonuç Bulunamadı,verileri tekrar kontrol ediniz.</p>
+    }
+</body>
+</html>
+

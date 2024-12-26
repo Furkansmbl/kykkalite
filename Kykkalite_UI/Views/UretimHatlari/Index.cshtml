@@ -1,0 +1,40 @@
+﻿@model List<ResultUretimHatlariDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Uretim Hatlari</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">UretimHattiId</th>
+                                <th scope="col">FabrikaId</th>
+                                <th scope="col">HatAdiAciklamasi</th>
+                                <th scope="col">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>  
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">@item.UretimHattiId</th>
+                                    <td>@item.FabrikaId</td>
+                                    <td>@item.HatAdiAciklamasi</td>
+                                    <td><a href="/UretimHatlari/UpdateUretimHatlari/" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <a href="/UretimHatlari/CreateUretimHatlari/" class="btn btn-outline-info">Yeni Üretim Hattı Girişi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
