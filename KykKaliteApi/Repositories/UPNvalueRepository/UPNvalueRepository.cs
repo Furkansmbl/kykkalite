@@ -32,7 +32,11 @@ namespace KykKaliteApi.Repositories.UPNvalueRepository
 
         public async Task<List<ResultUPNvalueDto>> GetAllUPNvalueAsync()
         {
-            string query = "Select * From UPNvalue";
+            string query = "SELECT UA.*,  " +
+                " P.KontrolParametresi, " +
+                " U.malzemeaciklamasi FROM UPNvalue UA JOIN Parametreler P " +
+                " ON CAST(PARSENAME(REPLACE(UA.upAtamaKodu, '+', '.'), 2) AS INT) = P.ParametreId JOIN Urunler U   " +
+                " ON CAST(PARSENAME(REPLACE(UA.upAtamaKodu, '+', '.'), 3) AS INT) = U.UrunId;";
             using (var connection = _context.CreateConnection())
             {
                 var values = await connection.QueryAsync<ResultUPNvalueDto>(query);

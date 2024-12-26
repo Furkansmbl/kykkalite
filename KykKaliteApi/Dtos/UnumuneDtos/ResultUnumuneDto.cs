@@ -5,6 +5,7 @@
         public int NumuneId { get; set; }
 
         public int UrunId { get; set; }
+        public string MalzemeAciklamasi { get; set; } = null!;
 
         public string SiraNo { get; set; }
 
@@ -24,8 +25,9 @@
         public string OlusturmaTarihi { get; set; }
         public string GuncellenmeTarihi { get; set; }
 
-        public string PersonelSicilNo { get; set; } = null!;
+        public string UnPersonel { get; set; } = null!;
         public string Token { get; set; }
+        public string Trend { get; set; }
 
     }
 }

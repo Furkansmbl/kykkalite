@@ -12,8 +12,14 @@
         public float AltOnaySiniri { get; set; }
         public float UstOnaySiniri { get; set; }
         public float UstSartliKabulSiniri { get; set; }
+        public string SartliOnay { get; set; }
+        public string Durum { get; set; }
+        public string Red { get; set; }
+        public string Onay { get; set; }
+        public string Genel { get; set; }
 
         public string ParametreKodu { get; set; } = null!;
+        public string UNVANI { get; set; }
 
         public string KontrolParametresi { get; set; } = null!;
         public int NumuneId { get; set; }

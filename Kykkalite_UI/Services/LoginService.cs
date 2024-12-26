@@ -11,6 +11,9 @@ namespace Kykkalite_UI.Services
                 _contextAccessor = contextAccessor;
             }
             public string GetPersonelSicilNo => _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        }
+
+        public string GetFabrikaId => _contextAccessor.HttpContext.User.FindFirst(ClaimTypes.Locality).Value;
+
+    }
     
 }

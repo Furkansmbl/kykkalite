@@ -1,0 +1,545 @@
+﻿        @using Kykkalite_UI.Dtos.DashboardDtos
+        @using Newtonsoft.Json
+        @model List<UrunDegKatDto>
+
+        @{
+            ViewData["Title"] = "Dashboard";
+            Layout = "";
+        }
+@{
+    ViewBag.Title = "Fabrika Oranları Grafiği";
+    var factoryOranlar = ViewBag.FactoryOranlar as double[] ?? new double[4];
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <style>
+        body {
+            width: 2500px;
+            background-color: black;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            zoom: 0.71;
+        }
+
+        .large-chart {
+            width: 800px; /* Increase the width as needed */
+            height: 800px; /* Increase the height as needed */
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            margin-left: 0px;
+            margin-right: 1000px;
+        }
+
+        .charts {
+            flex: 0 0 110%; /* Middle section: 35% width */
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff; /* Keep this white for contrast */
+            margin: 0 10px;
+        }
+
+        .pie-chart-container {
+            flex: 0 0 120%; /* Right section: 40% width */
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff; /* Keep this white for contrast */
+            margin: 0 10px;
+        }
+
+        .left-charts {
+            flex: 0 0 0%; /* Left section: 25% width */
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff; /* Keep this white for contrast */
+            margin: 0 10px;
+        }
+
+        .chart-container {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        canvas {
+            max-height: 300px;
+            aspect-ratio: auto 240 / 240;
+        }
+
+        h2, h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: black; /* Change text color to black */
+        }
+
+        .bottom-charts {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-charts">
+
+            <div class="chart-container" style="display: none;">
+                <h3>Eskişehir</h3>
+                <canvas id="fabrika1OranChart"></canvas>
+            </div>
+
+            <div class="chart-container" style="display: none;">
+                <h3>Adana</h3>
+                <canvas id="fabrika2OranChart"></canvas>
+            </div>
+
+
+        </div>
+
+        <div class="charts">
+            <h2>ÜRÜN DEĞİŞİM KATSAYISI SIRALAMASI</h2>
+            <div class="chart-row">
+                <div class="chart-container">
+                    <h3>Eskişehir Değişim Katsayıları</h3>
+                    <canvas id="fabrika1Chart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Adana Değişim Katsayıları</h3>
+                    <canvas id="fabrika2Chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-row">
+                <div class="chart-container">
+                    <h3>Diyarbakır Değişim Katsayıları</h3>
+                    <canvas id="hammaddelerChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Samsun Değişim Katsayıları</h3>
+                    <canvas id="fabrika4Chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-row">
+              
+                <div class="chart-container">
+                    <h3>Aydın Değişim Katsayıları</h3>
+                    <canvas id="fabrika5Chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="pie-chart-container">
+            
+            <h1>FABRİKA BAZLI KALİTE KONTROL ORANLARI</h1>
+            <canvas id="factoryChart"></canvas>
+
+            <!-- Genel Chart on top -->
+            <div class="chart-container">
+                <h2>KALİTE KONTROL ÜRÜN ONAY DAĞILIMI</h2>
+
+                <h3>TÜM FABRİKALAR</h3>
+                <canvas id="genelOnayChart" class="large-chart"></canvas>
+            </div>
+
+            <!-- Bottom charts in two rows of two charts each -->
+            <div class="bottom-charts">
+                <!-- First Row: Eskişehir and Adana charts -->
+                <div class="chart-row">
+                    <div class="chart-container">
+                        <h3>Eskişehir</h3>
+                        <canvas id="eskisehirOnayChart1" width="400" height="400" style="display: block; box-sizing: border-box; height: 600px; width: 600px;"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Diyarbakır</h3>
+                        <canvas id="diyarbakirOnayChart1" width="400" height="400" style="display: block; box-sizing: border-box; height: 600px; width: 600px;"></canvas>
+                    </div>
+
+                </div>
+
+                <!-- Second Row: Eskişehir and Adana charts -->
+                <div class="chart-row">
+                    <div class="chart-container">
+                        <h3>Adana</h3>
+                        <canvas id="adanaOnayChart1" width="400" height="400" style="display: block; box-sizing: border-box; height: 600px; width: 600px;"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Samsun</h3>
+                        <canvas id="samsunOnayChart1" width="400" height="400" style="display: block; box-sizing: border-box; height: 600px; width: 600px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('factoryChart').getContext('2d');
+        const factoryChart = new Chart(ctx, {
+            type: 'bar',  // Keep 'bar' as the type
+            data: {
+                labels: ['Eskişehir', 'Adana', 'Diyarbakır', 'Samsun'],
+                datasets: [{
+                    label: 'Fabrika Oranları (%)',
+                    data: [@factoryOranlar[0], @factoryOranlar[1], @factoryOranlar[2], @factoryOranlar[3]],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',  // This makes the bar chart horizontal
+                scales: {
+                    x: {  // Adjust the scale settings for the x-axis
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                weight: 'bold'  // Bold x-axis labels
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                weight: 'bold'  // Bold y-axis labels
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                weight: 'bold'  // Bold legend text
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+
+            <script>
+                const fabrika1Values = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Fabrika1Values));
+        const fabrika2Values = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Fabrika2Values));
+        const fabrika4Values = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Fabrika4Values));
+        const fabrika5Values = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Fabrika5Values));
+        const hammaddelerList = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Fabrika3Values));
+                const fabrika1Oran = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Fabrika1Oran));
+                const fabrika2Oran = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Fabrika2Oran));
+
+
+                const createBarChart = (ctx, labels, data, title) => {
+                    return new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: title,
+                                data: data,
+                                backgroundColor: [
+                                    'rgba(75, 192, 192, 0.7)',
+                                    'rgba(153, 102, 255, 0.7)',
+                                    'rgba(255, 159, 64, 0.7)',
+                                    'rgba(54, 162, 235, 0.7)',
+                                    'rgba(255, 99, 132, 0.7)'
+                                ],
+                                borderColor: [
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 99, 132, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',  // Yatay çubuk grafiği için eklenen ayar
+                            scales: {
+                                x: {  // X ekseni, yatay çubuk grafik için y ekseni olur
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: true
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (tooltipItem) {
+                                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                };
+
+                const fabrika1OranLabels = fabrika1Oran.map(x => x.MalzemeAciklamasi);
+                const fabrika1OranData = fabrika1Oran.map(x => x.Oran);
+
+                const fabrika2OranLabels = fabrika2Oran.map(x => x.MalzemeAciklamasi);
+                const fabrika2OranData = fabrika2Oran.map(x => x.Oran);
+
+                const fabrika1OranCtx = document.getElementById('fabrika1OranChart').getContext('2d');
+                createBarChart(fabrika1OranCtx, fabrika1OranLabels, fabrika1OranData, 'Fabrika 1 Oranları');
+
+                const fabrika2OranCtx = document.getElementById('fabrika2OranChart').getContext('2d');
+                createBarChart(fabrika2OranCtx, fabrika2OranLabels, fabrika2OranData, 'Fabrika 2 Oranları');
+
+                const createChart = (ctx, labels, data, title) => {
+                    return new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: title,
+                                data: data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.7)',
+                                    'rgba(54, 162, 235, 0.7)',
+                                    'rgba(255, 206, 86, 0.7)',
+                                    'rgba(75, 192, 192, 0.7)',
+                                    'rgba(153, 102, 255, 0.7)',
+                                    'rgba(255, 159, 64, 0.7)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            layout: {
+                                padding: {
+                                    left: 20,
+                                    right: 20,
+                                    top: 10,
+                                    bottom: 10
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        autoSkip: false,
+                                        maxRotation: 0,
+                                        minRotation: 0,
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        padding: 10,
+                                        font: {
+                                            size: 14,
+                                            weight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (tooltipItem) {
+                                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                };
+
+        const createDoughnutChart = (ctx, data, title) => {
+            return new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Onay', 'Sartli Onay', 'Red'],
+                    datasets: [{
+                        label: title,
+                        data: data,
+                        backgroundColor: ['#36A2EB', '#FFCE56', '#FF6384'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
+                                }
+                            }
+                        },
+                        // Plugin to display percentages on the doughnut chart
+                        datalabels: {
+                            anchor: 'center',
+                            align: 'center',
+                            formatter: (value, context) => {
+                                const total = context.chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                                const percentage = total > 0 ? Math.round((value / total) * 100) + '%' : '0%';
+                                return percentage;
+                            },
+                            color: '#fff',
+                            font: {
+                                weight: 'bold',
+                                size: '16'
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels] // Include the ChartDataLabels plugin
+            });
+        };
+
+                // Bar chart data
+                const fabrika1Labels = fabrika1Values.map(x => x.MalzemeAciklamasi);
+                const fabrika1Data = fabrika1Values.map(x => x.DegisimKatsayisi);
+
+                const fabrika2Labels = fabrika2Values.map(x => x.MalzemeAciklamasi);
+                const fabrika2Data = fabrika2Values.map(x => x.DegisimKatsayisi);
+
+        const fabrika4Labels = fabrika4Values.map(x => x.MalzemeAciklamasi);
+        const fabrika4Data = fabrika4Values.map(x => x.DegisimKatsayisi);
+
+        const fabrika5Labels = fabrika5Values.map(x => x.MalzemeAciklamasi);
+        const fabrika5Data = fabrika5Values.map(x => x.DegisimKatsayisi);
+
+                const hammaddelerLabels = hammaddelerList.map(x => x.MalzemeAciklamasi);
+                const hammaddelerData = hammaddelerList.map(x => x.DegisimKatsayisi);
+
+                const fabrika1Ctx = document.getElementById('fabrika1Chart').getContext('2d');
+                createChart(fabrika1Ctx, fabrika1Labels, fabrika1Data, 'Eskişehir Değişim Katsayıları');
+
+                const fabrika2Ctx = document.getElementById('fabrika2Chart').getContext('2d');
+                createChart(fabrika2Ctx, fabrika2Labels, fabrika2Data, 'Adana Değişim Katsayıları');
+
+        const fabrika5Ctx = document.getElementById('fabrika5Chart').getContext('2d');
+        createChart(fabrika5Ctx, fabrika5Labels, fabrika5Data, 'Aydın Değişim Katsayıları');
+
+
+        const fabrika4Ctx = document.getElementById('fabrika4Chart').getContext('2d');
+        createChart(fabrika4Ctx, fabrika4Labels, fabrika4Data, 'Samsun Değişim Katsayıları');
+
+                const hammaddelerCtx = document.getElementById('hammaddelerChart').getContext('2d');
+                createChart(hammaddelerCtx, hammaddelerLabels, hammaddelerData, 'Diyarbakır Değişim Katsayıları');
+
+        // Pie chart data (converted to doughnut)
+        const eskisehirOnayData = [0, 0, 0];
+        const adanaOnayData = [0, 0, 0];
+        const diyarbakirOnayData = [0, 0, 0];
+        const samsunOnayData = [0, 0, 0];
+
+        // Data from ViewBag
+        const eskisehirOnay = @Html.Raw(JsonConvert.SerializeObject(ViewBag.EskisehirOnay));
+        const adanaOnay = @Html.Raw(JsonConvert.SerializeObject(ViewBag.AdanaOnay));
+        const diyarbakirOnay = @Html.Raw(JsonConvert.SerializeObject(ViewBag.DiyarbakirOnay)); // Updated key
+        const samsunOnay = @Html.Raw(JsonConvert.SerializeObject(ViewBag.SamsunOnay));
+
+        // Assigning data to respective variables
+        if (eskisehirOnay) {
+            eskisehirOnayData[0] = parseInt(eskisehirOnay.Onay) || 0;
+            eskisehirOnayData[1] = parseInt(eskisehirOnay.SartliOnaySayisi) || 0;
+            eskisehirOnayData[2] = parseInt(eskisehirOnay.RedSayisi) || 0;
+        }
+
+        if (adanaOnay) {
+            adanaOnayData[0] = parseInt(adanaOnay.Onay) || 0;
+            adanaOnayData[1] = parseInt(adanaOnay.SartliOnaySayisi) || 0;
+            adanaOnayData[2] = parseInt(adanaOnay.RedSayisi) || 0;
+        }
+
+        if (diyarbakirOnay) {
+            diyarbakirOnayData[0] = parseInt(diyarbakirOnay.Onay) || 0;
+            diyarbakirOnayData[1] = parseInt(diyarbakirOnay.SartliOnaySayisi) || 0;
+            diyarbakirOnayData[2] = parseInt(diyarbakirOnay.RedSayisi) || 0;
+        }
+
+        if (samsunOnay) {
+            samsunOnayData[0] = parseInt(samsunOnay.Onay) || 0;
+            samsunOnayData[1] = parseInt(samsunOnay.SartliOnaySayisi) || 0;
+            samsunOnayData[2] = parseInt(samsunOnay.RedSayisi) || 0;
+        }
+
+        // General Onay Data (including all regions now)
+        const genelOnayData = [
+            eskisehirOnayData[0] + adanaOnayData[0] + diyarbakirOnayData[0] + samsunOnayData[0],
+            eskisehirOnayData[1] + adanaOnayData[1] + diyarbakirOnayData[1] + samsunOnayData[1],
+            eskisehirOnayData[2] + adanaOnayData[2] + diyarbakirOnayData[2] + samsunOnayData[2]
+        ];
+
+        // Initialize each chart
+
+        const genelOnayCtx = document.getElementById('genelOnayChart').getContext('2d');
+        createDoughnutChart(genelOnayCtx, genelOnayData, 'Genel Onay Durumları');
+
+        const eskisehirOnayCtx1 = document.getElementById('eskisehirOnayChart1').getContext('2d');
+        createDoughnutChart(eskisehirOnayCtx1, eskisehirOnayData, 'Eskişehir Onay Durumları');
+
+        const adanaOnayCtx1 = document.getElementById('adanaOnayChart1').getContext('2d');
+        createDoughnutChart(adanaOnayCtx1, adanaOnayData, 'Adana Onay Durumları');
+
+        const diyarbakirOnayCtx1 = document.getElementById('diyarbakirOnayChart1').getContext('2d'); // New chart for Diyarbakir
+        createDoughnutChart(diyarbakirOnayCtx1, diyarbakirOnayData, 'Diyarbakır Onay Durumları');
+
+        const samsunOnayCtx1 = document.getElementById('samsunOnayChart1').getContext('2d'); // New chart for Samsun
+        createDoughnutChart(samsunOnayCtx1, samsunOnayData, 'Samsun Onay Durumları');
+
+        const eskisehirOnayCtx2 = document.getElementById('eskisehirOnayChart2').getContext('2d');
+        createDoughnutChart(eskisehirOnayCtx2, eskisehirOnayData, 'Eskişehir Onay Durumları');
+
+        const adanaOnayCtx2 = document.getElementById('adanaOnayChart2').getContext('2d');
+        createDoughnutChart(adanaOnayCtx2, adanaOnayData, 'Adana Onay Durumları');
+
+        const diyarbakirOnayCtx2 = document.getElementById('diyarbakirOnayChart2').getContext('2d'); // New chart for Diyarbakir
+        createDoughnutChart(diyarbakirOnayCtx2, diyarbakirOnayData, 'Diyarbakır Onay Durumları');
+
+        const samsunOnayCtx2 = document.getElementById('samsunOnayChart2').getContext('2d'); // New chart for Samsun
+        createDoughnutChart(samsunOnayCtx2, samsunOnayData, 'Samsun Onay Durumları');
+
+            </script>
+        </body>
+        </html>

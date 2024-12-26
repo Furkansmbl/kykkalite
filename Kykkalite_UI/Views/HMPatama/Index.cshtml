@@ -1,20 +1,49 @@
 ﻿@model List<ResultHMPatamaDto>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Admin/Index.cshtml";
+
+    // Filtreleme ve sayfa parametrelerini almak
+    var malzemeAciklamasiFilter = HttpContextAccessor.HttpContext.Request.Query["malzemeAciklamasi"];
+    var kontrolParametresiFilter = HttpContextAccessor.HttpContext.Request.Query["ParametreKodu"];
+    var currentPage = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) > 0 ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) : 1;
+    var pageSize = 15;
+
+    // Filtrelenmiş öğeleri almak
+    var filteredItems = Model
+        .Where(item => (string.IsNullOrEmpty(malzemeAciklamasiFilter) || item.MalzemeAciklamasi.Contains(malzemeAciklamasiFilter, StringComparison.OrdinalIgnoreCase))
+                    && (string.IsNullOrEmpty(kontrolParametresiFilter) || item.ParametreKodu.Contains(kontrolParametresiFilter, StringComparison.OrdinalIgnoreCase)))
+        .ToList();
+
+    // Sayfalama işlemi
+    var pagedItems = filteredItems.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling(filteredItems.Count / (double)pageSize);
 }
+
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Hammadde Parametre Atama</h6>
-                <a href="/HMPatama/CreateHMPatama/" class="btn btn-outline-info">Yeni Hammadde Parametresi Girişi</a>
-                <td><a href="/HMPatama/UpdateHMPatama/" class="btn btn-outline-success">Güncelle</a></td>
+                <form method="get" class="row mb-3">
+                    <div class="col-md-5">
+                        <input type="text" name="malzemeAciklamasi" value="@malzemeAciklamasiFilter" class="form-control" placeholder="Malzeme Açıklaması Ara...">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="ParametreKodu" value="@kontrolParametresiFilter" class="form-control" placeholder="Kontrol Parametresi Ara...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">Filtrele</button>
+                    </div>
+                </form>
 
-                <div class="table-responsive">
+                <a href="/HMPatama/CreateHMPatama/" class="btn btn-outline-info">Yeni Hammadde Parametresi Girişi</a>
+
+                <div class="table-responsive mt-3">
                     <table class="table">
                         <thead>
-
                             <tr>
                                 <th scope="col">HmpaId</th>
                                 <th scope="col">ParametreKodu</th>
@@ -29,17 +58,28 @@
                                 <th scope="col">CihazId</th>
                                 <th scope="col">ReferansDokuman</th>
                                 <th scope="col">Aciklama</th>
+                                <th scope="col">MevcutPartiBuyuklugu</th>
+                                <th scope="col">TedarikSikligi</th>
+                                <th scope="col">TedarikSikligiOrtalama</th>
+                                <th scope="col">TedarikSikligiBirim</th>
+                                <th scope="col">Versiyon</th>
                                 <th scope="col">FabrikaId</th>
                                 <th scope="col">PersonelSicilNo</th>
-                                <th scope="col">EklenmeTarihi</th>
+                                <th scope="col">OlusturmaTarihi</th>
                                 <th scope="col">KullanımDurumu</th>
+                                <th scope="col">Tolerans</th>
+                                <th scope="col">ParametreID</th>
+                                <th scope="col">Malzeme Açıklaması</th>
+                                <th scope="col">ParametreYonu</th>
+
+                                <th scope="col">Güncelle</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @foreach (var item in pagedItems)
                             {
                                 <tr>
-                                    <th scope="row">@item.HmpaId</th>
+                                    <td>@item.HmpaId</td>
                                     <td>@item.ParametreKodu</td>
                                     <td>@item.HammaddeId</td>
                                     <td>@item.HmpatamaKodu</td>
@@ -52,19 +92,105 @@
                                     <td>@item.CihazId</td>
                                     <td>@item.ReferansDokuman</td>
                                     <td>@item.Aciklama</td>
+                                    <td>@item.MevcutPartiBuyuklugu</td>
+                                    <td>@item.TedarikSikligi</td>
+                                    <td>@item.TedarikSikligiOrtalama</td>
+                                    <td>@item.TedarikSikligiBirim</td>
+                                    <td>@item.Versiyon</td>
                                     <td>@item.FabrikaId</td>
                                     <td>@item.PersonelSicilNo</td>
-                                    <td>@item.EklenmeTarihi</td>
+                                    <td>@item.OlusturmaTarihi</td>
                                     <td>@item.KullanimDurumu</td>
+                                    <td>@item.Tolerans</td>
+                                    <td>@item.ParametreID</td>
+                                    <td>@item.MalzemeAciklamasi</td>
+                                    <td>@item.ParametreYonu</td>
+
+                                    <td><a href="#" class="btn btn-outline-success">Güncelle</a></td>
+
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Pagination Controls -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="?page=@i&malzemeAciklamasi=@malzemeAciklamasiFilter&ParametreKodu=@kontrolParametresiFilter">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var row = this.closest('tr');
 
+            // Razor tablosundaki <td> sırasına göre düzenlenmiş değişkenler
+            var HmpaId = row.cells[0].innerText.trim();
+            var ParametreKodu = row.cells[1].innerText.trim();
+            var HammaddeId = row.cells[2].innerText.trim();
+            var HmpatamaKodu = row.cells[3].innerText.trim();
+            var ParametreKritiklikSeviyesi = row.cells[4].innerText.trim();
+            var KontrolDegeriNominal = row.cells[5].innerText.trim();
+            var AltOnaySiniri = row.cells[6].innerText.trim();
+            var UstOnaySiniri = row.cells[7].innerText.trim();
+            var AltSartliKabulSiniri = row.cells[8].innerText.trim();
+            var UstSartliKabulSiniri = row.cells[9].innerText.trim();
+            var CihazId = row.cells[10].innerText.trim();
+            var ReferansDokuman = row.cells[11].innerText.trim();
+            var Aciklama = row.cells[12].innerText.trim();
+            var MevcutPartiBuyuklugu = row.cells[13].innerText.trim();
+            var TedarikSikligi = row.cells[14].innerText.trim();
+            var TedarikSikligiOrtalama = row.cells[15].innerText.trim();
+            var TedarikSikligiBirim = row.cells[16].innerText.trim();
+            var Versiyon = row.cells[17].innerText.trim();
+            var FabrikaId = row.cells[18].innerText.trim();
+            var PersonelSicilNo = row.cells[19].innerText.trim();
+            var EklenmeTarihi = row.cells[20].innerText.trim();
+            var KullanimDurumu = row.cells[21].innerText.trim();
+            var Tolerans = row.cells[22].innerText.trim();
+            var ParametreID = row.cells[23].innerText.trim();
+            var ParametreYonu = row.cells[25].innerText.trim();
 
+            // URL oluşturma
+            var url = "/HMPatama/UpdateHMPatama?" +
+                "HmpaId=" + encodeURIComponent(HmpaId) +
+                "&ParametreKodu=" + encodeURIComponent(ParametreKodu) +
+                "&HammaddeId=" + encodeURIComponent(HammaddeId) +
+                "&HmpatamaKodu=" + encodeURIComponent(HmpatamaKodu) +
+                "&ParametreKritiklikSeviyesi=" + encodeURIComponent(ParametreKritiklikSeviyesi) +
+                "&KontrolDegeriNominal=" + encodeURIComponent(KontrolDegeriNominal) +
+                "&AltOnaySiniri=" + encodeURIComponent(AltOnaySiniri) +
+                "&UstOnaySiniri=" + encodeURIComponent(UstOnaySiniri) +
+                "&AltSartliKabulSiniri=" + encodeURIComponent(AltSartliKabulSiniri) +
+                "&UstSartliKabulSiniri=" + encodeURIComponent(UstSartliKabulSiniri) +
+                "&CihazId=" + encodeURIComponent(CihazId) +
+                "&ReferansDokuman=" + encodeURIComponent(ReferansDokuman) +
+                "&Aciklama=" + encodeURIComponent(Aciklama) +
+                "&MevcutPartiBuyuklugu=" + encodeURIComponent(MevcutPartiBuyuklugu) +
+                "&TedarikSikligi=" + encodeURIComponent(TedarikSikligi) +
+                "&TedarikSikligiOrtalama=" + encodeURIComponent(TedarikSikligiOrtalama) +
+                "&TedarikSikligiBirim=" + encodeURIComponent(TedarikSikligiBirim) +
+                "&Versiyon=" + encodeURIComponent(Versiyon) +
+                "&FabrikaId=" + encodeURIComponent(FabrikaId) +
+                "&PersonelSicilNo=" + encodeURIComponent(PersonelSicilNo) +
+                "&EklenmeTarihi=" + encodeURIComponent(EklenmeTarihi) +
+                "&KullanimDurumu=" + encodeURIComponent(KullanimDurumu) +
+                "&Tolerans=" + encodeURIComponent(Tolerans) +
+                "&ParametreYonu=" + encodeURIComponent(ParametreYonu) +
+                "&ParametreID=" + encodeURIComponent(ParametreID);
 
+            window.location.href = url;
+        });
+    });
+</script>

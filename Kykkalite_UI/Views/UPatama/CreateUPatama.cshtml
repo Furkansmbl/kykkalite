@@ -11,10 +11,10 @@
                 <h6 class="mb-4">Ürün Parametre ekleme Sayfası</h6>
                 <form method="post">
                     <label>Kontrol Parametresi</label>
-                    @Html.DropDownListFor(x => x.ParametreId, (List<SelectListItem>)ViewBag.vvv, new { @class = "form-control" })
+                    @Html.DropDownListFor(x => x.ParametreId, (IEnumerable<SelectListItem>)ViewBag.ParametreList, "Select Parametre", new { @class = "form-control" })
                     <br />
                     <label>Urun Adı</label>
-                    @Html.DropDownListFor(x => x.UrunId, (List<SelectListItem>)ViewBag.u, new { @class = "form-control" })
+                    @Html.DropDownListFor(x => x.UrunId, (IEnumerable<SelectListItem>)ViewBag.UrunList, "Select Urun", new { @class = "form-control" })
                     <br />
                     <label>ParametreKritiklikSeviyesi</label>
                     <select asp-for="ParametreKritiklikSeviyesi" class="form-select">
@@ -63,6 +63,18 @@
                     <br />
                     <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
                     <input type="hidden" class="form-control" asp-for="OlusturmaTarihi" />
+                    <label>Parametre Yönü</label>
+                    <select asp-for="ParametreYonu" class="form-control">
+                        <option value="POZİTİF">POZİTİF</option>
+                        <option value="ÇİFT">ÇİFT</option>
+                        <option value="-">-</option>
+                    </select>
+                    <br />
+                    <label>Kullanım Durumu</label>
+                    <select asp-for="KullanimDurumu" class="form-control">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
                     <br />
                     <button class="btn btn-success">Ürün Parametre ekle</button>
                 </form>
@@ -76,8 +88,4 @@
             document.querySelector('[name="OlusturmaTarihi"]').value = formattedDate;
         });
     </script>
-
-
-
-
 

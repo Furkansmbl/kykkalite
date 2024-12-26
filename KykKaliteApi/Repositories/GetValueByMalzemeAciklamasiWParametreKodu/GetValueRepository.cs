@@ -15,17 +15,52 @@ namespace KykKaliteApi.Repositories.GetValueByMalzemeAciklamasiWParametreKodu
             _context = context;
         }
 
-        public async Task<List<ResultGetValueDto>> GetValueByMalzemeAciklamasiWParametreKoduAsync(string malzemeaciklamasi, string kontrolparametresi, string baslangicTarihi, string bitisTarihi)
+        public async Task<List<ResultGetValueDto>> GetKontrolParametresi()
+        {
+         
+                string query = @"
+   SELECT DISTINCT ur.MalzemeAciklamasi , par.kontrolparametresi
+FROM urunler ur
+JOIN upatamaAktif upa ON ur.UrunID = upa.UrunID
+JOIN parametreler par ON upa.ParametreKodu = par.ParametreKodu";
+
+                using (var connection = _context.CreateConnection())
+                {
+                    var values = await connection.QueryAsync<ResultGetValueDto>(query);
+                    return values.ToList(); ;
+                }
+            
+        }
+        public async Task<List<ResultGetValueDto>> GetKontrolParametresiHammadde()
+        {
+
+            string query = @"
+    SELECT DISTINCT par.kontrolparametresi , ur.MalzemeAciklamasi, TH.UNVANI
+FROM Hammaddeler ur
+JOIN HMPatamaAktif upa ON  ur.HammaddeID = upa.HammaddeID
+JOIN TedarikciHammadde th on ur.MalzemeAciklamasi = TH.MALZADI
+JOIN parametreler par ON upa.ParametreKodu = par.ParametreKodu";
+
+            using (var connection = _context.CreateConnection())
+            {
+                var values = await connection.QueryAsync<ResultGetValueDto>(query);
+                return values.ToList(); ;
+            }
+
+        }
+        public async Task<List<ResultGetValueDto>> GetValueByMalzemeAciklamasiWParametreKoduAsync(string malzemeaciklamasi, string kontrolparametresi, string baslangicTarihi, string bitisTarihi, int fabrikaId)
         {
             string query = @"
 SELECT TOP 49 
     upn.Value,
-    upn.OlusturmaTarihi,
+    LEFT(upn.OlusturmaTarihi, 10) AS OlusturmaTarihi, 
     upa.AltOnaySiniri,
     upa.AltSartliKabulSiniri,
     upa.UstSartliKabulSiniri,
     upa.UstOnaySiniri,
-    par.ParametreTipiOlcmeGozlem
+    par.ParametreTipiOlcmeGozlem,
+    ur.malzemeaciklamasi,
+    par.KontrolParametresi
 FROM 
     upnvalue upn
 JOIN 
@@ -37,11 +72,13 @@ JOIN
 WHERE 
     ur.malzemeaciklamasi = @malzemeaciklamasi
     AND par.kontrolparametresi = @kontrolparametresi
-    AND upn.OlusturmaTarihi BETWEEN @baslangicTarihi AND @bitisTarihi
+      AND LEFT(upn.OlusturmaTarihi, 10) 
+        BETWEEN @baslangicTarihi AND @bitisTarihi 
+    AND upa.FabrikaID = @fabrikaId
 ORDER BY 
-    upn.OlusturmaTarihi DESC;";
+    LEFT(upn.OlusturmaTarihi, 10) DESC ";
 
-            var parameters = new { malzemeaciklamasi, kontrolparametresi, baslangicTarihi, bitisTarihi };
+            var parameters = new { malzemeaciklamasi, kontrolparametresi, baslangicTarihi, bitisTarihi, fabrikaId };
             using (var connection = _context.CreateConnection())
             {
                 var values = await connection.QueryAsync<ResultGetValueDto>(query, parameters);
@@ -49,34 +86,38 @@ ORDER BY
             }
         }
 
-        public async Task<List<ResultGetValueDto>> GetValueByMalzemeAciklamasiWParametreKoduHammaddeAsync(string malzemeaciklamasi, string kontrolparametresi, string baslangicTarihi, string bitisTarihi)
+        public async Task<List<ResultGetValueDto>> GetValueByMalzemeAciklamasiWParametreKoduHammaddeAsync(string malzemeaciklamasi, string kontrolparametresi, string baslangicTarihi, string bitisTarihi, string UNVANI)
         {
             string query = @"
 SELECT TOP 49 
-    hpn.Value,
-    hpn.OlusturmaTarihi,
-	hpa.AltOnaySiniri,
-	hpa.AltSartliKabulSiniri,
-    hpa.UstSartliKabulSiniri,
-    hpa.UstOnaySiniri,
-    par.ParametreTipiOlcmeGozlem
+    hmpn.Value,
+    LEFT(hmpn.OlusturmaTarihi, 10) AS OlusturmaTarihi, 
+    hma.AltOnaySiniri,
+    hma.AltSartliKabulSiniri,
+    hma.UstSartliKabulSiniri,
+    hma.UstOnaySiniri,
+    par.ParametreTipiOlcmeGozlem,
+    hm.malzemeaciklamasi,
+    par.KontrolParametresi,
+	TH.UNVANI
 FROM 
-    HMPNvalue hpn
-JOIN 
-    HMPatamaAktif hpa ON hpn.HMPAtamaKodu = hpa.HMPAtamaKodu
-JOIN 
-    Hammaddeler h ON hpa.HammaddeID = h.HammaddeID
-JOIN 
-    parametreler par ON hpa.ParametreKodu = par.ParametreKodu
+    HMPNvalue hmpn
+	JOIN HMnumune hmn ON hmpn.NumuneID = hmn.NumuneID
+	JOIN TedarikciHammadde th ON hmn.THMID = th.THMID
+	JOIN HMPatamaAktif hma ON hmpn.HMPAtamaKodu = hma.HMPAtamaKodu
+	JOIN Hammaddeler hm ON hma.HammaddeID = hm.HammaddeID
+	JOIN parametreler par ON hma.ParametreKodu = par.ParametreKodu
 WHERE 
-	
-    h.malzemeaciklamasi = @malzemeaciklamasi
+    hm.malzemeaciklamasi = @malzemeaciklamasi
     AND par.kontrolparametresi = @kontrolparametresi
-    AND hpn.OlusturmaTarihi BETWEEN @baslangicTarihi AND @bitisTarihi
+	AND th.UNVANI = @UNVANI
+    AND LEFT(hmpn.OlusturmaTarihi, 10) 
+        BETWEEN @baslangicTarihi AND @bitisTarihi
 ORDER BY 
-    hpn.OlusturmaTarihi DESC;";
+    LEFT(hmpn.OlusturmaTarihi, 10) DESC;
+";
 
-            var parameters = new { malzemeaciklamasi, kontrolparametresi, baslangicTarihi, bitisTarihi };
+            var parameters = new { malzemeaciklamasi, kontrolparametresi, baslangicTarihi, bitisTarihi, UNVANI };
             using (var connection = _context.CreateConnection())
             {
                 var values = await connection.QueryAsync<ResultGetValueDto>(query, parameters);

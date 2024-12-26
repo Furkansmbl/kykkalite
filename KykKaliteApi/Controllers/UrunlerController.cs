@@ -32,7 +32,7 @@ namespace KykKaliteApi.Controllers
         public async Task<IActionResult> CreateUrunler(CreateUrunlerDto createUrunlerDto)
         {
             _urunlerRepository.CreateUrunler(createUrunlerDto);
-            return Ok("Ürün grubu Başarılı Bir Şekilde Eklendi");
+            return Ok("Ürün Başarılı Bir Şekilde Eklendi");
         }
         [HttpGet("{urunId,malzemeAciklamasi}")]
         public async Task<IActionResult> GetUpatamaKodlariByUrunIDA(int urunId, string malzemeAciklamasi)

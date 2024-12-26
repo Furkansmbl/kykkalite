@@ -268,31 +268,54 @@
     </div>
     <div class="container">
         <div class="form-container">
-            <form method="post">
+            <form method="post" onsubmit="return saveSelectedValues();">
                 <div class="form-group">
                     <label for="personelAdSoyad">Personel:</label>
                     <input type="text" class="form-control" value="@ViewBag.PersonelSicilNo" readonly />
                 </div>
+
                 <div class="form-group">
-                    <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
-                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                    <label for="MalzemeAciklamasi">Malzeme Açıklaması:</label>
+                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, "Select Malzeme Açıklaması", new { @class = "form-control", @id = "MalzemeAciklamasi", @onchange = "filterParameters()" })
                 </div>
+
                 <div class="form-group">
-                    <label for="kontrolparametresi">kontrolparametresi</label>
-                    <input type="text" id="kontrolparametresi" name="kontrolparametresi" required>
+                    <label for="UNVANI">UNVANI:</label>
+                    <select id="UNVANI" name="UNVANI" class="form-control" required>
+                        <option value="">Select UNVANI</option>
+                        @foreach (var parametre in ViewBag.ParametreList)
+                        {
+                            <option class="unvani-option" data-malzeme="@parametre.malzemeaciklamasi" value="@parametre.UNVANI">@parametre.UNVANI</option>
+                        }
+                    </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="kontrolparametresi">Kontrol Parametresi:</label>
+                    <select id="kontrolparametresi" name="kontrolparametresi" class="form-control" required>
+                        <option value="">Select Kontrol Parametresi</option>
+                        @foreach (var parametre in ViewBag.ParametreList)
+                        {
+                            <option class="kontrol-option" data-malzeme="@parametre.malzemeaciklamasi" value="@parametre.KontrolParametresi">@parametre.KontrolParametresi</option>
+                        }
+                    </select>
+                </div>
+
                 <div class="form-group">
                     <label for="baslangicTarihi">Başlangıç Tarihi</label>
                     <input type="date" id="baslangicTarihi" name="baslangicTarihi" required value="2000-01-01">
                 </div>
+
                 <div class="form-group">
                     <label for="bitisTarihi">Bitiş Tarihi</label>
                     <input type="date" id="bitisTarihi" name="bitisTarihi" required value="@DateTime.Now.ToString("yyyy-MM-dd")">
                 </div>
+
                 <div class="form-group">
                     <button type="submit">Query</button>
                 </div>
             </form>
+
         </div>
 
 
@@ -624,8 +647,64 @@
                 }
             };
         </script>
+        <script>
+            // Function to filter UNVANI and Kontrol Parametresi dropdowns based on the selected Malzeme Açıklaması
+            function filterParameters() {
+                var selectedMalzeme = document.getElementById("MalzemeAciklamasi").value;
 
+                // Get all options for UNVANI and Kontrol Parametresi
+                var unvaniOptions = document.getElementById("UNVANI").options;
+                var kontrolOptions = document.getElementById("kontrolparametresi").options;
 
+                // Reset selections
+                document.getElementById("UNVANI").value = "";
+                document.getElementById("kontrolparametresi").value = "";
+
+                // Show/hide UNVANI options based on selected Malzeme
+                for (var i = 0; i < unvaniOptions.length; i++) {
+                    unvaniOptions[i].style.display = (unvaniOptions[i].dataset.malzeme === selectedMalzeme || unvaniOptions[i].value === "") ? 'block' : 'none';
+                }
+
+                // Show/hide Kontrol Parametresi options based on selected Malzeme
+                for (var j = 0; j < kontrolOptions.length; j++) {
+                    kontrolOptions[j].style.display = (kontrolOptions[j].dataset.malzeme === selectedMalzeme || kontrolOptions[j].value === "") ? 'block' : 'none';
+                }
+            }
+
+            // Save selected values to localStorage when the form is submitted
+            function saveSelectedValues() {
+                var selectedMalzeme = document.getElementById("MalzemeAciklamasi").value;
+                var selectedUnvani = document.getElementById("UNVANI").value;
+                var selectedKontrolParametresi = document.getElementById("kontrolparametresi").value;
+
+                localStorage.setItem("selectedMalzeme", selectedMalzeme);
+                localStorage.setItem("selectedUnvani", selectedUnvani);
+                localStorage.setItem("selectedKontrolParametresi", selectedKontrolParametresi);
+
+                return true; // Allow the form to submit
+            }
+
+            // Restore selected values and filter options after the page reloads
+            window.onload = function () {
+                // Load previously selected Malzeme Açıklaması from localStorage
+                var storedMalzeme = localStorage.getItem("selectedMalzeme");
+                if (storedMalzeme) {
+                    document.getElementById("MalzemeAciklamasi").value = storedMalzeme;
+                    filterParameters(); // Filter the options based on the stored value
+                }
+
+                // Load previously selected UNVANI and Kontrol Parametresi from localStorage and restore their values
+                var storedUnvani = localStorage.getItem("selectedUnvani");
+                if (storedUnvani) {
+                    document.getElementById("UNVANI").value = storedUnvani;
+                }
+
+                var storedKontrolParametresi = localStorage.getItem("selectedKontrolParametresi");
+                if (storedKontrolParametresi) {
+                    document.getElementById("kontrolparametresi").value = storedKontrolParametresi;
+                }
+            };
+        </script>
             }
             else
             {
@@ -635,3 +714,5 @@
 </div>
 </body>
 </html>
+
+</script>

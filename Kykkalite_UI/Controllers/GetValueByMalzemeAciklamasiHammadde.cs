@@ -24,8 +24,20 @@ namespace Kykkalite_UI.Controllers
             var personelSicilNo = _loginService.GetPersonelSicilNo;
             ViewBag.v = await GetProductDescription();
             ViewBag.PersonelSicilNo = personelSicilNo;
+            var parametreList = await GetParametre();
+            ViewBag.ParametreList = parametreList; // Pass the full list to the view
 
             return View();
+        }
+        private async Task<List<ResultGetValueDto>> GetParametre()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu/Hmk");
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultGetValueDto>>(jsonData);
+
+            return values;
         }
         private async Task<List<SelectListItem>> GetProductDescription()
         {
@@ -47,13 +59,14 @@ namespace Kykkalite_UI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string malzemeAciklamasi, string kontrolParametresi, string baslangicTarihi, string bitisTarihi)
+        public async Task<IActionResult> Index(string malzemeAciklamasi, string kontrolParametresi, string baslangicTarihi, string bitisTarihi, string UNVANI)
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
             ViewBag.PersonelSicilNo = personelSicilNo;
             ViewBag.v = await GetProductDescription();
-
+            var parametreList = await GetParametre();
+            ViewBag.ParametreList = parametreList; // Pass the full list to the view
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
@@ -61,10 +74,11 @@ namespace Kykkalite_UI.Controllers
                 var encodedMalzemeAciklamasi = Uri.EscapeDataString(malzemeAciklamasi);
                 var encodedkontrolParametresi = Uri.EscapeDataString(kontrolParametresi);
                 var encodedbaslangicTarihi = Uri.EscapeDataString(baslangicTarihi);
+                var encodedUNVANI = Uri.EscapeDataString(UNVANI);
                 var encodedbitisTarihi = Uri.EscapeDataString(bitisTarihi);
 
 
-                var response = await client.GetAsync($"http://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu/hm?malzemeaciklamasi={encodedMalzemeAciklamasi}&kontrolparametresi={encodedkontrolParametresi}&baslangicTarihi={encodedbaslangicTarihi}&bitisTarihi={encodedbitisTarihi}");
+                var response = await client.GetAsync($"http://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu/hm?malzemeaciklamasi={encodedMalzemeAciklamasi}&kontrolparametresi={encodedkontrolParametresi}&baslangicTarihi={encodedbaslangicTarihi}&bitisTarihi={encodedbitisTarihi}&UNVANI={encodedUNVANI}");
 
                 if (response.IsSuccessStatusCode)
                 {

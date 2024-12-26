@@ -5,22 +5,27 @@ using FluentEmail.Smtp;
 using Kykkalite_UI.Dtos.UnumuneDtos;
 using Kykkalite_UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using NuGet.Common;
 using System.Text;
-
+using Dapper;
+using Kykkalite_UI.Dtos.FabrikalarDtos;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using KykKaliteApi.Dtos.HMnumuneDtos;
+using Kykkalite_UI.Dtos.HMnumuneDtos;
 namespace Kykkalite_UI.Controllers
 {
     public class UnumuneController : Controller
     {
-
+        private readonly ILogger<UnumuneController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILoginService _loginService;
         private readonly IFluentEmail fluentEmail;
         private readonly IHttpContextAccessor _contextAccessor;
-        public UnumuneController(IHttpClientFactory httpClientFactory, ILoginService loginService, IHttpContextAccessor contextAccessor, IFluentEmail fluentEmail)
+        public UnumuneController(ILogger<UnumuneController> logger,IHttpClientFactory httpClientFactory, ILoginService loginService, IHttpContextAccessor contextAccessor, IFluentEmail fluentEmail)
         {
-
+            _logger = logger;
             _httpClientFactory = httpClientFactory;
             _loginService = loginService;
             this.fluentEmail = fluentEmail;
@@ -28,7 +33,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("http://localhost:44344/api/Unumune");
+            var responseMessage = await client.GetAsync("http://localhost:5185/api/Unumune");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -37,11 +42,21 @@ namespace Kykkalite_UI.Controllers
             }
             return View();
         }
+        public async Task<IActionResult> DeleteUnumune(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var reponseMessage = await client.DeleteAsync($"http://localhost:5185/api/Unumune/{id}");
+            if (reponseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
         [HttpGet]
         public async Task<IActionResult> ExportToExcel()
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("http://localhost:44344/api/Unumune");
+            var responseMessage = await client.GetAsync("http://localhost:5185/api/Unumune");
             if (!responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -81,7 +96,7 @@ namespace Kykkalite_UI.Controllers
                     worksheet.Cell(currentRow, 8).Value = item.OnayDurumu;
                     worksheet.Cell(currentRow, 9).Value = item.AmirOnayDurumu;
                     worksheet.Cell(currentRow, 10).Value = item.OlusturmaTarihi;
-                    worksheet.Cell(currentRow, 11).Value = item.PersonelSicilNo;
+                    worksheet.Cell(currentRow, 11).Value = item.UnPersonel;
 
                 }
 
@@ -93,7 +108,29 @@ namespace Kykkalite_UI.Controllers
                 }
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> CreateUnumuneManuel()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateUnumuneManuel(CreateUnumuneManuelDto createUnumuneManuelDto)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createUnumuneManuelDto);
+            StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            try
+            {
+                var responseMessage = await client.PostAsync("http://localhost:5185/api/Unumune/Manuel", stringContent);
+                Console.WriteLine(responseMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
 
+            return View();
+        }
         [HttpGet]
         public IActionResult CreateUnumune()
         {
@@ -102,17 +139,35 @@ namespace Kykkalite_UI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUnumune([FromBody] CreateUnumuneDto createUnumuneDto)
         {
+
             string token = createUnumuneDto.Token;
 
             if (string.IsNullOrEmpty(createUnumuneDto.Token) && (createUnumuneDto.red > 0 || createUnumuneDto.yellow > 0))
             {
                 token = GenerateToken();
                 createUnumuneDto.Token = token;
-                SendMail(createUnumuneDto);
+
+                if (createUnumuneDto.red > 0)
+                {
+                    createUnumuneDto.AmirOnayDurumu = "Red";
+                    createUnumuneDto.OnayDurumu = true; 
+                }
+                else if (createUnumuneDto.yellow > 0)
+                {
+                    createUnumuneDto.AmirOnayDurumu = "SartliOnay";
+                    createUnumuneDto.OnayDurumu = true;
+
+                }
+                    SendMail(createUnumuneDto);
+
+                
             }
             else
             {
                 createUnumuneDto.Token = "-";
+                createUnumuneDto.AmirOnayDurumu = "1";
+                createUnumuneDto.OnayDurumu = true;
+
             }
 
             if (!ModelState.IsValid)
@@ -123,26 +178,31 @@ namespace Kykkalite_UI.Controllers
 
             // Trend durumu kontrolü
             bool isTrendFound = false;
-            List<int> trendIndices = new List<int>();
+            List<string> trendParameters = new List<string>();
+            List<string> trendResults = new List<string>();
 
             for (int i = 1; i <= 13; i++)
             {
                 string trendProperty = $"Trend{i}";
                 string valueProperty = $"Value{i}";
+                string kontrolParametresiProperty = $"KontrolParametresi{i}";
 
-                var trendValue = createUnumuneDto.GetType().GetProperty(trendProperty).GetValue(createUnumuneDto)?.ToString();
-                var valueValue = createUnumuneDto.GetType().GetProperty(valueProperty).GetValue(createUnumuneDto)?.ToString();
+                var trendValue = createUnumuneDto.GetType().GetProperty(trendProperty)?.GetValue(createUnumuneDto)?.ToString();
+                var valueValue = createUnumuneDto.GetType().GetProperty(valueProperty)?.GetValue(createUnumuneDto)?.ToString();
+                var kontrolParametresiValue = createUnumuneDto.GetType().GetProperty(kontrolParametresiProperty)?.GetValue(createUnumuneDto)?.ToString();
 
-                if (trendValue != null && valueValue != null)
+                if (trendValue != null && valueValue != null && kontrolParametresiValue != null)
                 {
                     string combinedTrendAndValue = CombineTrendAndValue(trendValue, valueValue);
                     string trendResult = CalculateTrend(combinedTrendAndValue);
                     Console.WriteLine($"Trend Result for {trendProperty} and {valueProperty}: {trendResult}");
 
-                    if (trendResult == "Trend var")
+                    // Sadece pozitif veya negatif trend varsa ekleyin
+                    if (trendResult == "Pozitif Trend var" || trendResult == "Negatif Trend var")
                     {
+                        trendResults.Add($"{kontrolParametresiValue}:{trendResult}");
                         isTrendFound = true;
-                        trendIndices.Add(i);  // Trend bulunan i değerini listeye ekle
+                        trendParameters.Add(kontrolParametresiValue);
                     }
                 }
             }
@@ -150,15 +210,18 @@ namespace Kykkalite_UI.Controllers
             // Trend bulunan i değerlerini kaydet
             if (isTrendFound)
             {
-                createUnumuneDto.TrendKontrol = string.Join(", ", trendIndices);
+                createUnumuneDto.TrendKontrol = string.Join(", ", trendParameters);
                 createUnumuneDto.Trend = "Trend Var";
-                SendMail1(createUnumuneDto);
+                createUnumuneDto.TrendYonu = string.Join(", ", trendResults); // Trend sonuçlarını kaydet
+                SendMailTrend(createUnumuneDto);
             }
             else
             {
                 createUnumuneDto.TrendKontrol = "-";
                 createUnumuneDto.Trend = "Trend Yok";
+                createUnumuneDto.TrendYonu = "-"; // Trend sonuçları olmadığını belirle
             }
+
 
             // HTTP isteği gönderimi
             var client = _httpClientFactory.CreateClient();
@@ -180,18 +243,18 @@ namespace Kykkalite_UI.Controllers
 
         private static string CombineTrendAndValue(string trend, string value)
         {
-            // Trend'deki '-' karakterini ',' ile değiştir ve Value'yi ekle
-            string modifiedTrend = trend.Replace('-', ',');
-            string combinedString = $"{modifiedTrend},{value}";
+            string modifiedTrend = trend.Replace('-', '.');
+            string combinedString = $"{modifiedTrend}.{value}";
             return combinedString;
         }
 
         private static string CalculateTrend(string combinedTrendAndValue)
         {
-            // Virgül ile ayır ve double dizisine dönüştür
-            double[] trendValues = combinedTrendAndValue.Split(',')
-                                                        .Select(v => double.TryParse(v, out var result) ? result : 0)
-                                                        .ToArray();
+            var parts = combinedTrendAndValue.Split('.');
+            if (parts.Distinct().Count() == 1)
+                return "Trend yok";
+
+            double[] trendValues = parts.Select(v => double.TryParse(v, out var result) ? result : 0).ToArray();
 
             if (trendValues.Length < 2)
                 throw new ArgumentException("Not enough data to calculate trend.");
@@ -209,52 +272,49 @@ namespace Kykkalite_UI.Controllers
             double spearmanRho = 1 - (6 * sumSquaredDifferences) / (n * (Math.Pow(n, 2) - 1));
 
             double zValue = spearmanRho * Math.Sqrt(n - 1);
+            if (Math.Abs(zValue) <= 2.326347874)
+                return "Trend Yok";
 
-            if (Math.Abs(zValue) > 2.326347874)
-                return "Trend var";
+            else if (Math.Abs(zValue) >= 0 && (zValue) >= -2.326347874)
+                return "Negatif Trend var";
             else
-                return "Trend yok";
+                return "Pozitif Trend var";
         }
-
-
-
+    
 
         private string GenerateToken()
         {
             return Guid.NewGuid().ToString("N");
         }
 
-         private SendResponse SendMail(CreateUnumuneDto createUnumuneDto)
+        private async Task SendMail(CreateUnumuneDto createUnumuneDto)
         {
-            var email = fluentEmail
-                .To(new List<Address> {
-            new Address { EmailAddress = "furkansumbul1903@gmail.com", Name = "Furkan" }
-                })
-                .Subject("Konu")
-                .UsingTemplateFromFile("Views/EmailTemplates/SariKirmizi.cshtml", createUnumuneDto)
-                .Send();
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createUnumuneDto);
+            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            return email;
+            var responseMessage = await client.PostAsync("http://localhost:5185/api/Unumune/Mail", stringContent);
+            Console.WriteLine(responseMessage);
         }
-        private SendResponse SendMail1(CreateUnumuneDto createUnumuneDto)
+        private async Task SendMailTrend(CreateUnumuneDto createUnumuneDto)
         {
-            var email = fluentEmail
-                .To(new List<Address> {
-            new Address { EmailAddress = "furkansumbul1903@gmail.com", Name = "Furkan" }
-                })
-                .Subject("Konu")
-                .UsingTemplateFromFile("Views/EmailTemplates/TrendMail.cshtml", createUnumuneDto)
-                .Send();
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(createUnumuneDto);
+            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            return email;
+            var responseMessage = await client.PostAsync("http://localhost:5185/api/Unumune/TrendMail", stringContent);
+            Console.WriteLine(responseMessage);
         }
+
+
+
         [HttpGet]
         public async Task<IActionResult> UpdateUnumune(int id)
         {
             var userId = _loginService.GetPersonelSicilNo;
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"http://localhost:44344/api/UNumune/{id}");
+            var responseMessage = await client.GetAsync($"http://localhost:5185/api/UNumune/{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -272,7 +332,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(updateUnumuneDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("http://localhost:44344/api/Unumune", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:5185/api/Unumune", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -284,7 +344,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> UpdateAmir(string token)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"http://localhost:44344/api/Unumune/validate-token?token={token}");
+            var responseMessage = await client.GetAsync($"http://localhost:5185/api/Unumune/validate-token?token={token}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var createUnumuneDto = JsonConvert.DeserializeObject<CreateUnumuneDto>(await responseMessage.Content.ReadAsStringAsync());
@@ -302,7 +362,7 @@ namespace Kykkalite_UI.Controllers
                 var client = _httpClientFactory.CreateClient();
                 var jsonData = JsonConvert.SerializeObject(createUnumuneDto);
                 StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                var responseMessage = await client.PutAsync("http://localhost:44344/api/Unumune/update-amir", stringContent);
+                var responseMessage = await client.PutAsync("http://localhost:5185/api/Unumune/update-amir", stringContent);
                 return true;
             }
             catch (Exception)

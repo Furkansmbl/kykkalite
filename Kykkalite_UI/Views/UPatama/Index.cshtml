@@ -1,7 +1,19 @@
 ﻿@model List<ResultUPatamaDto>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Admin/Index.cshtml";
+    var malzemeAciklamasiFilter = HttpContextAccessor.HttpContext.Request.Query["malzemeAciklamasi"];
+    var kontrolParametresiFilter = HttpContextAccessor.HttpContext.Request.Query["kontrolParametresi"];
+    var currentPage = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) > 0 ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) : 1;
+    var pageSize = 30;
+    var filteredItems = Model
+        .Where(item => (string.IsNullOrEmpty(malzemeAciklamasiFilter) || item.MalzemeAciklamasi.Contains(malzemeAciklamasiFilter, StringComparison.OrdinalIgnoreCase))
+                    && (string.IsNullOrEmpty(kontrolParametresiFilter) || item.KontrolParametresi.Contains(kontrolParametresiFilter, StringComparison.OrdinalIgnoreCase)))
+        .ToList();
+    var pagedItems = filteredItems.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling(filteredItems.Count / (double)pageSize);
 }
 
 <div class="container-fluid pt-4 px-4">
@@ -9,12 +21,27 @@
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Ürün Parametre Atama</h6>
+                <form method="get" class="row mb-3">
+                    <div class="col-md-5">
+                        <input type="text" name="malzemeAciklamasi" value="@malzemeAciklamasiFilter" class="form-control" placeholder="Malzeme Açıklaması Ara...">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="kontrolParametresi" value="@kontrolParametresiFilter" class="form-control" placeholder="Kontrol Parametresi Ara...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">Filtrele</button>
+                    </div>
+                </form>
+
                 <a href="/UPatama/CreateUPatama/" class="btn btn-outline-info">Yeni Ürün Parametresi Girişi</a>
+
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">Ürün Parametre Atama Kodu</th>
+                                <th scope="col">Malzeme Açıklaması</th>
+                                <th scope="col">Kontrol Parametresi</th>
                                 <th scope="col">Parametre Kritiklik Seviyesi</th>
                                 <th scope="col">Kontrol Degeri(Nominal)</th>
                                 <th scope="col">Alt Onay Siniri</th>
@@ -37,10 +64,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @foreach (var item in pagedItems)
                             {
                                 <tr>
                                     <td>@item.UpatamaKodu</td>
+                                    <td>@item.MalzemeAciklamasi</td>
+                                    <td>@item.KontrolParametresi</td>
                                     <td>@item.ParametreKritiklikSeviyesi</td>
                                     <td>@item.KontrolDegeriNominal</td>
                                     <td>@item.AltOnaySiniri</td>
@@ -65,10 +94,23 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Pagination Controls -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="?page=@i&malzemeAciklamasi=@malzemeAciklamasiFilter&kontrolParametresi=@kontrolParametresiFilter">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
+
 
 <script>
     document.querySelectorAll('.btn-outline-success').forEach(btn => {
@@ -76,24 +118,24 @@
             e.preventDefault();
             var row = this.closest('tr');
             var upatamaKodu = row.cells[0].innerText.trim();
-            var parametreKritiklikSeviyesi = row.cells[1].innerText.trim();
-            var kontrolDegeriNominal = row.cells[2].innerText.trim();
-            var altOnaySiniri = row.cells[3].innerText.trim();
-            var ustOnaySiniri = row.cells[4].innerText.trim();
-            var altSartliKabulSiniri = row.cells[5].innerText.trim();
-            var ustSartliKabulSiniri = row.cells[6].innerText.trim();
-            var parametreYonu = row.cells[7].innerText.trim();
-            var tolerans = row.cells[8].innerText.trim();
-            var versiyon = row.cells[9].innerText.trim();
-            var cihazId = row.cells[10].innerText.trim();
-            var referansDokuman = row.cells[11].innerText.trim();
-            var aciklama = row.cells[12].innerText.trim();
-            var orneklemSikligi = row.cells[13].innerText.trim();
-            var orneklemSiklikBirim = row.cells[14].innerText.trim();
-            var personelSicilNo = row.cells[15].innerText.trim();
-            var olusturmaTarihi = row.cells[16].innerText.trim();
-            var upaId = row.cells[17].innerText.trim();
-            var parametreKodu = row.cells[18].innerText.trim();
+            var parametreKritiklikSeviyesi = row.cells[3].innerText.trim();
+            var kontrolDegeriNominal = row.cells[4].innerText.trim();
+            var altOnaySiniri = row.cells[5].innerText.trim();
+            var ustOnaySiniri = row.cells[6].innerText.trim();
+            var altSartliKabulSiniri = row.cells[7].innerText.trim();
+            var ustSartliKabulSiniri = row.cells[8].innerText.trim();
+            var parametreYonu = row.cells[9].innerText.trim();
+            var tolerans = row.cells[10].innerText.trim();
+            var versiyon = row.cells[11].innerText.trim();
+            var cihazId = row.cells[12].innerText.trim();
+            var referansDokuman = row.cells[13].innerText.trim();
+            var aciklama = row.cells[14].innerText.trim();
+            var orneklemSikligi = row.cells[15].innerText.trim();
+            var orneklemSiklikBirim = row.cells[16].innerText.trim();
+            var personelSicilNo = row.cells[17].innerText.trim();
+            var olusturmaTarihi = row.cells[18].innerText.trim();
+            var upaId = row.cells[19].innerText.trim();
+            var parametreKodu = row.cells[20].innerText.trim();
 
             var url = "/UPatama/UpdateUPatama?UpatamaKodu=" + encodeURIComponent(upatamaKodu) +
                 "&ParametreKritiklikSeviyesi=" + encodeURIComponent(parametreKritiklikSeviyesi) +

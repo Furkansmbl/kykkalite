@@ -13,6 +13,7 @@
 
         public string Tolerans { get; set; }
         public string ParametreYonu { get; set; }
+        public bool KullanimDurumu { get; set; }
 
         public string ParametreKritiklikSeviyesi { get; set; }
 

@@ -17,7 +17,11 @@ namespace KykKaliteApi.Repositories.UPatamaRepository
 
         public async void CreateUPatama(CreateUPatamaDto createUPatamaDto)
         {
-            string query = "insert into UPatamaAktif (ParametreKodu,UrunId,UpatamaKodu,ParametreKritiklikSeviyesi,KontrolDegeriNominal,AltOnaySiniri,UstOnaySiniri,AltSartliKabulSiniri,UstSartliKabulSiniri,CihazId,ReferansDokuman,Aciklama,OrneklemSikligi,OrneklemSiklikBirim,FabrikaId,PersonelSicilNo,OlusturmaTarihi,ParametreId,Versiyon,Tolerans,ParametreYonu) values (@parametreKodu,@urunId,@upatamaKodu,@parametreKritiklikSeviyesi,@kontrolDegeriNominal,@altOnaySiniri,@ustOnaySiniri,@altSartliKabulSiniri,@ustSartliKabulSiniri,@cihazId,@referansDokuman,@aciklama,@orneklemSikligi,@orneklemSiklikBirim,@fabrikaId,@personelSicilNo,@olusturmaTarihi,@parametreId,@versiyon,@tolerans,@parametreYonu)";
+            string query = "insert into UPatamaAktif (ParametreKodu,UrunId,UpatamaKodu,ParametreKritiklikSeviyesi,KontrolDegeriNominal," +
+                "AltOnaySiniri,UstOnaySiniri,AltSartliKabulSiniri,UstSartliKabulSiniri,CihazId,ReferansDokuman,Aciklama,OrneklemSikligi," +
+                "OrneklemSiklikBirim,FabrikaId,PersonelSicilNo,OlusturmaTarihi,ParametreId,Versiyon,Tolerans,ParametreYonu,KullanimDurumu) values " +
+                "(@parametreKodu,@urunId,@upatamaKodu,@parametreKritiklikSeviyesi,@kontrolDegeriNominal,@altOnaySiniri,@ustOnaySiniri,@altSartliKabulSiniri," +
+                "@ustSartliKabulSiniri,@cihazId,@referansDokuman,@aciklama,@orneklemSikligi,@orneklemSiklikBirim,@fabrikaId,@personelSicilNo,@olusturmaTarihi,@parametreId,@versiyon,@tolerans,@parametreYonu,@kullanimDurumu)";
             var parameters = new DynamicParameters();
             parameters.Add("@parametreKodu", createUPatamaDto.ParametreKodu);
             parameters.Add("@urunId", createUPatamaDto.UrunId);
@@ -40,6 +44,7 @@ namespace KykKaliteApi.Repositories.UPatamaRepository
             parameters.Add("@OrneklemSiklikBirim", createUPatamaDto.OrneklemSiklikBirim);
             parameters.Add("@personelSicilNo", createUPatamaDto.PersonelSicilNo);
             parameters.Add("@olusturmaTarihi", createUPatamaDto.OlusturmaTarihi) ;
+            parameters.Add("@kullanimDurumu", createUPatamaDto.KullanimDurumu);
             using (var connection = _context.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
@@ -92,7 +97,17 @@ namespace KykKaliteApi.Repositories.UPatamaRepository
 
         public async Task<List<ResultUPatamaDto>> GetAllUPatamaAsync()
         {
-            string query = "Select * From UPatamaAktif";
+            string query = @"SELECT UA.*, 
+       P.KontrolParametresi, 
+       U.malzemeaciklamasi 
+FROM UPatamaAktif UA 
+JOIN Parametreler P 
+    ON CAST(PARSENAME(REPLACE(UA.upAtamaKodu, '+', '.'), 2) AS INT) = P.ParametreId
+JOIN Urunler U 
+    ON CAST(PARSENAME(REPLACE(UA.upAtamaKodu, '+', '.'), 3) AS INT) = U.UrunId;
+
+";
+
             using (var connection = _context.CreateConnection())
             {
                 var values = await connection.QueryAsync<ResultUPatamaDto>(query);
@@ -100,11 +115,12 @@ namespace KykKaliteApi.Repositories.UPatamaRepository
             }
         }
 
+
         public async void UpdateUPatama(UpdateUPatamaDto updateUPatamaDto)
         {
             string query = "UPDATE UPatamaAktif SET ParametreKodu = @parametreKodu , UrunId = @urunId, ParametreId = @parametreId , FabrikaId = @fabrikaId , UpAtamaKodu = @upAtamaKodu  , Versiyon = @versiyon , ParametreKritiklikSeviyesi = @parametreKritiklikSeviyesi , " +
                 " Tolerans = @tolerans, ParametreYonu = @parametreYonu ,  KontrolDegeriNominal = @kontrolDegeriNominal, AltOnaySiniri = @altOnaySiniri , UstOnaySiniri = @ustOnaySiniri , AltSartliKabulSiniri = @altSartliKabulSiniri ,UstSartliKabulSiniri =@ustSartliKabulSiniri," +
-                " CihazId =@cihazId, ReferansDokuman = @referansDokuman , Aciklama = @aciklama , OrneklemSikligi = @orneklemSikligi , OrneklemSiklikBirim =@OrneklemSiklikBirim ,PersonelSicilNo = @personelSicilNo, OlusturmaTarihi = @olusturmaTarihi WHERE UpaId = @upaId ";
+                " CihazId =@cihazId, ReferansDokuman = @referansDokuman , Aciklama = @aciklama , OrneklemSikligi = @orneklemSikligi , OrneklemSiklikBirim =@OrneklemSiklikBirim ,PersonelSicilNo = @personelSicilNo, OlusturmaTarihi = @olusturmaTarihi, KullanimDurumu = @kullanimDurumu WHERE UpaId = @upaId ";
             var parameters = new DynamicParameters();
             parameters.Add("@upaId", updateUPatamaDto.UpaId);
             parameters.Add("@parametreKodu", updateUPatamaDto.ParametreKodu);
@@ -128,6 +144,7 @@ namespace KykKaliteApi.Repositories.UPatamaRepository
             parameters.Add("@OrneklemSiklikBirim", updateUPatamaDto.OrneklemSiklikBirim);
             parameters.Add("@personelSicilNo", updateUPatamaDto.PersonelSicilNo);
             parameters.Add("@olusturmaTarihi", updateUPatamaDto.OlusturmaTarihi);
+            parameters.Add("@kullanimDurumu", updateUPatamaDto.KullanimDurumu);
 
             using (var connection = _context.CreateConnection())
             {

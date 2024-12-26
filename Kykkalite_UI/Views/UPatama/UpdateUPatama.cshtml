@@ -15,6 +15,15 @@
                     <label>UpatamaKodu</label>
                     <input type="text" asp-for="UpatamaKodu" class="form-control" />
                     <br />
+                    <label>ParametreId</label>
+                    <input type="text" asp-for="ParametreId" class="form-control" />
+                    <br />
+                    <label>FabrikaId</label>
+                    <input type="text" asp-for="FabrikaId" class="form-control" />
+                    <br />
+                    <label>UrunId</label>
+                    <input type="text" asp-for="UrunId" class="form-control" />
+                    <br />
                     <label>ParametreKritiklikSeviyesi</label>
                     <input type="text" asp-for="ParametreKritiklikSeviyesi" class="form-control" />
                     <br />
@@ -66,6 +75,12 @@
                     <label>OlusturmaTarihi</label>
                     <input type="text" asp-for="OlusturmaTarihi" class="form-control" />
                     <br />
+                    <label for="KullanimDurumu">Kullanım Durumu</label>
+                    <select asp-for="KullanimDurumu" class="form-control">
+                        <option value="true">Aktif</option>
+                        <option value="false">Pasif</option>
+                    </select>
+                    <br />
                     <button class="btn btn-success">Ürün Parametre Güncelle</button>
                 </form>
             </div>
@@ -77,6 +92,27 @@
             const urlParams = new URLSearchParams(window.location.search);
             document.querySelector('input[name="UpaId"]').value = urlParams.get('UpaId');
             document.querySelector('input[name="UpatamaKodu"]').value = urlParams.get('UpatamaKodu');
+
+            // Extract values from UpatamaKodu
+            const upatamaKodu = urlParams.get('UpatamaKodu') || '';
+            const parts = upatamaKodu.split('+');
+
+            if (parts.length >= 3) {
+                // The value before the first '+' becomes UrunId
+                document.querySelector('input[name="UrunId"]').value = parts[0]; // First part as UrunId
+
+                // The value between the first and second '+' becomes ParametreId
+                document.querySelector('input[name="ParametreId"]').value = parts[1]; // Second part as ParametreId
+
+                // The value after the second '+' becomes FabrikaId
+                document.querySelector('input[name="FabrikaId"]').value = parts.slice(2).join('+'); // Join the rest as FabrikaId
+            } else {
+                // Clear fields if not enough parts
+                document.querySelector('input[name="UrunId"]').value = '';
+                document.querySelector('input[name="ParametreId"]').value = '';
+                document.querySelector('input[name="FabrikaId"]').value = '';
+            }
+
             document.querySelector('input[name="ParametreKritiklikSeviyesi"]').value = urlParams.get('ParametreKritiklikSeviyesi');
             document.querySelector('input[name="KontrolDegeriNominal"]').value = urlParams.get('KontrolDegeriNominal');
             document.querySelector('input[name="AltOnaySiniri"]').value = urlParams.get('AltOnaySiniri');
@@ -88,7 +124,7 @@
             document.querySelector('input[name="Tolerans"]').value = urlParams.get('Tolerans');
             document.querySelector('input[name="CihazId"]').value = urlParams.get('CihazId');
             document.querySelector('input[name="ReferansDokuman"]').value = urlParams.get('ReferansDokuman');
-            document.querySelector('input[name="Aciklama"]').value = urlParams.get('Aciklama');
+            document.querySelector('input[name="Aciklama"]').value = urlParams.get('Aciklama') || '-';
             document.querySelector('input[name="OrneklemSikligi"]').value = urlParams.get('OrneklemSikligi');
             document.querySelector('input[name="PersonelSicilNo"]').value = urlParams.get('PersonelSicilNo');
             document.querySelector('input[name="OrneklemSiklikBirim"]').value = urlParams.get('OrneklemSiklikBirim');
@@ -103,5 +139,7 @@
             }
         });
     </script>
+
+
 
 </div>

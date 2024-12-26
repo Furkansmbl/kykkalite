@@ -1,101 +1,127 @@
 ﻿@model List<ResultUPNvalueDto>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Admin/Index.cshtml";
-}
+    var malzemeAciklamasiFilter = HttpContextAccessor.HttpContext.Request.Query["malzemeAciklamasi"];
+    var numuneIdFilter = HttpContextAccessor.HttpContext.Request.Query["numuneId"]; 
+    var currentPage = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) > 0 ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) : 1;
+    var pageSize = 30;
 
+    var filteredItems = Model
+        .Where(item => (string.IsNullOrEmpty(malzemeAciklamasiFilter) || item.MalzemeAciklamasi.Contains(malzemeAciklamasiFilter, StringComparison.OrdinalIgnoreCase))
+                    && (string.IsNullOrEmpty(numuneIdFilter) || item.NumuneId.ToString().Contains(numuneIdFilter, StringComparison.OrdinalIgnoreCase))) 
+        .ToList();
+
+    var pagedItems = filteredItems.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling(filteredItems.Count / (double)pageSize);
+}
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Ürün Parametre VALUE</h6>
-                <td> <a href="/UPNvalue/ExportToExcel" class="btn btn-primary">Export to Excel</a></td>
-                <div class="mb-4">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Numune Id ara...">
+                <h6 class="mb-4">Ürün Value</h6>
+                <form method="get" class="row mb-3">
+                    <div class="col-md-5">
+                        <input type="text" name="malzemeAciklamasi" value="@malzemeAciklamasiFilter" class="form-control" placeholder="Malzeme Açıklaması Ara...">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="numuneId" value="@numuneIdFilter" class="form-control" placeholder="NumuneId Ara..."> 
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">Filtrele</button>
+                    </div>
+                </form>
+
+                <div class="table-responsive">
+                    <table class="table urun-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">UpnvalueId</th>
+                                <th scope="col">UpatamaKodu</th>
+                                <th scope="col">Malzeme Açıklaması</th>
+                                <th scope="col">Kontrol Parametresi</th>
+                                <th scope="col">NumuneId</th>
+                                <th scope="col">Value</th>
+                                <th scope="col">Versiyon</th>
+                                <th scope="col">Olusturma Tarihi</th>
+                                <th scope="col">Güncellenme Tarihi</th>
+                                <th scope="col">Personel Sicil No</th>
+                                <th scope="col">Güncelle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in pagedItems)
+                            {
+                                <tr class="urun-row">
+                                    <td>@item.UpnvalueId</td>
+                                    <td>@item.UpatamaKodu</td>
+                                    <td>@item.MalzemeAciklamasi</td>
+                                    <td>@item.KontrolParametresi</td>
+                                    <td>@item.NumuneId</td>
+                                    <td>@item.Value</td>
+                                    <td>@item.Versiyon</td>
+                                    <td>@item.OlusturmaTarihi</td>
+                                    <td>@item.GuncellenmeTarihi</td>
+                                    <td>@item.PersonelSicilNo</td>
+                                    <td><a href="/UPNvalue/UpdateUPNvalue/" class="btn btn-outline-success">Güncelle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="tab-content" id="parametreTabContent">
-                    @for (int i = 0; i < Model.Count; i += 30)
-                    {
-                        <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="table-@(i)" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table urun-table" id="urunTable-@(i)">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">UpnvalueId</th>
-                                            <th scope="col">UpatamaKodu</th>
-                                            <th scope="col">NumuneId</th>
-                                            <th scope="col">Value</th>
-                                            <th scope="col">Versiyon</th>
-                                            <th scope="col">Olusturma Tarihi</th>
-                                            <th scope="col">Güncellenme Tarihi</th>
-                                            <th scope="col">PersonelSicilNo</th>
-                                            <th scope="col">Güncelle</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for (int j = i; j < Math.Min(i + 30, Model.Count); j++)
-                                        {
-                                            var item = Model[j];
-                                            <tr class="urun-row">
-                                                <td>@item.UpnvalueId</td>
-                                                <td>@item.UpatamaKodu</td>
-                                                <td>@item.NumuneId</td>
-                                                <td>@item.Value</td>
-                                                <td>@item.Versiyon</td>
-                                                <td>@item.OlusturmaTarihi </td>
-                                                <td>@item.GuncellenmeTarihi </td>
-                                                <td>@item.PersonelSicilNo</td>
-                                                <td><a href="/UPNvalue/UpdateUPNvalue/" class="btn btn-outline-success">Güncelle</a></td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    }
-                </div>
-
-                <button class="btn btn-primary mt-3" id="advanceButton">İleri</button>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="?page=@i&malzemeAciklamasi=@malzemeAciklamasiFilter&numuneId=@numuneIdFilter">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    var tabCount = Math.ceil(@Model.Count / 30);
-        var currentTab = 0;
+    var tabCount = Math.ceil(Math.max(0, @Model.Count - 1000) / 30);
+    var currentTab = 0;
 
-    document.getElementById("advanceButton").addEventListener("click", function () {
+    document.getElementById("advanceButton")?.addEventListener("click", function () {
         currentTab++;
         if (currentTab >= tabCount) {
             currentTab = 0;
         }
-        document.querySelector('.tab-pane.show').classList.remove('show', 'active');
-        document.getElementById("table-" + (currentTab * 30)).classList.add('show', 'active');
+        document.querySelector('.tab-pane.show')?.classList.remove('show', 'active');
+        document.getElementById("table-" + (Math.max(0, @Model.Count - 1000) + currentTab * 30))?.classList.add('show', 'active');
     });
 
-    document.getElementById('searchInput').addEventListener('input', function () {
+    document.getElementById('searchInput')?.addEventListener('input', function () {
         var searchValue = this.value.toLowerCase();
         var rows = document.querySelectorAll('.urun-row');
         var found = false;
 
         rows.forEach(function (row) {
-            var numuneId = row.cells[2].innerText.toLowerCase();
+            var numuneId = row.cells[4].innerText.toLowerCase(); // NumuneId sütunu
             if (numuneId.includes(searchValue)) {
-                row.style.display = '';
+                row.style.display = ''; // Eşleşen satırları göster
                 found = true;
                 var tabPane = row.closest('.tab-pane');
                 if (!tabPane.classList.contains('show')) {
-                    document.querySelector('.tab-pane.show').classList.remove('show', 'active');
-                    tabPane.classList.add('show', 'active');
+                    document.querySelector('.tab-pane.show')?.classList.remove('show', 'active');
+                    tabPane.classList.add('show', 'active'); // İlgili sayfayı aktif yap
                 }
             } else {
-                row.style.display = 'none';
+                row.style.display = 'none'; // Eşleşmeyen satırları gizle
             }
         });
 
         if (!found) {
+            // Eğer aramada sonuç bulunamazsa, ilk sekmeye dön
             var activeTab = document.querySelector('.tab-pane.show');
             if (activeTab) {
                 activeTab.classList.remove('show', 'active');
@@ -107,24 +133,26 @@
         }
     });
 
+    // Güncelle butonuna tıklandığında
     document.querySelectorAll('.btn-outline-success').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             var row = this.closest('tr');
             var upnvalueId = row.cells[0].innerText.trim();
             var upatamaKodu = row.cells[1].innerText.trim();
-            var numuneId = row.cells[2].innerText.trim();
-            var value = row.cells[3].innerText.trim();
-            var versiyon = row.cells[4].innerText.trim();
-            var olusturmaTarihi = row.cells[5].innerText.trim();
+            var numuneId = row.cells[4].innerText.trim();
+            var value = row.cells[5].innerText.trim();
+            var versiyon = row.cells[6].innerText.trim();
+            var olusturmaTarihi = row.cells[7].innerText.trim();
 
+            // URL parametreleri ile güncelleme sayfasına yönlendirme
             var url = "/UPNvalue/UpdateUPNvalue?UpnvalueId=" + encodeURIComponent(upnvalueId) +
                 "&UpatamaKodu=" + encodeURIComponent(upatamaKodu) +
                 "&NumuneId=" + encodeURIComponent(numuneId) +
                 "&Value=" + encodeURIComponent(value) +
                 "&Versiyon=" + encodeURIComponent(versiyon) +
-                "&OlusturmaTarihi=" + encodeURIComponent(olusturmaTarihi) ;
-                window.location.href = url;
+                "&OlusturmaTarihi=" + encodeURIComponent(olusturmaTarihi);
+            window.location.href = url;
         });
     });
 </script>

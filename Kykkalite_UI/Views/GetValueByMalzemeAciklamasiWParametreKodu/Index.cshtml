@@ -1,4 +1,4 @@
-﻿@using static Kykkalite_UI.Controllers.GetValueByMalzemeAciklamasiWParametreKoduController
+﻿﻿@using static Kykkalite_UI.Controllers.GetValueByMalzemeAciklamasiWParametreKoduController
 @using System.Text.Json
 @using System.Text.Encodings.Web
 
@@ -48,6 +48,7 @@
                 text-decoration: none;
                 cursor: pointer;
             }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #fff;
@@ -92,6 +93,7 @@
                 text-decoration: none;
                 cursor: pointer;
             }
+
         .container {
             display: flex;
             flex-direction: row;
@@ -219,6 +221,7 @@
             flex: 1;
             padding: 10px;
         }
+
         .metric-label {
             font-weight: bold;
             margin-top: 10px;
@@ -227,7 +230,7 @@
         .metric-value {
             margin-bottom: 10px;
         }
-   
+
 
         .chart-container {
             margin-top: 20px;
@@ -249,6 +252,7 @@
             width: 100%;
             height: auto;
         }
+
         .upper-charts, .lower-charts {
             display: flex;
             justify-content: space-between;
@@ -264,18 +268,34 @@
     </div>
     <div class="container">
         <div class="form-container">
-            <form method="post">
+            <form method="post" onsubmit="return saveSelectedValues()">
+                <div class="form-group">
+                    <label for="fabrikaId">Fabrika Adı:</label>
+                    <select id="fabrikaId" name="fabrikaId" required>
+                        <option value="1">ESKİŞEHİR</option>
+                        <option value="2">ADANA</option>
+                        <option value="3">DİYARBAKIR</option>
+                        <option value="4">SAMSUN</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label for="personelAdSoyad">Personel:</label>
                     <input type="text" class="form-control" value="@ViewBag.PersonelSicilNo" readonly />
                 </div>
                 <div class="form-group">
-                    <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
-                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                    <label for="MalzemeAciklamasi">Malzeme Açıklaması:</label>
+                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, "Select Malzeme Açıklaması", new { @class = "form-control", @id = "MalzemeAciklamasi", @onchange = "filterKontrolParametresi()" })
                 </div>
+
                 <div class="form-group">
-                    <label for="kontrolparametresi">kontrolparametresi</label>
-                    <input type="text" id="kontrolparametresi" name="kontrolparametresi" required>
+                    <label for="kontrolparametresi">Kontrol Parametresi:</label>
+                    <select id="kontrolparametresi" name="kontrolparametresi" class="form-control" required>
+                        <option value="">Select Kontrol Parametresi</option>
+                        @foreach (var parametre in ViewBag.ParametreList)
+                        {
+                            <option class="parametre-option" data-malzeme="@parametre.malzemeaciklamasi" value="@parametre.KontrolParametresi">@parametre.KontrolParametresi</option>
+                        }
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="baslangicTarihi">Başlangıç Tarihi</label>
@@ -317,8 +337,6 @@
                 {
                     decimal ustSartliOnaySiniri = (decimal)firstResult.UstSartliKabulSiniri;
                     decimal altSartliOnaySiniri = (decimal)firstResult.AltSartliKabulSiniri;
-                    decimal altOnaySiniri = (decimal)firstResult.AltOnaySiniri;
-                    decimal ustOnaySiniri = (decimal)firstResult.UstOnaySiniri;
                     decimal tolerance = ustSartliOnaySiniri - altSartliOnaySiniri;
 
                     decimal sigmaBeklenen;
@@ -346,26 +364,34 @@
                                 columnValues[i].Add(value);
                             }
                         }
-                        if (columnValues[i].Count > 0)
+
+                        if (columnValues[i].Count > 1) // Ensure there's more than one value to calculate standard deviation
                         {
                             columnAverages[i] = columnValues[i].Average();
                             columnRanges[i] = columnValues[i].Max() - columnValues[i].Min();
-                            columnRangeAverages[i] = columnValues[i].Count > 1 ? columnRanges[i] / (columnValues[i].Count - 1) : columnRanges[i];
+                            columnRangeAverages[i] = columnRanges[i] / (columnValues[i].Count - 1);
                             UKS[i] = columnRangeAverages[i] * 3.267m;
-                            AKS[i] = columnRangeAverages[i] * 0;
+
                             columnSigmaGercelesen[i] = columnRangeAverages[i] / 1.128m;
                             columnTolerances[i] = tolerance;
                             columnSigmaBeklenen[i] = sigmaBeklenen;
-                            columnStandartSapmalar[i] = (decimal)Math.Sqrt((double)columnValues[i].Sum(v => (v - columnAverages[i]) * (v - columnAverages[i])) / (columnValues[i].Count - 1));
+
+                            // Calculate standard deviation safely
+                            decimal sumOfSquares = columnValues[i].Sum(v => (v - columnAverages[i]) * (v - columnAverages[i]));
+                            columnStandartSapmalar[i] = (decimal)Math.Sqrt((double)(sumOfSquares / (columnValues[i].Count - 1)));
+
                             columnDegisimKatsayilari[i] = columnStandartSapmalar[i] / columnAverages[i];
-                            if (columnSigmaBeklenen[i] < columnRangeAverages[i] / 1.128m)
-                            {
-                                GerBek[i] = "Süreç değişkenliğini gerektiğinden fazladır.";
-                            }
-                            else
-                            {
-                                GerBek[i] = "Süreç değişkenliği gerektiğinden azdır.";
-                            }
+
+                            // Check for process variability
+                            GerBek[i] = columnSigmaBeklenen[i] < columnRangeAverages[i] / 1.128m
+                            ? "Süreç değişkenliğini gerektiğinden fazladır."
+                            : "Süreç değişkenliği gerektiğinden azdır.";
+                        }
+                        else
+                        {
+                            
+                            columnStandartSapmalar[i] = 0; // or other appropriate default
+                            GerBek[i] = "Yetersiz veri.";
                         }
                     }
                 }
@@ -373,7 +399,9 @@
                 {
                     throw new InvalidOperationException("Sonuç Bulunamadı...");
                 }
+            
 
+            
                 <div class="results-layout">
                     <div class="calculated-values">
                         <div class="left-column">
@@ -393,7 +421,9 @@
                                     <div class="metric-value">@columnStandartSapmalar[i].ToString("F3")</div>
 
                                     <div class="metric-label">Değişim Katsayısı</div>
-                                    <div class="metric-value">@columnDegisimKatsayilari[i].ToString("F3")</div>
+                                    <div class="metric-value">
+                                        @((columnDegisimKatsayilari[i]).ToString("P0"))
+                                    </div>
                                 </div>
                             }
                         </div>
@@ -442,9 +472,12 @@
         </div>
 
 
-           <script>
-        var columnValues = @Html.Raw(JsonSerializer.Serialize(columnValues[0]));
-        var averageValue = columnValues.reduce((sum, value) => sum + value, 0) / columnValues.length;
+        <script>
+            var columnValues = @Html.Raw(JsonSerializer.Serialize(columnValues[0]));
+            var averageValue = columnValues.reduce((sum, value) => sum + value, 0) / columnValues.length;
+
+            var columnValues = @Html.Raw(JsonSerializer.Serialize(columnValues[0]));
+            var averageValue = columnValues.reduce((sum, value) => sum + value, 0) / columnValues.length;
 
             var spcChartData = {
                 labels: @Html.Raw(JsonSerializer.Serialize(resultSet.Select((_, index) => index + 1))),
@@ -506,139 +539,197 @@
                 ]
             };
 
-        var spcChartOptions = {
-            scales: {
-                x: {
-                    beginAtZero: true
+            var spcChartOptions = {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '@Html.Raw(resultSet[0].malzemeaciklamasi) - @Html.Raw(resultSet[0].KontrolParametresi)', // Display MalzemeAciklamasi and KontrolParametresi as the chart title
+                        font: {
+                            size: 20 // Adjust the font size for the title
+                        }
+                    }
                 },
-                y: {
-                    beginAtZero: true,
-                    suggestedMin: @firstResult.AltOnaySiniri,
-                    suggestedMax: @firstResult.UstOnaySiniri
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMin: @firstResult.AltOnaySiniri,
+                        suggestedMax: @firstResult.UstOnaySiniri
+                    }
                 }
-            }
-        };
+            };
 
-        var ctx = document.getElementById('spcChart').getContext('2d');
-        var spcChart = new Chart(ctx, {
-            type: 'line',
-            data: spcChartData,
-            options: spcChartOptions
-        });
-
-        var xbarChartData = {
-            labels: @Html.Raw(JsonSerializer.Serialize(resultSet.Select((_, index) => index + 1))),
-            datasets: [
-                {
-                    label: 'Range Ortalama',
-                    data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(columnRangeAverages[0], resultSet.Count))),
-                    borderColor: 'rgba(255, 159, 64, 1)',
-                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                    borderWidth: 3,
-                    fill: false,
-                    borderDash: [5, 5],
-                    pointRadius: 0
-                },
-                {
-                    label: 'Veri Değişimi',
-                    data: @Html.Raw(JsonSerializer.Serialize(columnValues[0])),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 3,
-                        pointRadius: 0
-                },
-                {
-                    label: 'ÜKS',
-                    data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(UKS[0], resultSet.Count))),
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                    borderWidth: 3,
-                    fill: false,
-                    borderDash: [5, 5],
-                    pointRadius: 0
-                },
-                {
-                    label: 'AKS',
-                    data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(AKS[0], resultSet.Count))),
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                    borderWidth: 3,
-                    fill: false,
-                    borderDash: [5, 5],
-                    pointRadius: 0
-                }
-            ]
-        };
-
-        var xbarChartOptions = {
-            scales: {
-                x: {
-                    beginAtZero: true
-                },
-                y: {
-                    beginAtZero: true
-                }
-            }
-        };
-
-        var ctxXbar = document.getElementById('xbarChart').getContext('2d');
-        var xbarChart = new Chart(ctxXbar, {
-            type: 'line',
-            data: xbarChartData,
-            options: xbarChartOptions
-        });
-
-        var spcChartModal = document.getElementById("spcChartModal");
-        var spcChartCloseBtn = spcChartModal.getElementsByClassName("close")[0];
-
-        document.getElementById('spcChart').addEventListener('click', function () {
-            spcChartModal.style.display = "block";
-            var ctxExpandedSpc = document.getElementById('expandedSpcChart').getContext('2d');
-            new Chart(ctxExpandedSpc, {
+            var ctx = document.getElementById('spcChart').getContext('2d');
+            var spcChart = new Chart(ctx, {
                 type: 'line',
                 data: spcChartData,
                 options: spcChartOptions
             });
-        });
 
-        spcChartCloseBtn.onclick = function () {
-            spcChartModal.style.display = "none";
-        };
+            var xbarChartData = {
+                labels: @Html.Raw(JsonSerializer.Serialize(resultSet.Select((_, index) => index + 1))),
+                datasets: [
+                    {
+                        label: 'Range Ortalama',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(columnRangeAverages[0], resultSet.Count))),
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Veri Değişimi',
+                        data: @Html.Raw(JsonSerializer.Serialize(columnValues[0])),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 3,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'ÜKS',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(UKS[0], resultSet.Count))),
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'AKS',
+                        data: @Html.Raw(JsonSerializer.Serialize(Enumerable.Repeat(AKS[0], resultSet.Count))),
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderWidth: 3,
+                        fill: false,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    }
+                ]
+            };
 
-        var xbarChartModal = document.getElementById("xbarChartModal");
-        var xbarChartCloseBtn = xbarChartModal.getElementsByClassName("close")[0];
+            var xbarChartOptions = {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            };
 
-        document.getElementById('xbarChart').addEventListener('click', function () {
-            xbarChartModal.style.display = "block";
-            var ctxExpandedXbar = document.getElementById('expandedXbarChart').getContext('2d');
-            new Chart(ctxExpandedXbar, {
+            var ctxXbar = document.getElementById('xbarChart').getContext('2d');
+            var xbarChart = new Chart(ctxXbar, {
                 type: 'line',
                 data: xbarChartData,
                 options: xbarChartOptions
             });
-        });
 
-        xbarChartCloseBtn.onclick = function () {
-            xbarChartModal.style.display = "none";
-        };
+            var spcChartModal = document.getElementById("spcChartModal");
+            var spcChartCloseBtn = spcChartModal.getElementsByClassName("close")[0];
 
-        window.onclick = function (event) {
-            if (event.target == spcChartModal) {
+            document.getElementById('spcChart').addEventListener('click', function () {
+                spcChartModal.style.display = "block";
+                var ctxExpandedSpc = document.getElementById('expandedSpcChart').getContext('2d');
+                new Chart(ctxExpandedSpc, {
+                    type: 'line',
+                    data: spcChartData,
+                    options: spcChartOptions
+                });
+            });
+
+            spcChartCloseBtn.onclick = function () {
                 spcChartModal.style.display = "none";
-            }
-            if (event.target == xbarChartModal) {
+            };
+
+            var xbarChartModal = document.getElementById("xbarChartModal");
+            var xbarChartCloseBtn = xbarChartModal.getElementsByClassName("close")[0];
+
+            document.getElementById('xbarChart').addEventListener('click', function () {
+                xbarChartModal.style.display = "block";
+                var ctxExpandedXbar = document.getElementById('expandedXbarChart').getContext('2d');
+                new Chart(ctxExpandedXbar, {
+                    type: 'line',
+                    data: xbarChartData,
+                    options: xbarChartOptions
+                });
+            });
+
+            xbarChartCloseBtn.onclick = function () {
                 xbarChartModal.style.display = "none";
+            };
+
+            window.onclick = function (event) {
+                if (event.target == spcChartModal) {
+                    spcChartModal.style.display = "none";
+                }
+                if (event.target == xbarChartModal) {
+                    xbarChartModal.style.display = "none";
+                }
+            };
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            // Function to filter the Kontrol Parametresi dropdown based on the selected MalzemeAciklamasi
+            function filterKontrolParametresi() {
+                var selectedMalzeme = document.getElementById("MalzemeAciklamasi").value;
+                var parametreOptions = document.getElementsByClassName("parametre-option");
+
+                // Reset Kontrol Parametresi dropdown selection
+                document.getElementById("kontrolparametresi").value = "";
+
+                // Loop through the Kontrol Parametresi options and show/hide based on the selected MalzemeAciklamasi
+                for (var i = 0; i < parametreOptions.length; i++) {
+                    if (parametreOptions[i].getAttribute("data-malzeme") === selectedMalzeme) {
+                        parametreOptions[i].style.display = "block"; // Show option
+                    } else {
+                        parametreOptions[i].style.display = "none"; // Hide option
+                    }
+                }
             }
-        };
-    </script>
-         
+
+            // Save selected values to localStorage when the form is submitted
+            function saveSelectedValues() {
+                var selectedMalzeme = document.getElementById("MalzemeAciklamasi").value;
+                var selectedKontrolParametresi = document.getElementById("kontrolparametresi").value;
+
+                localStorage.setItem("selectedMalzeme", selectedMalzeme); // Save selected Malzeme
+                localStorage.setItem("selectedKontrolParametresi", selectedKontrolParametresi); // Save selected Kontrol Parametresi
+
+                return true; // Allow the form to submit
+            }
+
+            // Restore the selected values and filter options after the page reloads
+            window.onload = function () {
+                // Load previously selected MalzemeAciklamasi from localStorage
+                var storedMalzeme = localStorage.getItem("selectedMalzeme");
+                if (storedMalzeme) {
+                    document.getElementById("MalzemeAciklamasi").value = storedMalzeme;
+                }
+
+                // Filter the Kontrol Parametresi options based on the stored MalzemeAciklamasi
+                filterKontrolParametresi();
+
+                // Load previously selected Kontrol Parametresi from localStorage and restore the value
+                var storedKontrolParametresi = localStorage.getItem("selectedKontrolParametresi");
+                if (storedKontrolParametresi) {
+                    document.getElementById("kontrolparametresi").value = storedKontrolParametresi;
+                }
+            };
+        </script>
 
             }
             else
             {
-                <p class="no-results">Sonuç bulunamadı, verileri tekrar kontrol ediniz.</p>
+        <p class="no-results">Sonuç bulunamadı, verileri tekrar kontrol ediniz.</p>
             }
-        </div>
-    </div>
+</div>
+</div>
 </body>
 </html>

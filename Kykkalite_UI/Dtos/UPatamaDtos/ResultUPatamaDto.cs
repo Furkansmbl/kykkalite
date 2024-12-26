@@ -7,9 +7,12 @@
         public string ParametreKodu { get; set; } = null!;
 
         public int UrunId { get; set; }
+        
         public int ParametreId { get; set; }
 
         public string UpatamaKodu { get; set; } = null!;
+        public string MalzemeAciklamasi { get; set; } = null!;
+        public string KontrolParametresi { get; set; }
         public string Versiyon { get; set; }
 
         public string Tolerans { get; set; }

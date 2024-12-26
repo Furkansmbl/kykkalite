@@ -5,6 +5,8 @@
         public int UpaId { get; set; }
 
         public string ParametreKodu { get; set; } = null!;
+        public bool KullanimDurumu { get; set; }
+
 
         private int urunId;
         private int parametreId;

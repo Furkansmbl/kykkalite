@@ -10,65 +10,173 @@
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Hammadde Parametre Güncelleme Sayfası</h6>
                 <form method="post">
-                    <label>HmpaId</label>
-                    <input type="member" asp-for="HmpaId" class="form-control" />
-                    <br />
-                    <label>ParametreKodu</label>
-                    <input type="text" asp-for="ParametreKodu" class="form-control" />
-                    <br />
-                    <label>HammaddeId</label>
-                    <input type="member" asp-for="HammaddeId" class="form-control" />
-                    <br />
-                    <label>HmpatamaKodu</label>
-                    <input type="text" asp-for="HmpatamaKodu" class="form-control" />
-                    <br />
-                    <label>ParametreKritiklikSeviyesi</label>
-                    <select asp-for="ParametreKritiklikSeviyesi" class="form-select">
-                        <option value="true">Aktif</option>
-                        <option value="false">Pasif</option>
-                    </select>
-                    <br />
-                    <label>KontrolDegeriNominal</label>
-                    <input type="number" step="any" asp-for="KontrolDegeriNominal" class="form-control" />
-                    <br />
-                    <label>AltOnaySiniri</label>
-                    <input type="number" step="any" asp-for="AltOnaySiniri" class="form-control" />
-                    <br />
-                    <label>UstOnaySiniri</label>
-                    <input type="number" step="any" asp-for="UstOnaySiniri" class="form-control" />
-                    <br />
-                    <label>AltSartliKabulSiniri</label>
-                    <input type="number" step="any" asp-for="AltSartliKabulSiniri" class="form-control" />
-                    <br />
-                    <label>UstSartliKabulSiniri</label>
-                    <input type="number" step="any" asp-for="UstSartliKabulSiniri" class="form-control" />
-                    <br />
-                    <label>CihazId</label>
-                    <input type="member" asp-for="CihazId" class="form-control" />
-                    <br />
-                    <label>ReferansDokuman</label>
-                    <input type="text" asp-for="ReferansDokuman" class="form-control" />
-                    <br />
-                    <label>Aciklama</label>
-                    <input type="text" asp-for="Aciklama" class="form-control" />
-                    <br />
-                    <label>Fabrikalar</label>
-                    @Html.DropDownListFor(x => x.FabrikaId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
-                    <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
-                    <br />
-                    <label>EklenmeTarihi</label>
-                    <input type="datetime-local" class="form-control" asp-for="EklenmeTarihi" />
-                    <br />
-                    <label>KullanimDurumu</label>
-                    <select asp-for="KullanimDurumu" class="form-select">
-                        <option value="true">Aktif</option>
-                        <option value="false">Pasif</option>
-                    </select>
-                    <br />
+                    <div class="form-group">
+                        <label for="HmpaId">HmpaId</label>
+                        <input type="text" asp-for="HmpaId" class="form-control"  />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ParametreKodu">ParametreKodu</label>
+                        <input type="text" asp-for="ParametreKodu" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="HammaddeId">HammaddeId</label>
+                        <input type="member" asp-for="HammaddeId" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="HmpatamaKodu">HmpatamaKodu</label>
+                        <input type="text" asp-for="HmpatamaKodu" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ParametreKritiklikSeviyesi">ParametreKritiklikSeviyesi</label>
+                        <input type="text" asp-for="ParametreKritiklikSeviyesi" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="KontrolDegeriNominal">KontrolDegeriNominal</label>
+                        <input type="text" asp-for="KontrolDegeriNominal" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="AltOnaySiniri">AltOnaySiniri</label>
+                        <input type="text" asp-for="AltOnaySiniri" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="UstOnaySiniri">UstOnaySiniri</label>
+                        <input type="text" asp-for="UstOnaySiniri" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="AltSartliKabulSiniri">AltSartliKabulSiniri</label>
+                        <input type="text" asp-for="AltSartliKabulSiniri" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="UstSartliKabulSiniri">UstSartliKabulSiniri</label>
+                        <input type="text" asp-for="UstSartliKabulSiniri" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="CihazId">CihazId</label>
+                        <input type="text" asp-for="CihazId" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ReferansDokuman">ReferansDokuman</label>
+                        <input type="text" asp-for="ReferansDokuman" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Aciklama">Aciklama</label>
+                        <input type="text" asp-for="Aciklama" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="MevcutPartiBuyuklugu">MevcutPartiBuyuklugu</label>
+                        <input type="text" asp-for="MevcutPartiBuyuklugu" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="TedarikSikligi">TedarikSikligi</label>
+                        <input type="text" asp-for="TedarikSikligi" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="TedarikSikligiOrtalama">TedarikSikligiOrtalama</label>
+                        <input type="text" asp-for="TedarikSikligiOrtalama" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="TedarikSikligiBirim">TedarikSikligiBirim</label>
+                        <input type="text" asp-for="TedarikSikligiBirim" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Versiyon">Versiyon</label>
+                        <input type="text" asp-for="Versiyon" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="FabrikaId">FabrikaId</label>
+                        <input type="text" asp-for="FabrikaId" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PersonelSicilNo">PersonelSicilNo</label>
+                        <input type="text" asp-for="PersonelSicilNo" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="EklenmeTarihi">EklenmeTarihi</label>
+                        <input type="text" asp-for="OlusturmaTarihi" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="KullanimDurumu">KullanimDurumu</label>
+                        <input type="text" asp-for="KullanimDurumu" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Tolerans">Tolerans</label>
+                        <input type="text" asp-for="Tolerans" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ParametreYonu">ParametreYonu</label>
+                        <input type="text" asp-for="ParametreYonu" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="ParametreID">ParametreID</label>
+                        <input type="text" asp-for="ParametreID" class="form-control" />
+                    </div>
+
                     <button class="btn btn-success">Hammadde Parametre Güncelle</button>
                 </form>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Set values from URL query parameters to corresponding input fields
+            document.querySelector('input[name="HmpaId"]').value = urlParams.get('HmpaId');
+            document.querySelector('input[name="ParametreKodu"]').value = urlParams.get('ParametreKodu');
+            document.querySelector('input[name="HammaddeId"]').value = urlParams.get('HammaddeId');
+            document.querySelector('input[name="HmpatamaKodu"]').value = urlParams.get('HmpatamaKodu');
+            document.querySelector('input[name="ParametreKritiklikSeviyesi"]').value = urlParams.get('ParametreKritiklikSeviyesi');
+            document.querySelector('input[name="KontrolDegeriNominal"]').value = urlParams.get('KontrolDegeriNominal');
+            document.querySelector('input[name="AltOnaySiniri"]').value = urlParams.get('AltOnaySiniri');
+            document.querySelector('input[name="UstOnaySiniri"]').value = urlParams.get('UstOnaySiniri');
+            document.querySelector('input[name="AltSartliKabulSiniri"]').value = urlParams.get('AltSartliKabulSiniri');
+            document.querySelector('input[name="UstSartliKabulSiniri"]').value = urlParams.get('UstSartliKabulSiniri');
+            document.querySelector('input[name="CihazId"]').value = urlParams.get('CihazId');
+            document.querySelector('input[name="ReferansDokuman"]').value = urlParams.get('ReferansDokuman');
+            document.querySelector('input[name="Aciklama"]').value = urlParams.get('Aciklama') || '-';
+            document.querySelector('input[name="MevcutPartiBuyuklugu"]').value = urlParams.get('MevcutPartiBuyuklugu');
+            document.querySelector('input[name="TedarikSikligi"]').value = urlParams.get('TedarikSikligi');
+            document.querySelector('input[name="TedarikSikligiOrtalama"]').value = urlParams.get('TedarikSikligiOrtalama');
+            document.querySelector('input[name="TedarikSikligiBirim"]').value = urlParams.get('TedarikSikligiBirim');
+            document.querySelector('input[name="Versiyon"]').value = urlParams.get('Versiyon');
+            document.querySelector('input[name="FabrikaId"]').value = urlParams.get('FabrikaId');
+            document.querySelector('input[name="PersonelSicilNo"]').value = urlParams.get('PersonelSicilNo');
+            document.querySelector('input[name="OlusturmaTarihi"]').value = urlParams.get('EklenmeTarihi');
+            document.querySelector('input[name="KullanimDurumu"]').value = urlParams.get('KullanimDurumu');
+            document.querySelector('input[name="Tolerans"]').value = urlParams.get('Tolerans');
+            document.querySelector('input[name="ParametreID"]').value = urlParams.get('ParametreID');
+            document.querySelector('input[name="ParametreYonu"]').value = urlParams.get('ParametreYonu');
+
+            const toleransValue = parseFloat(urlParams.get('Versiyon'));
+            if (!isNaN(toleransValue)) {
+                document.querySelector('input[name="Versiyon"]').value = toleransValue + 1;
+            } else {
+                document.querySelector('input[name="Versiyon"]').value = '';
+            }
+        });
+    </script>
 
 

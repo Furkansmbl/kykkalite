@@ -15,6 +15,7 @@
         public string Tolerans { get; set; }
         public string ParametreYonu { get; set; }
 
+        public bool KullanimDurumu { get; set; }
         public string ParametreKritiklikSeviyesi { get; set; }
 
         public string KontrolDegeriNominal { get; set; }
@@ -31,7 +32,7 @@
 
         public string ReferansDokuman { get; set; } = null!;
 
-        public string Aciklama { get; set; } = null!;
+        public string Aciklama { get; set; } = "-";
 
         public string OrneklemSikligi { get; set; } = null!;
 

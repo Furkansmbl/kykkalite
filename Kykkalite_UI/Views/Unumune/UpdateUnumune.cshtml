@@ -41,6 +41,15 @@
                 <label>Amir Onay Durumu</label>
                 <input type="text" asp-for="AmirOnayDurumu" class="form-control" />
                 <br />
+                    <label>trend</label>
+                    <input type="text" asp-for="Trend" class="form-control" />
+                    <br />
+                    <label>hatAdiAciklamasi</label>
+                    <input type="text" asp-for="HatAdiAciklamasi" class="form-control" />
+                <br />
+                    <label>token</label>
+                    <input type="text" asp-for="Token" class="form-control" />
+                    <br />
                 <label>Olusturma Tarihi</label>
                     <input type="text" asp-for="OlusturmaTarihi" class="form-control" />
                     <br />
@@ -63,17 +72,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const urlParams = new URLSearchParams(window.location.search);
-            document.getElementById('NumuneId').value = urlParams.get('NumuneId');
-            document.getElementById('UrunId').value = urlParams.get('UrunId');
-            document.getElementById('SiraNo').value = urlParams.get('SiraNo');
-            document.getElementById('UretimTarihi').value = urlParams.get('UretimTarihi');
-            document.getElementById('KontrolSaati').value = urlParams.get('KontrolSaati');
-            document.getElementById('NumuneSeriNoSarjNo').value = urlParams.get('NumuneSeriNoSarjNo');
-            document.getElementById('MudahaleVarmi').value = urlParams.get('MudahaleVarmi');
-            document.getElementById('Aciklama').value = urlParams.get('Aciklama');
-            document.getElementById('OnayDurumu').value = urlParams.get('OnayDurumu');
-            document.getElementById('AmirOnayDurumu').value = urlParams.get('AmirOnayDurumu');
-            document.getElementById('OlusturmaTarihi').value = urlParams.get('OlusturmaTarihi');
+            document.getElementById('NumuneId').value = urlParams.get('numuneId');
+            document.getElementById('UrunId').value = urlParams.get('urunId');
+            document.getElementById('SiraNo').value = urlParams.get('siraNo');
+            document.getElementById('UretimTarihi').value = urlParams.get('uretimTarihi');
+            document.getElementById('KontrolSaati').value = urlParams.get('kontrolSaati');
+            document.getElementById('NumuneSeriNoSarjNo').value = urlParams.get('numuneSeriNoSarjNo');
+            document.getElementById('MudahaleVarmi').value = urlParams.get('mudahaleVarmi');
+            document.getElementById('Aciklama').value = urlParams.get('aciklama');
+            document.getElementById('OnayDurumu').value = urlParams.get('onayDurumu');
+            document.getElementById('AmirOnayDurumu').value = urlParams.get('amirOnayDurumu');
+            document.getElementById('OlusturmaTarihi').value = urlParams.get('olusturmaTarihi');
+            document.getElementById('HatAdiAciklamasi').value = urlParams.get('hatAdiAciklamasi');
+            document.getElementById('Trend').value = urlParams.get('trend');
+            document.getElementById('Token').value = urlParams.get('token');
 
 
         });

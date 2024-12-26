@@ -6,7 +6,10 @@
 
         public int HammaddeId { get; set; }
 
+        public string THMID { get; set; }
         public string SiraNo { get; set; }
+        public string UNVANI { get; set; }
+        public string MalzemeAciklamasi { get; set; }
 
         public string Tarihi { get; set; }
 

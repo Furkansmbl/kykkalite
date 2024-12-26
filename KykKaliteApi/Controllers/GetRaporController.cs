@@ -16,9 +16,15 @@ namespace KykKaliteApi.Controllers
             _getRaporRepository = getRaporRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetRaporDtosAsync([FromQuery] int FabrikaId, [FromQuery] string malzemeAciklamasi, [FromQuery] string OlusturmaTarihi, [FromQuery] string BitisTarihi)
+        public async Task<IActionResult> GetRaporDtosAsync([FromQuery] int FabrikaId, [FromQuery] string malzemeAciklamasi, [FromQuery] string OlusturmaTarihi,[FromQuery] string BitisTarihi)
         {
             var value = await _getRaporRepository.GetRaporDtosAsync(FabrikaId, malzemeAciklamasi, OlusturmaTarihi, BitisTarihi);
+            return Ok(value);
+        }
+        [HttpGet("hm")]
+        public async Task<IActionResult> GetRaporHammaddeDtosAsync([FromQuery] int FabrikaId, [FromQuery] string malzemeAciklamasi, [FromQuery] string OlusturmaTarihi, [FromQuery] string BitisTarihi, [FromQuery] string UNVANI)
+        {
+            var value = await _getRaporRepository.GetRaporHammaddeDtosAsync(FabrikaId, malzemeAciklamasi, OlusturmaTarihi, BitisTarihi, UNVANI);
             return Ok(value);
         }
         [HttpGet("not")]

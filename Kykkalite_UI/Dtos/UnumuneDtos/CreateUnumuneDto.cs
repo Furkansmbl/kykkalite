@@ -6,8 +6,12 @@
         public string malzemeAciklamasi { get; set; }
 
         public int NumuneId { get; set; }
+        public string HatAdiAciklamasi { get; set; }
+        public string TrendYonu { get; set; } = "-";
 
         public int UrunId { get; set; }
+        public string FabrikaId { get; set; }
+        public string LatestNumuneID { get; set; }
 
         public string SiraNo { get; set; }
 
@@ -22,7 +26,7 @@
 
         public bool OnayDurumu { get; set; }
 
-        public string AmirOnayDurumu { get; set; }
+        public string AmirOnayDurumu { get; set; } = "1";
 
         public string Versiyon { get; set; }
         public string OlusturmaTarihi { get; set; }
@@ -46,7 +50,7 @@
         public string Value13 { get; set; } = "-";
         public string Value14 { get; set; } = "-";
         public string Value15 { get; set; } = "-";
-        public string Trend { get; set; } = "-";
+        public string Trend { get; set; } = "1";
         public string Trend1 { get; set; } = "-";
         public string Trend2 { get; set; } = "-";
         public string Trend3 { get; set; } = "-";
@@ -78,6 +82,10 @@
         public string KontrolParametresi9 { get; set; } = "-";
         public string KontrolParametresi10 { get; set; } = "-";
         public string KontrolParametresi11 { get; set; } = "-";
+        public string KontrolParametresi12 { get; set; } = "-";
+        public string KontrolParametresi13 { get; set; } = "-";
+        public string KontrolParametresi14 { get; set; } = "-";
+        public string KontrolParametresi15 { get; set; } = "-";
         public string AltSartliKabulSiniri { get; set; } = "-";
         public string AltSartliKabulSiniri1 { get; set; } = "-";
         public string AltSartliKabulSiniri2 { get; set; } = "-";

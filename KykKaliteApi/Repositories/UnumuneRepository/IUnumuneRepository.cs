@@ -9,6 +9,9 @@ namespace KykKaliteApi.Repositories.UnumuneRepository
     {
         Task<List<ResultUnumuneDto>> GetAllUnumuneAsync();
         void CreateUnumune(CreateUnumuneDto createUnumuneDto);
+        void CreateUnumuneManuel(CreateUnumuneManuelDto  createUnumuneManuelDto);
+        void SendUnumune(CreateUnumuneDto createUnumuneDto);
+        void TrendMailUnumune(CreateUnumuneDto createUnumuneDto);
         void DeleteUnumune(int id);
         void UpdateUnumune(UpdateUnumuneDto updateUnumuneDto);
         Task UpdateAmir(AmirOnayDurumuUnumuneDto amirOnayDurumuUnumuneDto);

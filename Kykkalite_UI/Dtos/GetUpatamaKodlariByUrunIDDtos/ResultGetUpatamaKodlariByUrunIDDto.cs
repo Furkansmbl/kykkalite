@@ -6,7 +6,11 @@
         public int NumuneId { get; set; }
         public string MalzemeAciklamasi { get; set; } = null!;
         public string KontrolSaati { get; set; }
-
+        public string HatAdiAciklamasi { get; set; } 
+        public string LatestNumuneID { get; set; }
+        public string DashCount { get; set; }
+        public int FabrikaId { get; set; }
+        public string ParametreKritiklikSeviyesi { get; set; }
 
         public int UrunId { get; set; }
 
@@ -14,6 +18,11 @@
         public string SiraNo { get; set; }
 
         public string UretimTarihi { get; set; }
+
+        public List<double> Averages { get; set; } = new List<double>();
+        public List<double> StandardDeviations { get; set; } = new List<double>();
+        public List<double> ErrorLimits { get; set; } = new List<double>();
+        public string Hesaplama { get; set; }
 
         public string NumuneSeriNoSarjNo { get; set; }
 
@@ -28,6 +37,7 @@
         public string EklenmeTarihi { get; set; }
 
         public string PersonelSicilNo { get; set; } = null!;
+        public string Trend { get; set; }
         public string Value { get; set; } = null!;
         public double AltOnaySiniri { get; set; }
         public DateTime GuncellenmeTarihi { get; set; }

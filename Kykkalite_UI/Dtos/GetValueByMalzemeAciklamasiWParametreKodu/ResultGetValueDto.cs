@@ -4,6 +4,10 @@
     {
         public string Value { get; set; } = null!;
         public string KontrolParametresi { get; set; } = null!;
+        public string UNVANI { get; set; } 
+        public int fabrikaId { get; set; } 
+
+        public string malzemeaciklamasi { get; set; } = null!;
         public double AltOnaySiniri { get; set; }
 
         public double UstOnaySiniri { get; set; }

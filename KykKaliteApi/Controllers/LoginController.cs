@@ -21,7 +21,7 @@ namespace KykKaliteApi.Controllers
         public async Task<IActionResult> SignIn(CreateLoginDto createLoginDto)
         {
             string query = "SELECT * FROM Kullanici WHERE PersonelSicilNo = @personelSicilNo AND Password = @password";
-            string query2 = "SELECT PersonelAdiSoyadi, AdminUser FROM Kullanici WHERE PersonelSicilNo = @personelSicilNo AND Password = @password";
+            string query2 = "SELECT PersonelAdiSoyadi, AdminUser, FabrikaId FROM Kullanici WHERE PersonelSicilNo = @personelSicilNo AND Password = @password";
 
             var parameters = new DynamicParameters();
             parameters.Add("@personelSicilNo", createLoginDto.PersonelSicilNo);
@@ -36,6 +36,7 @@ namespace KykKaliteApi.Controllers
                 {
                     GetCheckAppUserDto model = new GetCheckAppUserDto
                     {
+                        FabrikaId = userDetails.FabrikaId,
                         PersonelSicilNo = user.PersonelSicilNo,
                         PersonelAdiSoyadi = userDetails.PersonelAdiSoyadi,
                         AdminUser = userDetails.AdminUser

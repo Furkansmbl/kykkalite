@@ -2,13 +2,49 @@
 {
     public class CreateHMPatamaDto
     {
-        public int HmpaId { get; set; }
+        private int hammaddeId;
+        private int parametreId;
+        private int fabrikaId;
+        public int HammaddeId
+        {
+            get { return hammaddeId; }
+            set
+            {
+                hammaddeId = value;
+                UpdateHMatamaKodu();
+            }
+        }
+        public int ParametreId
+        {
+            get { return parametreId; }
+            set
+            {
+                parametreId = value;
+                UpdateHMatamaKodu();
+            }
+        }
+        public int FabrikaId
+        {
+            get { return fabrikaId; }
+            set
+            {
+                fabrikaId = value;
+                UpdateHMatamaKodu();
+            }
+        }
+        public string HMPAtamaKodu { get; private set; }
+        public string Versiyon { get; set; } = "1";
+        public string MevcutPartiBuyuklugu { get; set; }
+        public string TedarikSikligi { get; set; }
+        public string TedarikSikligiOrtalama { get; set; }
+        public string TedarikSikligiBirim { get; set; }
+        public string ParametreYonu { get; set; }
 
+        private void UpdateHMatamaKodu()
+        {
+            HMPAtamaKodu = $"{hammaddeId}+{ParametreId}+{fabrikaId}";
+        }
         public string ParametreKodu { get; set; } = null!;
-
-        public int HammaddeId { get; set; }
-
-        public string HmpatamaKodu { get; set; } = null!;
 
         public bool ParametreKritiklikSeviyesi { get; set; }
 
@@ -28,11 +64,10 @@
 
         public string Aciklama { get; set; } = null!;
 
-        public int FabrikaId { get; set; }
 
         public string PersonelSicilNo { get; set; } = null!;
+        public string OlusturmaTarihi { get; set; }
 
-        public DateTime EklenmeTarihi { get; set; }
 
         public bool KullanimDurumu { get; set; }
     }

@@ -1,0 +1,711 @@
+﻿@using Kykkalite_UI.Dtos.DashboardDtos
+@using Newtonsoft.Json
+@model List<Kykkalite_UI.Dtos.DashboardDtos.UrunDegKatDto>
+
+@{
+    var hammaddelerList = ViewBag.HammaddelerList as List<Kykkalite_UI.Dtos.DashboardDtos.UrunDegKatDto>;
+    ViewData["Title"] = "Dashboard";
+    Layout = "";
+}
+
+<style>
+    .styled-button {
+        display: inline-block;
+        padding: 12px 24px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg, #4caf50, #81c784);
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .styled-button:hover {
+            background: linear-gradient(135deg, #388e3c, #66bb6a);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .styled-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+    .container {
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .left-panel, .middle-panel, .right-panel {
+        flex: 1;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .left-panel {
+        background-color: #f9f9f9;
+    }
+
+    .middle-panel {
+        font-size: 18px; 
+    }
+
+        .middle-panel canvas {
+            width: 100% !important; 
+            height: auto !important;
+            transform: scale(1.04125);
+            transform-origin: top center;
+            margin-bottom: 40px;
+        }
+
+        .middle-panel div {
+            width: 80%; 
+            margin: 0 auto;
+        }
+
+    .right-panel {
+        text-align: center;
+        background-color: #f9f9f9;
+    }
+
+    h2, h3 {
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    canvas {
+        margin: 10px auto;
+        display: block;
+    }
+</style>
+
+<div class="container">
+    <div class="left-panel">
+        <h2 style="text-align: center; margin-bottom: 20px;">HAMMADDE DEĞİŞİM KATSAYISI SIRALAMASI</h2>
+        <canvas id="eskisehirDegKatChart" width="1500" height="600"></canvas>
+        <canvas id="adanaDegKatChart" width="1500" height="600"></canvas>
+        <canvas id="diyarbakirDegKatChart" width="1500" height="600"></canvas>
+        <canvas id="samsunDegKatChart" width="1500" height="600"></canvas>
+    </div>
+
+    <div class="middle-panel">
+        <h1 style="text-align: center; margin-bottom: 40px;">KALİTE KONTROL HAMMADDE ONAY DAĞILIMI</h1>
+        <div style="width: 60%; margin: 0 auto; margin-bottom: 40px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">Eskisehir Onay Dağılımları</h2>
+            <canvas id="eskisehirDoughnutChart"></canvas>
+
+            <h2 style="text-align: center; margin-bottom: 20px;">Adana Onay Dağılımları</h2>
+            <canvas id="adanaDoughnutChart"></canvas>
+        </div>
+    </div>
+    <div class="right-panel">
+        <h1 style="text-align: center; margin-bottom: 20px;">TEDARİKÇİ BAZLI UYGUNSUZLUK ORANI</h1>
+
+        <canvas id="eskisehirChart" width="1500" height="600"></canvas>
+        <canvas id="adanaChart" width="1500" height="600"></canvas>
+        <canvas id="diyarbakirChart" width="1500" height="600"></canvas>
+        <canvas id="samsunChart" width="1500" height="600"></canvas>
+
+        <canvas id="eskisehirSartliChart" width="1500" height="600" style="display: none;"></canvas>
+        <canvas id="adanaSartliChart" width="1500" height="600" style="display: none;"></canvas>
+        <canvas id="diyarbakirSartliChart" width="1500" height="600" style="display: none;"></canvas>
+        <canvas id="samsunSartliChart" width="1500" height="600" style="display: none;"></canvas>
+
+        <button id="nextButton" class="styled-button">Next Charts</button>
+    </div>
+
+
+</div>
+
+
+@{
+    ViewBag.Title = "Doughnut Chart Example";
+    var eskisehirOnay = ViewBag.EskisehirOnay;
+    var adanaOnay = ViewBag.AdanaOnay;
+
+    int onayCount = 0;
+    int sartliOnayCount = 0;
+    int redCount = 0;
+
+    if (eskisehirOnay != null)
+    {
+        int.TryParse(eskisehirOnay.Onay?.ToString(), out onayCount);
+        int.TryParse(eskisehirOnay.SartliOnaySayisi?.ToString(), out sartliOnayCount);
+        int.TryParse(eskisehirOnay.RedSayisi?.ToString(), out redCount);
+    }
+
+    int adanaOnayCount = 0;
+    int adanaSartliOnayCount = 0;
+    int adanaRedCount = 0;
+
+    if (adanaOnay != null)
+    {
+        int.TryParse(adanaOnay.Onay?.ToString(), out adanaOnayCount);
+        int.TryParse(adanaOnay.SartliOnaySayisi?.ToString(), out adanaSartliOnayCount);
+        int.TryParse(adanaOnay.RedSayisi?.ToString(), out adanaRedCount);
+    }
+
+    var labels = new[] { "Onay", "Sartlı Onay", "Red" };
+    var eskisehirData = new[] { onayCount, sartliOnayCount, redCount };
+    var adanaData = new[] { adanaOnayCount, adanaSartliOnayCount, adanaRedCount };
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doughnut Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script>
+        const eskisehirLabels = @Html.Raw(Json.Serialize(labels));
+        const eskisehirData = @Html.Raw(Json.Serialize(eskisehirData));
+        const eskisehirColors = [
+            'rgba(0, 0, 139, 0.6)',
+            'rgba(255, 255, 0, 0.6)', 
+            'rgba(255, 0, 0, 0.6)'    
+        ];
+
+        const adanaLabels = @Html.Raw(Json.Serialize(labels));
+        const adanaData = @Html.Raw(Json.Serialize(adanaData));
+        const adanaColors = [
+            'rgba(0, 0, 139, 0.6)',
+            'rgba(255, 255, 0, 0.6)',
+            'rgba(255, 0, 0, 0.6)'   
+        ];
+
+        function calculatePercentage(value, total) {
+            return ((value / total) * 100).toFixed(2) + '%';
+        }
+
+        const eskisehirCtx = document.getElementById('eskisehirDoughnutChart').getContext('2d');
+        const eskisehirDoughnutChart = new Chart(eskisehirCtx, {
+            type: 'doughnut',
+            data: {
+                labels: eskisehirLabels,
+                datasets: [{
+                    label: 'Eskisehir Onay Durumları',
+                    data: eskisehirData,
+                    backgroundColor: eskisehirColors,
+                    borderColor: eskisehirColors.map(color => color.replace('0.6', '1')), 
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { size: 30 }
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: { size: 26 },
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: 'white',
+                        font: { size: 24, weight: 'bold' }, 
+                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+                        formatter: (value, context) => {
+                            const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                            return calculatePercentage(value, total);
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        const adanaCtx = document.getElementById('adanaDoughnutChart').getContext('2d');
+        const adanaDoughnutChart = new Chart(adanaCtx, {
+            type: 'doughnut',
+            data: {
+                labels: adanaLabels,
+                datasets: [{
+                    label: 'Adana Onay Durumları',
+                    data: adanaData,
+                    backgroundColor: adanaColors,
+                    borderColor: adanaColors.map(color => color.replace('0.6', '1')),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { size: 30 }
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: { size: 26 },
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: 'white',
+                        font: { size: 24, weight: 'bold' }, 
+                        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)', 
+                        formatter: (value, context) => {
+                            const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                            return calculatePercentage(value, total);
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var eskisehirData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.EskisehirDegKat));
+        var eskisehirLabels = eskisehirData.map(item => item.MalzemeAciklamasi);
+        var eskisehirDegisimKatsayisi = eskisehirData.map(item => item.DegisimKatsayisi);
+
+        var adanaData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.AdanaDegKat));
+        var adanaLabels = adanaData.map(item => item.MalzemeAciklamasi);
+        var adanaDegisimKatsayisi = adanaData.map(item => item.DegisimKatsayisi);
+
+        var diyarbakirData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.DiyarbakirDegKat));
+        var diyarbakirLabels = diyarbakirData.map(item => item.MalzemeAciklamasi);
+        var diyarbakirDegisimKatsayisi = diyarbakirData.map(item => item.DegisimKatsayisi);
+
+        var samsunData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.SamsunDegKat));
+        var samsunLabels = samsunData.map(item => item.MalzemeAciklamasi);
+        var samsunDegisimKatsayisi = samsunData.map(item => item.DegisimKatsayisi);
+
+        var eskisehirDegKatCtx = document.getElementById('eskisehirDegKatChart').getContext('2d');
+        new Chart(eskisehirDegKatCtx, {
+            type: 'bar', 
+            data: {
+                labels: eskisehirLabels,
+                datasets: [{
+                    label: 'Eskisehir Degisim Katsayisi',
+                    data: eskisehirDegisimKatsayisi,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 26
+                            }
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 24
+                        }
+                    }
+                }
+            }
+        });
+
+        var adanaDegKatCtx = document.getElementById('adanaDegKatChart').getContext('2d');
+        new Chart(adanaDegKatCtx, {
+            type: 'bar',
+            data: {
+                labels: adanaLabels,
+                datasets: [{
+                    label: 'Adana Degisim Katsayisi',
+                    data: adanaDegisimKatsayisi,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 26
+                            }
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 24
+                        }
+                    }
+                }
+            }
+        });
+
+        var diyarbakirDegKatCtx = document.getElementById('diyarbakirDegKatChart').getContext('2d');
+        new Chart(diyarbakirDegKatCtx, {
+            type: 'bar', // Horizontal bar chart
+            data: {
+                labels: diyarbakirLabels,
+                datasets: [{
+                    label: 'Diyarbakir Degisim Katsayisi',
+                    data: diyarbakirDegisimKatsayisi,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 26
+                            }
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 24
+                        }
+                    }
+                }
+            }
+        });
+
+        var samsunDegKatCtx = document.getElementById('samsunDegKatChart').getContext('2d');
+        new Chart(samsunDegKatCtx, {
+            type: 'bar',
+            data: {
+                labels: samsunLabels,
+                datasets: [{
+                    label: 'Samsun Degisim Katsayisi',
+                    data: samsunDegisimKatsayisi,
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 24
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 26
+                            }
+                        }
+                    },
+                    tooltip: {
+                        bodyFont: {
+                            size: 24
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var eskisehirData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.EskisehirSartli));
+        var eskisehirLabels = eskisehirData.map(item => item.UNVANI);
+        var eskisehirSartliCounts = eskisehirData.map(item => item.SartliOnayOrani * 100); // 100 ile çarpıldı
+
+        var adanaData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.AdanaSartli));
+        var adanaLabels = adanaData.map(item => item.UNVANI);
+        var adanaSartliCounts = adanaData.map(item => item.SartliOnayOrani * 100); 
+
+        var diyarbakirData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.DiyarbakirSartli));
+        var diyarbakirLabels = diyarbakirData.map(item => item.UNVANI);
+        var diyarbakirSartliCounts = diyarbakirData.map(item => item.SartliOnayOrani * 100); 
+
+        var samsunData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.SamsunSartli));
+        var samsunLabels = samsunData.map(item => item.UNVANI);
+        var samsunSartliCounts = samsunData.map(item => item.SartliOnayOrani * 100); 
+
+        function createChart(ctx, labels, data, label, backgroundColor, borderColor) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 30
+                                },
+                                callback: function (value) {
+                                    return value + '%'; 
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    size: 30
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 30
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.raw + '%'; 
+                                }
+                            },
+                            bodyFont: {
+                                size: 30
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        var eskisehirSartliChartCtx = document.getElementById('eskisehirSartliChart').getContext('2d');
+        createChart(eskisehirSartliChartCtx, eskisehirLabels, eskisehirSartliCounts, 'Eskisehir Sartli Onay ', 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)');
+
+        var adanaSartliChartCtx = document.getElementById('adanaSartliChart').getContext('2d');
+        createChart(adanaSartliChartCtx, adanaLabels, adanaSartliCounts, 'Adana Sartli Onay ', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)');
+
+        var diyarbakirSartliChartCtx = document.getElementById('diyarbakirSartliChart').getContext('2d');
+        createChart(diyarbakirSartliChartCtx, diyarbakirLabels, diyarbakirSartliCounts, 'Diyarbakir Sartli Onay ', 'rgba(153, 102, 255, 0.2)', 'rgba(153, 102, 255, 1)');
+
+        var samsunSartliChartCtx = document.getElementById('samsunSartliChart').getContext('2d');
+        createChart(samsunSartliChartCtx, samsunLabels, samsunSartliCounts, 'Samsun Sartli Onay ', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)');
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var eskisehirData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.EskisehirRed));
+        var eskisehirLabels = eskisehirData.map(item => item.UNVANI);
+        var eskisehirRedCounts = eskisehirData.map(item => item.RedOrani * 100); 
+
+        var adanaData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.AdanaRed));
+        var adanaLabels = adanaData.map(item => item.UNVANI);
+        var adanaRedCounts = adanaData.map(item => item.RedOrani * 100); 
+
+        var diyarbakirData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.DiyarbakirRed));
+        var diyarbakirLabels = diyarbakirData.map(item => item.UNVANI);
+        var diyarbakirRedCounts = diyarbakirData.map(item => item.RedOrani * 100); 
+
+        var samsunData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.SamsunRed));
+        var samsunLabels = samsunData.map(item => item.UNVANI);
+        var samsunRedCounts = samsunData.map(item => item.RedOrani * 100); 
+
+        function createChart(ctx, labels, data, label, backgroundColor, borderColor) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: {
+                                    size: 30 
+                                },
+                                callback: function (value) {
+                                    return value + '%'; 
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: {
+                                    size: 30 
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 30 
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.raw + '%'; 
+                                }
+                            },
+                            bodyFont: {
+                                size: 30 
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        var eskisehirCtx = document.getElementById('eskisehirChart').getContext('2d');
+        createChart(eskisehirCtx, eskisehirLabels, eskisehirRedCounts, 'Eskisehir Red ', 'rgba(54, 162, 235, 0.2)', 'rgba(54, 162, 235, 1)');
+
+        var adanaCtx = document.getElementById('adanaChart').getContext('2d');
+        createChart(adanaCtx, adanaLabels, adanaRedCounts, 'Adana Red ', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 99, 132, 1)');
+
+        var diyarbakirCtx = document.getElementById('diyarbakirChart').getContext('2d');
+        createChart(diyarbakirCtx, diyarbakirLabels, diyarbakirRedCounts, 'Diyarbakir Red ', 'rgba(153, 102, 255, 0.2)', 'rgba(153, 102, 255, 1)');
+
+        var samsunCtx = document.getElementById('samsunChart').getContext('2d');
+        createChart(samsunCtx, samsunLabels, samsunRedCounts, 'Samsun Red ', 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)');
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const redCharts = ['eskisehirChart', 'adanaChart', 'diyarbakirChart', 'samsunChart'];
+        const sartliCharts = ['eskisehirSartliChart', 'adanaSartliChart', 'diyarbakirSartliChart', 'samsunSartliChart'];
+
+        const allChartGroups = [redCharts, sartliCharts];
+        let currentGroupIndex = 0;
+
+        function showNextGroup() {
+            [...redCharts, ...sartliCharts].forEach(chartId => {
+                document.getElementById(chartId).style.display = 'none';
+            });
+
+            const currentGroup = allChartGroups[currentGroupIndex];
+            currentGroup.forEach(chartId => {
+                document.getElementById(chartId).style.display = 'block';
+            });
+
+            currentGroupIndex = (currentGroupIndex + 1) % allChartGroups.length;
+        }
+
+        showNextGroup();
+
+        document.getElementById('nextButton').addEventListener('click', showNextGroup);
+    });
+</script>

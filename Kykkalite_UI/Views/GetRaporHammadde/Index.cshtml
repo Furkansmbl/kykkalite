@@ -1,0 +1,455 @@
+﻿@using static Kykkalite_UI.Controllers.GetRaporHammaddeController
+@using System.Text.Json
+@using System.Text.Encodings.Web
+
+@model QueryViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "";
+    var initialStartDate = new DateTime(2000, 1, 1).ToString("yyyy-MM-dd");
+    var initialEndDate = DateTime.Now.ToString("yyyy-MM-dd");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 90%;
+            max-width: 1400px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 900px;
+        }
+
+        .results-container {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            max-height: 100%;
+        }
+
+
+        .chart-section {
+            width: 100%;
+            height: 675px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas#pieChart {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .form-group label {
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="number"],
+            .form-group input[type="date"],
+            .form-group select {
+                padding: 15px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                margin-top: 5px;
+                font-size: 18px;
+                background-color: #fff;
+                transition: border-color 0.3s;
+                width: 100%;
+            }
+
+                .form-group input:focus,
+                .form-group select:focus {
+                    border-color: #007bff;
+                    outline: none;
+                }
+
+            .form-group button {
+                padding: 12px 24px;
+                background-color: #007bff;
+                border: none;
+                color: #fff;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-size: 18px;
+            }
+
+                .form-group button:hover {
+                    background-color: #0056b3;
+                }
+
+        table {
+            width: 95%;
+            background-color: #fff;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .results-container {
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .no-results {
+            margin-top: 20px;
+            color: #dc3545;
+            text-align: center;
+        }
+
+        .filter-buttons {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+            .filter-buttons button {
+                padding: 10px 20px;
+                margin: 0 5px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+                .filter-buttons button:hover {
+                    background-color: #0056b3;
+                }
+
+        .percentages-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .percentages {
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+
+        .form-group {
+            flex: 1;
+            max-width: 100%;
+        }
+
+            .form-group:nth-child(1) {
+                margin-bottom: 25px;
+            }
+
+            .form-group:nth-child(2) {
+                margin-bottom: 25px;
+            }
+
+            .form-group:nth-child(3) {
+                margin-bottom: 25px;
+            }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-group">
+                <td><a href="/Urunler/Index" class="btn btn-outline-success">Ana Sayfaya Git</a></td>
+
+            </div>
+
+            <h2>Hammadde Rapor</h2>
+            <form method="post" onsubmit="saveFormValues()">
+                <div class="form-group">
+                    <label for="fabrikaId">Fabrika Adı:</label>
+                    <select id="fabrikaId" name="fabrikaId" required>
+                        <option value="1">ESKİŞEHİR</option>
+                        <option value="2">ADANA</option>
+                        <option value="3">DİYARBAKIR</option>
+                        <option value="4">SAMSUN</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
+                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control", id = "malzemeAciklamasi" })
+                </div>
+                <div class="form-group">
+                    <label for="UNVANI">Unvanı:</label>
+                    @Html.DropDownList("UNVANI", (List<SelectListItem>)ViewBag.TedarikciList, new { @class = "form-control", id = "UNVANI" })
+                </div>
+                <div class="form-group">
+                    <label for="olusturmaTarihi">Oluşturma Tarihi:</label>
+                    <input type="date" id="olusturmaTarihi" name="olusturmaTarihi" value="@initialStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="bitisTarihi">Bitiş Tarihi:</label>
+                    <input type="date" id="bitisTarihi" name="bitisTarihi" value="@initialEndDate" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit"><i class="fas fa-search"></i> Query</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="results-container">
+            <div>
+                <canvas id="pieChart" width="400" height="400"></canvas>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnSartliOnay" class="filter-button" data-filter="SartliOnay">Sartli Onay</button>
+                    <button id="btnRed" class="filter-button" data-filter="Red">Red</button>
+                    <button id="btnOnay" class="filter-button" data-filter="Onay">Onay</button>
+                    <button id="btnGenel" class="filter-button" data-filter="Genel">Genel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-container">
+            @if (Model != null && Model.ResultSet != null && Model.ResultSet.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NumuneId</th>
+                            <th>Değer</th>
+                            <th>Kontrol Parametresi</th>
+                            <th>Amir Onay Durumu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultBody">
+                        @foreach (var item in Model.ResultSet)
+                        {
+                            <tr data-durum="@item.Durum" data-parametre="@item.KontrolParametresi">
+                                <td>@item.NumuneId</td>
+                                <td>@item.Value</td>
+                                <td>@item.KontrolParametresi</td>
+                                <td>@item.Durum</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var ctx = document.getElementById('pieChart').getContext('2d');
+                        var allResults = @Html.Raw(JsonSerializer.Serialize(Model.ResultSet));
+                        var pieChart;
+                        var currentDurumFilter = 'Genel'; // Default Durum filter
+                        var currentKontrolParametreFilter = null; // Default KontrolParametre filter (initially no filter)
+
+                        // Pie chart'ı oluşturmak için verileri toplama fonksiyonu
+                        var calculateColumnTotals = function (data) {
+                            var totals = {};
+
+                            data.forEach(function (item) {
+                                // Eğer 'Durum' ve 'KontrolParametresi' filtreleri aktifse, hem 'Durum' hem de 'KontrolParametresi'ne göre filtrele
+                                if ((currentDurumFilter === 'Genel' || item.Durum === currentDurumFilter) &&
+                                    (currentKontrolParametreFilter === null || item.KontrolParametresi === currentKontrolParametreFilter)) {
+                                    var kontrolParametre = item.KontrolParametresi;
+                                    if (!totals[kontrolParametre]) {
+                                        totals[kontrolParametre] = 1;
+                                    } else {
+                                        totals[kontrolParametre]++;
+                                    }
+                                }
+                            });
+
+                            return totals;
+                        };
+
+                        // Pie chart'ı oluşturma veya güncelleme fonksiyonu
+                        var renderChart = function (totals) {
+                            if (pieChart) {
+                                pieChart.destroy();
+                            }
+
+                            pieChart = new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    labels: Object.keys(totals),
+                                    datasets: [{
+                                        data: Object.values(totals),
+                                        backgroundColor: [
+                                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                                        ]
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { display: true },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function (context) {
+                                                    var label = context.label || '';
+                                                    if (label) {
+                                                        label += ': ';
+                                                    }
+                                                    if (context.raw !== null) {
+                                                        var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                                        var percentage = ((context.raw / total) * 100).toFixed(2);
+                                                        label += context.raw + ' (' + percentage + '%)';
+                                                    }
+                                                    return label;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            // Pie chart üzerinde tıklama olayını dinleyelim
+                            pieChart.canvas.addEventListener('click', function (event) {
+                                var activePoints = pieChart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
+                                if (activePoints.length > 0) {
+                                    var selectedLabel = pieChart.data.labels[activePoints[0].index];
+                                    currentKontrolParametreFilter = selectedLabel; // Pie chart'tan seçilen kontrol parametresini al
+                                    filterResults(); // Hem 'Durum' hem de 'KontrolParametresi' filtreleri ile sonuçları filtrele
+                                }
+                            });
+                        };
+
+                        // Tabloyu ve grafiği filtrelemek için fonksiyon
+                        var filterResults = function () {
+                            var filteredData = allResults.filter(function (item) {
+                                // 'Durum' ve 'KontrolParametresi' filtrelerine göre veriyi filtrele
+                                var matchesDurum = (currentDurumFilter === 'Genel' || item.Durum === currentDurumFilter);
+                                var matchesKontrolParametre = (currentKontrolParametreFilter === null || item.KontrolParametresi === currentKontrolParametreFilter);
+                                return matchesDurum && matchesKontrolParametre;
+                            });
+
+                            // Tabloyu filtreleme
+                            document.querySelectorAll('#resultBody tr').forEach(function (row) {
+                                var isVisible = (currentDurumFilter === 'Genel' || row.dataset.durum === currentDurumFilter) &&
+                                    (currentKontrolParametreFilter === null || row.dataset.parametre === currentKontrolParametreFilter);
+                                row.style.display = isVisible ? '' : 'none';
+                            });
+
+                            // Grafik için verileri hesaplama ve güncelleme
+                            var totals = calculateColumnTotals(filteredData);
+                            renderChart(totals);
+                        };
+
+                        // İlk grafik yüklemesi
+                        filterResults();
+
+                        // Filtreleme butonlarına olay dinleyicisi ekleme
+                        document.querySelectorAll('.filter-button').forEach(function (button) {
+                            button.addEventListener('click', function () {
+                                var filterKey = button.dataset.filter;
+                                currentDurumFilter = filterKey; // 'Durum' filtresini güncelle
+                                currentKontrolParametreFilter = null; // 'Kontrol Parametresi' filtresi sıfırlanır (buton tıklanırsa)
+                                filterResults(); // Filtreyi uygula
+                            });
+                        });
+                    });
+
+
+
+
+                    // Form değerlerini kaydet
+                    function saveFormValues() {
+                        const fabrikaId = document.getElementById("fabrikaId").value;
+                        const malzemeAciklamasi = document.getElementById("malzemeAciklamasi").value;
+                        const olusturmaTarihi = document.getElementById("olusturmaTarihi").value;
+                        const bitisTarihi = document.getElementById("bitisTarihi").value;
+
+                        localStorage.setItem("fabrikaId", fabrikaId);
+                        localStorage.setItem("malzemeAciklamasi", malzemeAciklamasi);
+                        localStorage.setItem("olusturmaTarihi", olusturmaTarihi);
+                        localStorage.setItem("bitisTarihi", bitisTarihi);
+                    }
+
+                    // Sayfa yüklendiğinde kaydedilen değerleri yükle
+                    window.onload = function () {
+                        const fabrikaId = localStorage.getItem("fabrikaId");
+                        const malzemeAciklamasi = localStorage.getItem("malzemeAciklamasi");
+                        const olusturmaTarihi = localStorage.getItem("olusturmaTarihi");
+                        const bitisTarihi = localStorage.getItem("bitisTarihi");
+
+                        if (fabrikaId) {
+                            document.getElementById("fabrikaId").value = fabrikaId;
+                        }
+                        if (malzemeAciklamasi) {
+                            document.getElementById("malzemeAciklamasi").value = malzemeAciklamasi;
+                        }
+                        if (olusturmaTarihi) {
+                            document.getElementById("olusturmaTarihi").value = olusturmaTarihi;
+                        }
+                        if (bitisTarihi) {
+                            document.getElementById("bitisTarihi").value = bitisTarihi;
+                        }
+                    };
+
+                </script>
+            }
+            else
+            {
+                <p class="no-results">Sonuç bulunamadı, verileri tekrar kontrol ediniz.</p>
+            }
+        </div>
+    </div>
+</body>
+</html>

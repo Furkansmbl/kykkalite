@@ -10,15 +10,14 @@
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Yeni Hammadde Parametresi Ekleme Sayfası</h6>
                 <form method="post">
-                    <label>ParametreKodu</label>
-                    <input type="text" asp-for="ParametreKodu" class="form-control" />
+                     <label>Kontrol Parametresi</label>
+                    @Html.DropDownListFor(x => x.ParametreId, (IEnumerable<SelectListItem>)ViewBag.ParametreList, "Select Parametre", new { @class = "form-control" })
                     <br />
                     <label>HammaddeId</label>
-                    <input type="text" asp-for="HammaddeId" class="form-control" />
-                    <br />
-                    <label>HmpatamaKodu</label>
-                    <input type="text" asp-for="HmpatamaKodu" class="form-control" />
-                    <br />
+                    @Html.DropDownListFor(x => x.HammaddeId, (IEnumerable<SelectListItem>)ViewBag.UrunList, "Select hammadde", new { @class = "form-control" })
+                    <br />              
+
+                   
                     <label>ParametreKritiklikSeviyesi</label>
                     <select asp-for="ParametreKritiklikSeviyesi" class="form-select">
                         <option value="true">Aktif</option>
@@ -40,23 +39,39 @@
                     <label>UstSartliKabulSiniri</label>
                     <input type="text" asp-for="UstSartliKabulSiniri" class="form-control" />
                     <br />
-                    <label>CihazId</label>
-                    <input type="text" asp-for="CihazId" class="form-control" />
+                       <label>Cihazlar</label>
+                    @Html.DropDownListFor(x => x.CihazId, (List<SelectListItem>)ViewBag.vv, new { @class = "form-control" })
                     <br />
                     <label>ReferansDokuman</label>
                     <input type="text" asp-for="ReferansDokuman" class="form-control" />
                     <br />
+                      <label>Parametre Kodu</label>
+                    <input type="text" asp-for="ParametreKodu" class="form-control" />
+                    <br />
                     <label>Aciklama</label>
                     <input type="text" asp-for="Aciklama" class="form-control" />
+                    <br />
+                     <label>Mevcut Parti Buyuklugu</label>
+                    <input type="text" asp-for="MevcutPartiBuyuklugu" class="form-control" />
+                    <br />
+                      <label>ParametreYonu</label>
+                    <input type="text" asp-for="ParametreYonu" class="form-control" />
+                    <br />
+                     <label>Tedarik Sikligi</label>
+                    <input type="text" asp-for="TedarikSikligi" class="form-control" />
+                    <br />
+                     <label>Tedarik Sikligi Ortalama</label>
+                    <input type="text" asp-for="TedarikSikligiOrtalama" class="form-control" />
+                    <br />
+                     <label>TedarikSikligiBirim</label>
+                    <input type="text" asp-for="TedarikSikligiBirim" class="form-control" />
+                    <br /> 
+                    <label>OlusturmaTarihi</label>
+                    <input type="text" asp-for="OlusturmaTarihi" class="form-control" />
                     <br />
                    <label>Fabrikalar</label>
                     @Html.DropDownListFor(x => x.FabrikaId, (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
                    <input type="hidden" asp-for="PersonelSicilNo" class="form-control" value="@ViewBag.PersonelSicilNo" />
-
-                    <br />
-                    <label>EklenmeTarihi</label>
-                    <input type="datetime-local" class="form-control" asp-for="EklenmeTarihi" />
-                    <br />
                     <label>KullanımDurumu</label>
                     <select asp-for="KullanimDurumu" class="form-select">
                         <option value="true">Aktif</option>
@@ -69,7 +84,5 @@
         </div>
     </div>
 </div
-
-
 
 

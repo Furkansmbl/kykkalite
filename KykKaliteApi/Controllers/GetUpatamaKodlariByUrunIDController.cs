@@ -18,10 +18,16 @@ namespace KykKaliteApi.Controllers
             _getUpatamaKodlariByUrunIDRepository = getUpatamaKodlariByUrunIDRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUpatamaKodlariByUrunIDA([FromQuery]  string MalzemeAciklamasi)
+        public async Task<IActionResult> GetUpatamaKodlariByUrunIDA([FromQuery]  string MalzemeAciklamasi , int FabrikId, [FromQuery] string HatAdiAciklamasi)
         {
-            var value = await _getUpatamaKodlariByUrunIDRepository.GetUpatamaKodlariByUrunIDAsync(MalzemeAciklamasi);
+            var value = await _getUpatamaKodlariByUrunIDRepository.GetUpatamaKodlariByUrunIDAsync(MalzemeAciklamasi, FabrikId, HatAdiAciklamasi);
             return Ok(value);
+        }
+        [HttpGet("Uh")]
+        public async Task<IActionResult> GetUretimHatlari()
+        {
+            var values = await _getUpatamaKodlariByUrunIDRepository.GetUretimHatlari();
+            return Ok(values);
         }
     }
 }

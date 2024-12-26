@@ -4,6 +4,7 @@ using Kykkalite_UI.Dtos.GetValueByMalzemeAciklamasiWParametreKodu;
 using Kykkalite_UI.Dtos.UrunlerDtos;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using KykKaliteApi.Dtos.GetHmpatamaByHmIdDtos;
 
 namespace Kykkalite_UI.Controllers
 {
@@ -24,6 +25,8 @@ namespace Kykkalite_UI.Controllers
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
             ViewBag.v = await GetProductDescription();
+            var parametreList = await GetParametre();
+            ViewBag.ParametreList =  parametreList; // Pass the full list to the view
             ViewBag.PersonelSicilNo = personelSicilNo;
 
             return View();
@@ -42,18 +45,30 @@ namespace Kykkalite_UI.Controllers
             }).ToList();
             return urunGrupValues;
         }
+        private async Task<List<ResultGetValueDto>> GetParametre()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("http://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu/Pa");
+
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<ResultGetValueDto>>(jsonData);
+
+            return values;
+        }
         public class QueryViewModel
         {
             public List<ResultGetValueDto> ResultSet { get; set; }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string malzemeAciklamasi, string kontrolParametresi, string baslangicTarihi, string bitisTarihi)
+        public async Task<IActionResult> Index(string malzemeAciklamasi, string kontrolParametresi, string baslangicTarihi, string bitisTarihi, int fabrikaId)
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
             ViewBag.PersonelSicilNo = personelSicilNo;
             ViewBag.v = await GetProductDescription();
+            var parametreList = await GetParametre();
+            ViewBag.ParametreList = parametreList; 
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
@@ -64,7 +79,7 @@ namespace Kykkalite_UI.Controllers
                 var encodedbitisTarihi = Uri.EscapeDataString(bitisTarihi);
 
 
-                var response = await client.GetAsync($"http://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu?malzemeaciklamasi={encodedMalzemeAciklamasi}&kontrolparametresi={encodedkontrolParametresi}&baslangicTarihi={encodedbaslangicTarihi}&bitisTarihi={encodedbitisTarihi}");
+                var response = await client.GetAsync($"http://localhost:44344/api/GetValueByMalzemeAciklamasiWParametreKodu?malzemeaciklamasi={encodedMalzemeAciklamasi}&kontrolparametresi={encodedkontrolParametresi}&baslangicTarihi={encodedbaslangicTarihi}&bitisTarihi={encodedbitisTarihi}&fabrikaId={fabrikaId}");
 
                 if (response.IsSuccessStatusCode)
                 {

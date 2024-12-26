@@ -6,6 +6,8 @@
 
         public string UpatamaKodu { get; set; } = null!;
         public int NumuneId { get; set; }
+        public string MalzemeAciklamasi { get; set; } = null!;
+        public string KontrolParametresi { get; set; }
 
         public string Value { get; set; } = null!;
         public string OlusturmaTarihi { get; set; }

@@ -1,152 +1,140 @@
 ﻿@model List<ResultUnumuneDto>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Admin/Index.cshtml";
+    var malzemeAciklamasiFilter = HttpContextAccessor.HttpContext.Request.Query["malzemeAciklamasi"];
+    var uretimTarihiFilter = HttpContextAccessor.HttpContext.Request.Query["uretimTarihi"]; // Updated variable name
+    var currentPage = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) > 0 ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) : 1;
+    var pageSize = 30;
+    var filteredItems = Model
+        .Where(item => (string.IsNullOrEmpty(malzemeAciklamasiFilter) || item.MalzemeAciklamasi.Contains(malzemeAciklamasiFilter, StringComparison.OrdinalIgnoreCase))
+                    && (string.IsNullOrEmpty(uretimTarihiFilter) || item.UretimTarihi.Contains(uretimTarihiFilter, StringComparison.OrdinalIgnoreCase))) // Updated filter condition
+        .ToList();
+    var pagedItems = filteredItems.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling(filteredItems.Count / (double)pageSize);
 }
 
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Ürün Numune</h6>
-                <td> <a href="/UNumune/ExportToExcel" class="btn btn-primary">Export to Excel</a></td>
-                <div class="mb-4">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Numune Id ara...">
+                <h6 class="mb-4">Ürün Numune </h6>
+                <form method="get" class="row mb-3">
+                    <div class="col-md-5">
+                        <input type="text" name="malzemeAciklamasi" value="@malzemeAciklamasiFilter" class="form-control" placeholder="Malzeme Açıklaması Ara...">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="uretimTarihi" value="@uretimTarihiFilter" class="form-control" placeholder="Üretim Tarihi Ara..."> <!-- Updated input name -->
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">Filtrele</button>
+                    </div>
+                </form>
+
+                <a href="/Unumune/CreateUnumuneManuel/" class="btn btn-outline-info">Yeni Numune Ekle</a>
+                <a href="/UNumune/ExportToExcel" class="btn btn-primary">Export to Excel</a>
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">NumuneId</th>
+                                <th scope="col">UrunId</th>
+                                <th scope="col">Malzeme Aciklamasi</th>
+                                <th scope="col">Sira No</th>
+                                <th scope="col">Uretim Tarihi</th>
+                                <th scope="col">Kontrol Saati</th>
+                                <th scope="col">Numune SeriNo SarjNo</th>
+                                <th scope="col">Mudahale Varmi</th>
+                                <th scope="col">Aciklama</th>
+                                <th scope="col">Onay Durumu</th>
+                                <th scope="col">Amir Onay Durumu</th>
+                                <th scope="col">Olusturma Tarihi</th>
+                                <th scope="col">Guncellenme Tarihi</th>
+                                <th scope="col">Personel SicilNo</th>
+                                <th scope="col">Trend</th>
+                                <th scope="col">Token</th>
+                                <th scope="col">Hat-Adi-Aciklamasi</th>
+                                <th scope="col">Güncelle</th>
+                                <th scope="col">Sil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in pagedItems)
+                            {
+                                <tr>
+                                    <td>@item.NumuneId</td>
+                                    <td>@item.UrunId</td>
+                                    <td>@item.MalzemeAciklamasi</td>
+                                    <td>@item.SiraNo</td>
+                                    <td>@item.UretimTarihi</td>
+                                    <td>@item.KontrolSaati</td>
+                                    <td>@item.NumuneSeriNoSarjNo</td>
+                                    <td>@item.MudahaleVarmi</td>
+                                    <td>@item.Aciklama</td>
+                                    <td>@item.OnayDurumu</td>
+                                    <td>@item.AmirOnayDurumu</td>
+                                    <td>@item.OlusturmaTarihi</td>
+                                    <td>@item.GuncellenmeTarihi</td>
+                                    <td>@item.UnPersonel</td>
+                                    <td>@item.Trend</td>
+                                    <td>@item.Token</td>
+                                    <td>@item.HatAdiAciklamasi</td>
+                                    <td><a href="/UNumune/UpdateUNumune/" class="btn btn-outline-success">Güncelle</a></td>
+                                    <td>
+                                        <a href="/UNumune/DeleteUNumune/@item.NumuneId"
+                                           class="btn btn-outline-danger"
+                                           onclick="return confirm('İlgili Numuneyi Silmek için Tamam butonuna basın.');">
+                                            Sil
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <div class="tab-content" id="numuneTabContent">
-                    @for (int i = 0; i < Model.Count; i += 30)
-                    {
-                        <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="table-@(i)" role="tabpanel">
-                            <div class="table-responsive">
-                                <table class="table numune-table" id="numuneTable-@(i)">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">NumuneId</th>
-                                            <th scope="col">UrunId</th>
-                                            <th scope="col">Sira No</th>
-                                            <th scope="col">Uretim Tarihi</th>
-                                            <th scope="col">Kontrol Saati</th>
-                                            <th scope="col">Numune SeriNo SarjNo</th>
-                                            <th scope="col">Mudahale Varmi</th>
-                                            <th scope="col">Aciklama</th>
-                                            <th scope="col">Onay Durumu</th>
-                                            <th scope="col">Amir Onay Durumu</th>
-                                            <th scope="col">Olusturma Tarihi</th>
-                                            <th scope="col">Guncellenme Tarihi</th>
-                                            <th scope="col">Personel SicilNo</th>
-                                            <th scope="col">Güncelle</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for (int j = i; j < Math.Min(i + 30, Model.Count); j++)
-                                        {
-                                            var item = Model[j];
-                                            <tr class="numune-row">
-                                                <td>@item.NumuneId</td>
-                                                <td>@item.UrunId</td>
-                                                <td>@item.SiraNo</td>
-                                                <td>@item.UretimTarihi</td>
-                                                <td>@item.KontrolSaati</td>
-                                                <td>@item.NumuneSeriNoSarjNo</td>
-                                                <td>@item.MudahaleVarmi</td>
-                                                <td>@item.Aciklama</td>
-                                                <td>@item.OnayDurumu</td>
-                                                <td>@item.AmirOnayDurumu</td>
-                                                <td>@item.OlusturmaTarihi</td>
-                                                <td>@item.GuncellenmeTarihi</td>
-                                                <td>@item.PersonelSicilNo</td>
-                                                <td><a href="/UNumune/UpdateUNumune/" class="btn btn-outline-success">Güncelle</a></td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <button class="btn btn-primary mt-3" id="advanceButton">İleri</button>
+
+                <!-- Pagination Controls -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="?page=@i&malzemeAciklamasi=@malzemeAciklamasiFilter&uretimTarihi=@uretimTarihiFilter">@i</a> <!-- Updated link -->
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
 
+
 <script>
-    var tabCount = Math.ceil(@Model.Count / 30);
-        var currentTab = 0;
-
-    document.getElementById("advanceButton").addEventListener("click", function () {
-        currentTab++;
-        if (currentTab >= tabCount) {
-            currentTab = 0;
-        }
-        document.querySelector('.tab-pane.show').classList.remove('show', 'active');
-        document.getElementById("table-" + currentTab).classList.add('show', 'active');
-    });
-
-    document.getElementById('searchInput').addEventListener('input', function () {
-        var searchValue = this.value.toLowerCase();
-        var rows = document.querySelectorAll('.numune-row');
-        var found = false;
-
-        rows.forEach(function (row) {
-            var numuneId = row.cells[0].innerText.toLowerCase();
-            if (numuneId.includes(searchValue)) {
-                row.style.display = '';
-                found = true;
-                var tabPane = row.closest('.tab-pane');
-                if (!tabPane.classList.contains('show')) {
-                    document.querySelector('.tab-pane.show').classList.remove('show', 'active');
-                    tabPane.classList.add('show', 'active');
-                }
-            } else {
-                row.style.display = 'none';
-            }
-        });
-
-        if (!found) {
-            var activeTab = document.querySelector('.tab-pane.show');
-            if (activeTab) {
-                activeTab.classList.remove('show', 'active');
-            }
-            var firstTab = document.querySelector('.tab-pane');
-            if (firstTab) {
-                firstTab.classList.add('show', 'active');
-            }
-        }
-    });
-
     document.querySelectorAll('.btn-outline-success').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
             var row = this.closest('tr');
             var numuneId = row.cells[0].innerText.trim();
             var urunId = row.cells[1].innerText.trim();
-            var siraNo = row.cells[2].innerText.trim();
-            var uretimTarihi = row.cells[3].innerText.trim();
-            var kontrolSaati = row.cells[4].innerText.trim();
-            var numuneSeriNoSarjNo = row.cells[5].innerText.trim();
-            var mudahaleVarmi = row.cells[6].innerText.trim();
-            var aciklama = row.cells[7].innerText.trim();
-            var onayDurumu = row.cells[8].innerText.trim();
-            var amirOnayDurumu = row.cells[9].innerText.trim();
-            var olusturmaTarihi = row.cells[10].innerText.trim();
-            var guncellenmeTarihi = row.cells[11].innerText.trim();
-            var personelSicilNo = row.cells[12].innerText.trim();
-
-            var url = "/UNumune/UpdateUNumune?NumuneId=" + encodeURIComponent(numuneId) +
-                "&UrunId=" + encodeURIComponent(urunId) +
-                "&SiraNo=" + encodeURIComponent(siraNo) +
-                "&UretimTarihi=" + encodeURIComponent(uretimTarihi) +
-                "&KontrolSaati=" + encodeURIComponent(kontrolSaati) +
-                "&NumuneSeriNoSarjNo=" + encodeURIComponent(numuneSeriNoSarjNo) +
-                "&MudahaleVarmi=" + encodeURIComponent(mudahaleVarmi) +
-                "&Aciklama=" + encodeURIComponent(aciklama) +
-                "&OnayDurumu=" + encodeURIComponent(onayDurumu) +
-                "&AmirOnayDurumu=" + encodeURIComponent(amirOnayDurumu) +
-                "&OlusturmaTarihi=" + encodeURIComponent(olusturmaTarihi) +
-                "&GuncellenmeTarihi=" + encodeURIComponent(guncellenmeTarihi) +
-                "&PersonelSicilNo=" + encodeURIComponent(personelSicilNo);
-            window.location.href = url;
+            var siraNo = row.cells[3].innerText.trim();
+            var uretimTarihi = row.cells[4].innerText.trim();
+            var kontrolSaati = row.cells[5].innerText.trim();
+            var numuneSeriNoSarjNo = row.cells[6].innerText.trim();
+            var mudahaleVarmi = row.cells[7].innerText.trim();
+            var aciklama = row.cells[8].innerText.trim();
+            var onayDurumu = row.cells[9].innerText.trim();
+            var amirOnayDurumu = row.cells[10].innerText.trim();
+            var olusturmaTarihi = row.cells[11].innerText.trim();
+            var guncellenmeTarihi = row.cells[12].innerText.trim();
+            var personelSicilNo = row.cells[13].innerText.trim();
+            var trend = row.cells[14].innerText.trim();
+            var token = row.cells[15].innerText.trim();
+            var hatAdiAciklamasi = row.cells[16].innerText.trim();
+            window.location.href = '/UNumune/UpdateUNumune?numuneId=' + numuneId + '&urunId=' + urunId + '&siraNo=' + siraNo + '&uretimTarihi=' + uretimTarihi + '&kontrolSaati=' + kontrolSaati + '&numuneSeriNoSarjNo=' + numuneSeriNoSarjNo + '&mudahaleVarmi=' + mudahaleVarmi + '&aciklama=' + aciklama + '&onayDurumu=' + onayDurumu + '&amirOnayDurumu=' + amirOnayDurumu + '&olusturmaTarihi=' + olusturmaTarihi + '&guncellenmeTarihi=' + guncellenmeTarihi + '&personelSicilNo=' + personelSicilNo + '&trend=' + trend + '&token=' + token + '&hatAdiAciklamasi=' + hatAdiAciklamasi;
         });
     });
 </script>

@@ -4,62 +4,73 @@
     Layout = "~/Views/Admin/Index.cshtml";
 }
 
-<div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Yeni Hammadde Numune Ekleme Sayfası</h6>
-                <form method="post">
-                    <label>HammaddeId</label>
-                    <input type="text" asp-for="HammaddeId" class="form-control" />
-                    <br />
-                    <label>SiraNo</label>
-                    <input type="text" asp-for="SiraNo" class="form-control" />
-                    <br />
-                    <label>Tarihi</label>
-                    <input type="text" asp-for="Tarihi" class="form-control" />
-                    <br />
-                    <label>IrsaliyeNo</label>
-                    <input type="text" asp-for="IrsaliyeNo" class="form-control" />
-                    <br />
-                    <label>MalzemeLotSeriNo</label>
-                    <input type="text" asp-for="MalzemeLotSeriNo" class="form-control" />
-                    <br />
-                    <label>KykbarkodNo</label>
-                    <input type="text" asp-for="KykbarkodNo" class="form-control" />
-                    <br />
-                     <label>MalzemeUretimTarihi</label>
-                    <input type="text" asp-for="MalzemeUretimTarihi" class="form-control" />
-                    <br /> 
-                    <label>MalzemeSkt</label>
-                    <input type="text" asp-for="MalzemeSkt" class="form-control" />
-                    <br />
-                    <label>MalzemeMiktarı</label>
-                    <input type="text" asp-for="MalzemeMiktarı" class="form-control" />
-                    <br />
-                    <label>MiktarBirimi</label>
-                    <input type="text" asp-for="MiktarBirimi" class="form-control" />
-                    <br />
-                    <label>Aciklama</label>
-                    <input type="text" asp-for="Aciklama" class="form-control" />
-                    <br />
-                    <label>OnayDurumu</label>
-                    <input type="text" asp-for="OnayDurumu" class="form-control" />
-                    <br /> 
-                    <label>AmirOnayDurumu</label>
-                    <input type="text" asp-for="AmirOnayDurumu" class="form-control" />
-                    <br />
-                    <label>OlusturmaTarihi</label>
-                    <input type="text" asp-for="OlusturmaTarihi" class="form-control" />
-                    <br />
-                    <label>PersonelSicilNo</label>
-                    <input type="text" asp-for="PersonelSicilNo" class="form-control" />
-                    <br />
-                    <button class="btn btn-primary">Hammadde Numuneyi Kaydet</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div
+<table>
+    <thead>
+        <tr>
+            <th>HammaddeID</th>
+            <th>Sıra No</th>
+            <th>Tarihi</th>
+            <th>Saat</th>
+            <th>IrsaliyeNo</th>
+            <th>MalzemeLotSeriNo</th>
+            <th>KYK BarkodNo</th>
+            <th>Malzeme Uretim Tarihi</th>
+            <th>Malzeme SKT</th>
+            <th>Malzeme Miktarı</th>
+            <th>Miktar Birimi</th>
+            <th>Aciklama</th>
+            <th>Onay Durumu</th>
+            <th>Olusturma Tarihi</th>
+            <th>Versiyon</th>
+            <th>THM ID</th>
+            <th>Amir Onay Durumu</th>
+            <th>Fabrika ID</th>
+            <th>Personel SicilNo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input type="number" name="HammaddeID" asp-for="HammaddeId" class="form-control"  required /></td>
+            <td><input type="text" name="SiraNo" asp-for="SiraNo" class="form-control"  required /></td>
+            <td>
+                <input type="text" name="Tarihi" asp-for="Tarihi" class="form-control" placeholder="gg.aa.yyyy" pattern="\d{2}\.\d{2}\.\d{4}" required />
+            </td>
+            <td><input type="text" name="Saat" asp-for="Saat" class="form-control" required /> </td>
+            <td><input type="text" name="IrsaliyeNo" asp-for="IrsaliyeNo" class="form-control" required /></td>
+            <td><input type="text" name="MalzemeLotSeriNo" asp-for="MalzemeLotSeriNo" class="form-control" required /></td>
+            <td><input type="text" name="KYKBarkodNo" asp-for="KYKBarkodNo" class="form-control" required /></td>
+            <td>
+                <input type="text" name="MalzemeUretimTarihi" asp-for="MalzemeUretimTarihi" class="form-control" placeholder="gg.aa.yyyy" pattern="\d{2}\.\d{2}\.\d{4}" required />
+            </td>
+            <td>
+                <input type="text" name="MalzemeSKT" asp-for="MalzemeSkt" class="form-control" placeholder="gg.aa.yyyy" pattern="\d{2}\.\d{2}\.\d{4}" required />
+            </td>
+            <td><input type="text" name="MalzemeMiktarı" asp-for="MalzemeMiktarı" class="form-control" required /></td>
+            <td><input type="text" name="MiktarBirimi" asp-for="MiktarBirimi" class="form-control" required /></td>
+            <td><input type="text" name="Aciklama" asp-for="Aciklama" class="form-control" /></td>
+            <td><input type="text" name="Aciklama" asp-for="OnayDurumu" class="form-control" /></td>
+            <td>
+                <input type="text" name="OlusturmaTarihi" asp-for="OlusturmaTarihi" class="form-control" />
+            </td>
 
+            <td>
+                <input type="text" name="Versiyon" asp-for="Versiyon" class="form-control" />
+            </td>
+            <td>
+                <input type="text" name="THMID" asp-for="THMID" class="form-control" />
+            </td>
+            <td>
+                <input type="text" name="AmirOnayDurumu" asp-for="AmirOnayDurumu" class="form-control" />
+            </td>
+            <td>
+                <input type="member" name="FabrikaId" asp-for="FabrikaId" class="form-control" />
+            </td>
+            <td><input type="text" name="PersonelSicilNo" asp-for="PersonelSicilNo" class="form-control"  /></td>
 
+            <td>
+                <button type="button" class="btn-outline-success" id="sendButton">Gönder</button>
+            </td>
+        </tr>
+    </tbody>
+</table>

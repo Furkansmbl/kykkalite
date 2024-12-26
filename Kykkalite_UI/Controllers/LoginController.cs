@@ -28,7 +28,7 @@ namespace Kykkalite_UI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
             var content = new StringContent(JsonSerializer.Serialize(createLoginDto), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("http://localhost:5185/api/Login", content);
+            var response = await client.PostAsync("http://localhost:44344/api/Login", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -62,7 +62,7 @@ namespace Kykkalite_UI.Controllers
                         {
                             return RedirectToAction("Index", "Urunler"); 
                         }
-                        else
+                        else if(roleClaim != null && roleClaim.Value == "User")
                         {
                             return RedirectToAction("Index", "ChooseHmOrU"); 
                         }

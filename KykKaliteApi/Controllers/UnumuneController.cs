@@ -25,24 +25,30 @@ namespace KykKaliteApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUnumune( CreateUnumuneDto createUnumuneDto)
         {
-            if (!ModelState.IsValid)
-            {
-              
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
                 _unumuneRepository.CreateUnumune(createUnumuneDto);
                 return Ok("Unumune Başarılı Bir Şekilde Eklendi");
-            }
-            catch (Exception ex)
-            {
-               
-                return StatusCode(500, "Bir hata oluştu. Unumune eklenemedi.");
-            }
+
         }
-            [HttpDelete("{id}")]
+        [HttpPost("Manuel")]
+        public async Task<IActionResult> CreateUnumuneManuel(CreateUnumuneManuelDto createUnumuneManuelDto )
+        {
+            _unumuneRepository.CreateUnumuneManuel(createUnumuneManuelDto);
+            return Ok("Unumune Başarılı Bir Şekilde Eklendi");
+
+        }
+        [HttpPost("Mail")]  
+        public async Task<IActionResult> SendUnumune([FromBody] CreateUnumuneDto createUnumuneDto)
+        {
+             _unumuneRepository.SendUnumune(createUnumuneDto);  
+            return Ok("Unumune Başarılı Bir Şekilde Eklendi");
+        }
+        [HttpPost("TrendMail")] 
+        public async Task<IActionResult> TrendMailUnumune([FromBody] CreateUnumuneDto createUnumuneDto)
+        {
+            _unumuneRepository.TrendMailUnumune(createUnumuneDto);  
+            return Ok("Unumune Başarılı Bir Şekilde Eklendi");
+        }
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUnumune(int id)
         {
             _unumuneRepository.DeleteUnumune(id);

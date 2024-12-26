@@ -9,17 +9,29 @@ namespace KykKaliteApi.Controllers
     [ApiController]
     public class GetHmpatamaByhmidController : ControllerBase
     {
-        private readonly IGetHmpatamaByHmıdRepository _getHmpatamaByHmıdRepository ;
+        private readonly IGetHmpatamaByHmıdRepository _getHmpatamaByHmıdRepository;
 
-        public GetHmpatamaByhmidController(IGetHmpatamaByHmıdRepository getHmpatamaByHmıdRepository )
+        public GetHmpatamaByhmidController(IGetHmpatamaByHmıdRepository getHmpatamaByHmıdRepository)
         {
             _getHmpatamaByHmıdRepository = getHmpatamaByHmıdRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUpatamaKodlariByUrunIDA([FromQuery] string MalzemeAciklamasi)
+        public async Task<IActionResult> GetHmatamaKodlariByHmIDAsync([FromQuery] string MalzemeAciklamasi, [FromQuery] int fabrikaId, [FromQuery] string THMID, [FromQuery] string Unvani)
         {
-            var value = await _getHmpatamaByHmıdRepository.GetHmatamaKodlariByHmIDAsync(MalzemeAciklamasi);
+            var value = await _getHmpatamaByHmıdRepository.GetHmatamaKodlariByHmIDAsync(MalzemeAciklamasi, fabrikaId, THMID, Unvani);
             return Ok(value);
+        }
+        [HttpGet("Null")]
+        public async Task<IActionResult> GetHmatamaKodlariByHmIDNullAsync([FromQuery] string MalzemeAciklamasi, [FromQuery] int fabrikaId, [FromQuery] string THMID )
+        {
+            var value = await _getHmpatamaByHmıdRepository.GetHmatamaKodlariByHmIDNullAsync(MalzemeAciklamasi, fabrikaId, THMID);
+            return Ok(value);
+        }
+        [HttpGet("Pa")]
+        public async Task<IActionResult> GetKontrolTedarikci()
+        {
+            var values = await _getHmpatamaByHmıdRepository.GetTedarikci();
+            return Ok(values);
         }
     }
 }

@@ -50,12 +50,11 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-           
             max-width: 900px;
         }
 
         .results-container {
-            flex: 2;
+            flex: 1; 
             margin: 10px;
             padding: 20px;
             border-radius: 8px;
@@ -63,7 +62,10 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
+            max-width: 900px; 
+            max-height: 100%;
         }
+
 
         .chart-section {
             width: 100%; 
@@ -126,7 +128,7 @@
                 }
 
         table {
-            width: 100%;
+            width: 95%;
             background-color: #fff;
             border-collapse: collapse;
             font-size: 14px;
@@ -209,12 +211,18 @@
 
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+   
 </head>
-<body>
+<body>  
     <div class="container">
         <div class="form-container">
+            <div class="form-group">
+                <td><a href="/Urunler/Index" class="btn btn-outline-success">Ana Sayfaya Git</a></td>
+
+            </div>
+
             <h2>Ürün Rapor</h2>
-            <form method="post">
+            <form method="post" onsubmit="saveFormValues()">
                 <div class="form-group">
                     <label for="fabrikaId">Fabrika Adı:</label>
                     <select id="fabrikaId" name="fabrikaId" required>
@@ -226,7 +234,7 @@
                 </div>
                 <div class="form-group">
                     <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
-                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                    @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control", id = "malzemeAciklamasi" })
                 </div>
                 <div class="form-group">
                     <label for="olusturmaTarihi">Oluşturma Tarihi:</label>
@@ -241,200 +249,197 @@
                 </div>
             </form>
         </div>
+      
         <div class="results-container">
-            <div class="chart-section">
-                <canvas id="pieChart"></canvas>
-            </div>
-            <div class="info-section">
-                <div class="filter-buttons">
-                    <button onclick="filterResults('Red')">Red</button>
-                    <button onclick="filterResults('SartliOnay')">Sartli Onay</button>
-                    <button onclick="filterResults('1')">1</button>
-                </div>
-                <div class="percentages-container">
-                    <div class="percentages" id="redPercentage"></div>
-                    <div class="percentages" id="sartliOnayPercentage"></div>
-                    <div class="percentages" id="onePercentage"></div>
+            <div>
+                <canvas id="pieChart" width="400" height="400"></canvas>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="btnSartliOnay" class="filter-button" data-filter="SartliOnay">Sartli Onay</button>
+                    <button id="btnRed" class="filter-button" data-filter="Red">Red</button>
+                    <button id="btnOnay" class="filter-button" data-filter="Onay">Onay</button>
+                    <button id="btnGenel" class="filter-button" data-filter="Genel">Genel</button>
                 </div>
             </div>
         </div>
-            <div class="results-container">
+
+        <div class="results-container">
             @if (Model != null && Model.ResultSet != null && Model.ResultSet.Any())
             {
                 <table>
                     <thead>
                         <tr>
-                            <th>Oluşturma Tarihi</th>
-                            <th>Amir Onay Durumu</th>
+                            <th>NumuneId</th>
+                            <th>Değer</th>
                             <th>Kontrol Parametresi</th>
-                            <th>Malzeme Açıklaması</th>
+                            <th>Amir Onay Durumu</th>
                         </tr>
                     </thead>
                     <tbody id="resultBody">
                         @foreach (var item in Model.ResultSet)
                         {
-                            <tr>
-                                <td>@item.OlusturmaTarihi</td>
-                                <td>@item.AmirOnayDurumu</td>
+                            <tr data-durum="@item.Durum" data-parametre="@item.KontrolParametresi">
+                                <td>@item.NumuneId</td>
+                                <td>@item.Value</td>
                                 <td>@item.KontrolParametresi</td>
-                                <td>@item.MalzemeAciklamasi</td>
+                                <td>@item.Durum</td>
                             </tr>
                         }
                     </tbody>
                 </table>
 
-             <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var ctx = document.getElementById('pieChart').getContext('2d');
-        var allResults = @Html.Raw(JsonSerializer.Serialize(Model.ResultSet));
-        var filteredResults = allResults; // Initialize with all results
-        var pieChart;
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var ctx = document.getElementById('pieChart').getContext('2d');
+                        var allResults = @Html.Raw(JsonSerializer.Serialize(Model.ResultSet));
+                        var pieChart;
+                        var currentDurumFilter = 'Genel'; // Default Durum filter
+                        var currentKontrolParametreFilter = null; // Default KontrolParametre filter (initially no filter)
 
-        var renderChart = function (data) {
-            if (pieChart) {
-                pieChart.destroy();
-            }
-            var chartData = {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: []
-                }]
-            };
+                        // Pie chart'ı oluşturmak için verileri toplama fonksiyonu
+                        var calculateColumnTotals = function (data) {
+                            var totals = {};
 
-            var backgroundColors = [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-                '#FF9F40', '#FFCD56', '#4BC0C0', '#9966FF', '#FF6384'
-            ];
-
-            var countOccurrences = function (arr) {
-                return arr.reduce(function (acc, curr) {
-                    acc[curr] = (acc[curr] || 0) + 1;
-                    return acc;
-                }, {});
-            };
-
-            var occurrences = countOccurrences(data.map(r => r.KontrolParametresi));
-            var total = data.length;
-
-            for (var key in occurrences) {
-                chartData.labels.push(key);
-                chartData.datasets[0].data.push(occurrences[key]);
-                chartData.datasets[0].backgroundColor.push(backgroundColors[chartData.labels.length % backgroundColors.length]);
-            }
-
-            pieChart = new Chart(ctx, {
-                type: 'pie',
-                data: chartData,
-                options: {
-                    responsive: false, // Fixed size as defined in CSS
-                    plugins: {
-                        legend: {
-                            position: 'top', // Legend displayed above the chart
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    var label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
+                            data.forEach(function (item) {
+                                // Eğer 'Durum' ve 'KontrolParametresi' filtreleri aktifse, hem 'Durum' hem de 'KontrolParametresi'ne göre filtrele
+                                if ((currentDurumFilter === 'Genel' || item.Durum === currentDurumFilter) &&
+                                    (currentKontrolParametreFilter === null || item.KontrolParametresi === currentKontrolParametreFilter)) {
+                                    var kontrolParametre = item.KontrolParametresi;
+                                    if (!totals[kontrolParametre]) {
+                                        totals[kontrolParametre] = 1;
+                                    } else {
+                                        totals[kontrolParametre]++;
                                     }
-                                    if (context.raw !== null) {
-                                        var percentage = ((context.raw / total) * 100).toFixed(2);
-                                        label += context.raw + ' (' + percentage + '%)';
-                                    }
-                                    return label;
                                 }
+                            });
+
+                            return totals;
+                        };
+
+                        // Pie chart'ı oluşturma veya güncelleme fonksiyonu
+                        var renderChart = function (totals) {
+                            if (pieChart) {
+                                pieChart.destroy();
                             }
-                        }
-                    },
-                    onClick: function (e, elements) {
-                        if (elements.length > 0) {
-                            var segmentIndex = elements[0].index;
-                            var label = pieChart.data.labels[segmentIndex];
-                            filterResultsByParameter(label);
-                        }
+
+                            pieChart = new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    labels: Object.keys(totals),
+                                    datasets: [{
+                                        data: Object.values(totals),
+                                        backgroundColor: [
+                                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                                        ]
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { display: true },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function (context) {
+                                                    var label = context.label || '';
+                                                    if (label) {
+                                                        label += ': ';
+                                                    }
+                                                    if (context.raw !== null) {
+                                                        var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                                        var percentage = ((context.raw / total) * 100).toFixed(2);
+                                                        label += context.raw + ' (' + percentage + '%)';
+                                                    }
+                                                    return label;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            // Pie chart üzerinde tıklama olayını dinleyelim
+                            pieChart.canvas.addEventListener('click', function (event) {
+                                var activePoints = pieChart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
+                                if (activePoints.length > 0) {
+                                    var selectedLabel = pieChart.data.labels[activePoints[0].index];
+                                    currentKontrolParametreFilter = selectedLabel; // Pie chart'tan seçilen kontrol parametresini al
+                                    filterResults(); // Hem 'Durum' hem de 'KontrolParametresi' filtreleri ile sonuçları filtrele
+                                }
+                            });
+                        };
+
+                        // Tabloyu ve grafiği filtrelemek için fonksiyon
+                        var filterResults = function () {
+                            var filteredData = allResults.filter(function (item) {
+                                // 'Durum' ve 'KontrolParametresi' filtrelerine göre veriyi filtrele
+                                var matchesDurum = (currentDurumFilter === 'Genel' || item.Durum === currentDurumFilter);
+                                var matchesKontrolParametre = (currentKontrolParametreFilter === null || item.KontrolParametresi === currentKontrolParametreFilter);
+                                return matchesDurum && matchesKontrolParametre;
+                            });
+
+                            // Tabloyu filtreleme
+                            document.querySelectorAll('#resultBody tr').forEach(function (row) {
+                                var isVisible = (currentDurumFilter === 'Genel' || row.dataset.durum === currentDurumFilter) &&
+                                    (currentKontrolParametreFilter === null || row.dataset.parametre === currentKontrolParametreFilter);
+                                row.style.display = isVisible ? '' : 'none';
+                            });
+
+                            // Grafik için verileri hesaplama ve güncelleme
+                            var totals = calculateColumnTotals(filteredData);
+                            renderChart(totals);
+                        };
+
+                        // İlk grafik yüklemesi
+                        filterResults();
+
+                        // Filtreleme butonlarına olay dinleyicisi ekleme
+                        document.querySelectorAll('.filter-button').forEach(function (button) {
+                            button.addEventListener('click', function () {
+                                var filterKey = button.dataset.filter;
+                                currentDurumFilter = filterKey; // 'Durum' filtresini güncelle
+                                currentKontrolParametreFilter = null; // 'Kontrol Parametresi' filtresi sıfırlanır (buton tıklanırsa)
+                                filterResults(); // Filtreyi uygula
+                            });
+                        });
+                    });
+
+
+
+
+                    // Form değerlerini kaydet
+                    function saveFormValues() {
+                        const fabrikaId = document.getElementById("fabrikaId").value;
+                        const malzemeAciklamasi = document.getElementById("malzemeAciklamasi").value;
+                        const olusturmaTarihi = document.getElementById("olusturmaTarihi").value;
+                        const bitisTarihi = document.getElementById("bitisTarihi").value;
+
+                        localStorage.setItem("fabrikaId", fabrikaId);
+                        localStorage.setItem("malzemeAciklamasi", malzemeAciklamasi);
+                        localStorage.setItem("olusturmaTarihi", olusturmaTarihi);
+                        localStorage.setItem("bitisTarihi", bitisTarihi);
                     }
-                }
-            });
-        };
 
-        var categorizeResults = function (data) {
-            return data.map(function (item) {
-                if (item.Value < item.AltSartliKabulSiniri || item.Value > item.UstSartliKabulSiniri) {
-                    item.AmirOnayDurumu = 'Red';
-                } else if (item.Value >= item.AltSartliKabulSiniri && item.Value <= item.UstSartliKabulSiniri &&
-                    (item.Value < item.AltOnaySiniri || item.Value > item.UstOnaySiniri)) {
-                    item.AmirOnayDurumu = 'SartliOnay';
-                } else if (item.Value >= item.AltOnaySiniri && item.Value <= item.UstOnaySiniri) {
-                    item.AmirOnayDurumu = '1';
-                }
-                return item;
-            });
-        };
+                    // Sayfa yüklendiğinde kaydedilen değerleri yükle
+                    window.onload = function () {
+                        const fabrikaId = localStorage.getItem("fabrikaId");
+                        const malzemeAciklamasi = localStorage.getItem("malzemeAciklamasi");
+                        const olusturmaTarihi = localStorage.getItem("olusturmaTarihi");
+                        const bitisTarihi = localStorage.getItem("bitisTarihi");
 
-        var updateTable = function (data) {
-            var resultBody = document.getElementById('resultBody');
-            resultBody.innerHTML = '';
-            data.forEach(function (item) {
-                var row = '<tr>' +
-                    '<td>' + item.OlusturmaTarihi + '</td>' +
-                    '<td>' + item.AmirOnayDurumu + '</td>' +
-                    '<td>' + item.KontrolParametresi + '</td>' +
-                    '<td>' + item.MalzemeAciklamasi + '</td>' +
-                    '</tr>';
-                resultBody.innerHTML += row;
-            });
-        };
+                        if (fabrikaId) {
+                            document.getElementById("fabrikaId").value = fabrikaId;
+                        }
+                        if (malzemeAciklamasi) {
+                            document.getElementById("malzemeAciklamasi").value = malzemeAciklamasi;
+                        }
+                        if (olusturmaTarihi) {
+                            document.getElementById("olusturmaTarihi").value = olusturmaTarihi;
+                        }
+                        if (bitisTarihi) {
+                            document.getElementById("bitisTarihi").value = bitisTarihi;
+                        }
+                    };
 
-        var updatePercentages = function (data) {
-            var total = data.length;
-            var counts = {
-                'Red': 0,
-                'SartliOnay': 0,
-                '1': 0
-            };
-
-            data.forEach(function (item) {
-                counts[item.AmirOnayDurumu]++;
-            });
-
-            var percentagesHtml = '<p>Red: ' + ((counts['Red'] / total) * 100).toFixed(2) + '%</p>';
-            document.getElementById('redPercentage').innerHTML = percentagesHtml;
-
-            percentagesHtml = '<p>Sartli Onay: ' + ((counts['SartliOnay'] / total) * 100).toFixed(2) + '%</p>';
-            document.getElementById('sartliOnayPercentage').innerHTML = percentagesHtml;
-
-            percentagesHtml = '<p>1: ' + ((counts['1'] / total) * 100).toFixed(2) + '%</p>';
-            document.getElementById('onePercentage').innerHTML = percentagesHtml;
-        };
-
-        window.filterResults = function (status) {
-            var categorizedResults = categorizeResults(allResults);
-            filteredResults = categorizedResults.filter(function (item) {
-                return item.AmirOnayDurumu === status;
-            });
-            renderChart(filteredResults);
-            updateTable(filteredResults);
-            updatePercentages(filteredResults);
-        };
-
-        window.filterResultsByParameter = function (parameter) {
-            var finalFilteredResults = filteredResults.filter(function (item) {
-                return item.KontrolParametresi === parameter;
-            });
-            updateTable(finalFilteredResults);
-            updatePercentages(finalFilteredResults);
-        };
-
-        // Initial rendering
-        var categorizedResults = categorizeResults(allResults);
-        renderChart(categorizedResults);
-        updateTable(categorizedResults);
-        updatePercentages(categorizedResults);
-    });
-</script>
-
+                </script>
             } 
             else
             {

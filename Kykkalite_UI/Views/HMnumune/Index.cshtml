@@ -1,7 +1,25 @@
 ﻿@model List<ResultHMnumuneDto>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Hammadde Numune";
     Layout = "~/Views/Admin/Index.cshtml";
+
+    // Filtre değerlerini al
+    var malzemeAciklamasiFilter = HttpContextAccessor.HttpContext.Request.Query["MalzemeAciklamasi"];
+    var malzemeUretimTarihiFilter = HttpContextAccessor.HttpContext.Request.Query["MalzemeUretimTarihi"];
+    var currentPage = Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) > 0 ? Convert.ToInt32(HttpContextAccessor.HttpContext.Request.Query["page"]) : 1;
+    var pageSize = 30;
+
+    // Filtreleme işlemi
+    var filteredItems = Model
+        .Where(item => (string.IsNullOrEmpty(malzemeAciklamasiFilter) || item.MalzemeAciklamasi.Contains(malzemeAciklamasiFilter, StringComparison.OrdinalIgnoreCase))
+                    && (string.IsNullOrEmpty(malzemeUretimTarihiFilter) || item.MalzemeUretimTarihi.Contains(malzemeUretimTarihiFilter, StringComparison.OrdinalIgnoreCase)))
+        .ToList();
+
+    // Sayfalama işlemi
+    var pagedItems = filteredItems.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+    var totalPages = (int)Math.Ceiling(filteredItems.Count / (double)pageSize);
 }
 
 <div class="container-fluid pt-4 px-4">
@@ -9,14 +27,30 @@
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Hammadde Numune</h6>
-                <td><a href="/HMnumune/UpdateHMnumune/" class="btn btn-outline-success">Güncelle</a></td>
+
+                <!-- Filtreleme formu -->
+                <form method="get" class="row mb-3">
+                    <div class="col-md-5">
+                        <input type="text" name="MalzemeAciklamasi" value="@malzemeAciklamasiFilter" class="form-control" placeholder="Malzeme Açıklaması Ara...">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="MalzemeUretimTarihi" value="@malzemeUretimTarihiFilter" class="form-control" placeholder="Malzeme Üretim Tarihi Ara...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">Filtrele</button>
+                    </div>
+                </form>
+                <a href="/HMnumune/CreateHMnumuneManuel/" class="btn btn-outline-info">Yeni Numune Ekle</a>
+
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
-
                             <tr>
-    
+                                <th scope="col">NumuneId</th>
                                 <th scope="col">HammaddeId</th>
+                                <th scope="col">Malzeme Açıklaması</th>
+                                <th scope="col">UNVANI</th>
+                                <th scope="col">THMID</th>
                                 <th scope="col">SiraNo</th>
                                 <th scope="col">Tarihi</th>
                                 <th scope="col">Saat</th>
@@ -34,13 +68,18 @@
                                 <th scope="col">PersonelSicilNo</th>
                                 <th scope="col">GüncellenmeTarihi</th>
                                 <th scope="col">Güncelle</th>
+                                <th scope="col">Sil</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @foreach (var item in pagedItems)
                             {
                                 <tr>
+                                    <td>@item.NumuneId</td>
                                     <td>@item.HammaddeId</td>
+                                    <td>@item.MalzemeAciklamasi</td>
+                                    <td>@item.UNVANI</td>
+                                    <td>@item.THMID</td>
                                     <td>@item.SiraNo</td>
                                     <td>@item.Tarihi</td>
                                     <td>@item.Saat</td>
@@ -55,14 +94,32 @@
                                     <td>@item.OnayDurumu</td>
                                     <td>@item.AmirOnayDurumu</td>
                                     <td>@item.OlusturmaTarihi</td>
-                                    <td>@item.</td>
+                                    <td>@item.PersonelSicilNo</td>
                                     <td>@item.GuncellenmeTarihi</td>
-                                    <td><a href="" class="btn btn-outline-success">Güncelle</a></td>
+                                    <td><a href="/HMNumune/UpdateHMNumune/@item.HammaddeId" class="btn btn-outline-success">Güncelle</a></td>
+                                    <td>
+                                        <a href="/HMNumune/DeleteHMNumune/@item.NumuneId"
+                                           class="btn btn-outline-danger"
+                                           onclick="return confirm('İlgili Hammaddeyi silmek için Tamam butonuna basın.');">
+                                            Sil
+                                        </a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="?page=@i&MalzemeAciklamasi=@malzemeAciklamasiFilter&MalzemeUretimTarihi=@malzemeUretimTarihiFilter">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
+</div>

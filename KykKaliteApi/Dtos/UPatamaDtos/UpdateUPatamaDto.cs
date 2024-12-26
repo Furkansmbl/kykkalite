@@ -41,6 +41,7 @@
 
         public string PersonelSicilNo { get; set; } = null!;
 
+        public bool KullanimDurumu { get; set; }
         public DateTime OlusturmaTarihi { get; set; }
 
     }

@@ -27,8 +27,17 @@ namespace Kykkalite_UI
             }
             else
             {
+                // Generic error handler for production
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
+
+                // Use status code pages to show custom messages for HTTP error codes
+                app.UseStatusCodePages(context =>
+                {
+                    context.HttpContext.Response.ContentType = "text/plain";
+                    return context.HttpContext.Response.WriteAsync(
+                        $"An error occurred. Status code: {context.HttpContext.Response.StatusCode}");
+                });
             }
 
             app.UseHttpsRedirection();
@@ -42,8 +51,7 @@ namespace Kykkalite_UI
             {
                 endpoints.MapControllerRoute(
                     name: "areas",
-                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                );
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
                 // Default route for non-area controllers
                 endpoints.MapControllerRoute(

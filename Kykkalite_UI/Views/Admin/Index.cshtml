@@ -8,75 +8,75 @@
 <head>
     @await Component.InvokeAsync("_adminLayoutHeadComponentPartial")
     <style>
-        /* General container settings */
+       
         .container-xxl {
             display: flex;
             min-height: 100vh;
             padding: 0;
             margin: 0;
-            overflow: hidden; /* Hide scrollbar */
+            overflow: hidden; 
         }
 
-        /* Sidebar settings */
+        
         .sidebar {
-            width: 275px; /* Sidebar width */
-            position: fixed; /* Fixed position */
+            width: 275px; 
+            position: fixed; 
             top: 0;
             left: 0;
-            height: 100vh; /* Full height */
-            z-index: 1000; /* To ensure it appears on top */
-            background-color: #f8f9fa; /* Background color */
-            transition: transform 0.3s ease; /* Transition animation */
-            overflow-y: auto; /* Content scroll */
-            padding: 3px; /* Content padding */
-            box-sizing: border-box; /* Padding and border don't affect width */
+            height: 100vh; 
+            z-index: 1000; 
+            background-color: #f8f9fa; 
+            transition: transform 0.3s ease; 
+            overflow-y: auto; 
+            padding: 3px; 
+            box-sizing: border-box; 
         }
 
-            /* Sidebar closed state */
+           
             .sidebar.closed {
-                transform: translateX(-275px); /* Slide sidebar to the left */
+                transform: translateX(-275px); 
             }
 
-        /* Content section settings */
+       
         .content {
-            margin-left: 275px; /* Sidebar width */
+            margin-left: 275px; 
             flex: 1;
-            padding: 20px; /* Padding */
-            transition: margin-left 0.3s ease; /* Transition animation */
+            padding: 20px; 
+            transition: margin-left 0.3s ease; 
         }
 
-            /* Content area without sidebar */
+          
             .content.fullwidth {
                 margin-left: 0;
                 width: 100%;
             }
 
-        /* Navbar settings */
+        
         .navbar {
             padding: 0;
             margin: 0;
             position: sticky;
             top: 0;
-            z-index: 1001; /* To ensure it appears on top of the sidebar */
-            background-color: #fff; /* Navbar background color */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+            z-index: 1001; 
+            background-color: #fff; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Back to Top button */
+        
         .back-to-top {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 1001; /* Ensure it appears on top */
-            background-color: #007bff; /* Background color */
-            color: #fff; /* Text color */
-            border-radius: 50%; /* Circular button */
+            z-index: 1001; 
+            background-color: #007bff; 
+            color: #fff;
+            border-radius: 50%;
             width: 50px;
             height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
             text-decoration: none;
         }
 
@@ -84,30 +84,30 @@
                 font-size: 20px;
             }
 
-        /* Sidebar Toggler */
+        
         .sidebar-toggler {
             position: fixed;
-            top: 20px; /* Distance from top */
-            left: 20px; /* Distance from left */
+            top: 20px; 
+            left: 20px; 
             cursor: pointer;
-            background-color: #007bff; /* Background color */
-            color: #fff; /* Text color */
-            border-radius: 50%; /* Circular button */
-            width: 40px; /* Button size */
-            height: 40px; /* Button size */
+            background-color: #007bff; 
+            color: #fff;
+            border-radius: 50%; 
+            width: 40px; 
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Subtle shadow */
-            z-index: 1001; /* Ensure it appears on top */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+            z-index: 1001;
         }
 
             .sidebar-toggler i {
-                font-size: 20px; /* Icon size */
+                font-size: 20px;
             }
 
         .navbar-nav .nav-item {
-            margin: 5px 0; /* Spacing between items */
+            margin: 5px 0; 
         }
 
         .nav-link {
@@ -119,12 +119,12 @@
         }
 
             .nav-link:hover {
-                background-color: #e9ecef; /* Hover background color */
+                background-color: #e9ecef; 
             }
 
         .dropdown-menu {
             border-radius: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
         }
 
         table {

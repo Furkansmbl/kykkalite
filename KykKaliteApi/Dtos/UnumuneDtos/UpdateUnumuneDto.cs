@@ -7,7 +7,9 @@
         public int UrunId { get; set; }
 
         public string SiraNo { get; set; }
-
+        public string Token { get; set; }
+        public string HatAdiAciklamasi { get; set; }
+        public string Trend { get; set; }
         public string UretimTarihi { get; set; }
         public string KontrolSaati { get; set; }
 

@@ -130,7 +130,25 @@
         }
 
         table {
-            box-shadow: none; /* Gölgeleri kaldır */
+            box-shadow: none;
+            zoom: 80%;
+            border-collapse: collapse;
+            font-size: 18px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        td {
+            text-align: left;
         }
 
         input {
@@ -145,36 +163,68 @@
 </head>
 <body>
     <div class="form-group">
+        <a href="/ChooseHmOrU/CheckUserRole" class="btn btn-outline-success">Ana Sayfaya Git</a>
+    </div>
+    <div class="form-group">
         <td><a href="/GetUpatamaKodlariByUrunID/Index/" class="btn btn-outline-success">Ürün Sayfasına Git</a></td>
-
+    </div>
+    <div class="form-group">
+        <a href="/login/Index" class="btn btn-outline-danger float-right">Çıkış Yap</a>
     </div>
     <div class="container-fluid">
-        <form method="post">
+        <form method="post" onsubmit="return saveSelectedUnvani()">
             <div class="form-group">
-                <label for="fabrikaAdi">Fabrika Adı:</label>
-                <input type="text" id="fabrikaAdi" name="FabrikAdı" required>
+                <label for="fabrikaId">FabrikaId:</label>
+                <input type="text" id="fabrikaId" name="fabrikaId" class="form-control" value="@ViewBag.FabrikaId" readonly />
             </div>
 
             <div class="form-group">
-                <label for="personelAdSoyad">Personel:</label>
-                <input type="text" class="form-control" value="@ViewBag.PersonelSicilNo" readonly />
-
+                <label for="MalzemeAciklamasi">Malzeme Açıklaması:</label>
+                @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, "Select Malzeme Açıklaması", new { @class = "form-control", @id = "MalzemeAciklamasi", @onchange = "filterUnvani()" })
             </div>
 
             <div class="form-group">
-                <label for="malzemeAciklamasi">Malzeme Açıklaması:</label>
-                @Html.DropDownList("MalzemeAciklamasi", (List<SelectListItem>)ViewBag.v, new { @class = "form-control" })
+                <label for="UNVANI">UNVANI:</label>
+                <select id="UNVANI" name="UNVANI" class="form-control" required onchange="updateThmid()">
+                    @foreach (var tedarikci in ViewBag.TedarikciList)
+                    {
+                        <option class="tedarikci-option"
+                                data-malzeme="@tedarikci.MalzemeAciklamasi"
+                                data-fabrika-id="@tedarikci.FabrikaId"
+                                data-thmid="@tedarikci.THMID"
+                                value="@tedarikci.UNVANI">
+                            @tedarikci.UNVANI
+                        </option>
+                    }
+                </select>
             </div>
+
+            <div class="form-group">
+                <label for="THMID">THMID:</label>
+                <input type="text" id="THMID" name="THMID" class="form-control" readonly />
+            </div>
+
             <div class="form-group">
                 <button type="submit">Query</button>
             </div>
         </form>
+
         <div class="table-container">
             @if (Model != null && Model.ResultSet != null && Model.ResultSet.Any())
             {
                 <table>
                     <thead>
                         <tr>
+                            @if (Model.ResultSet.Any())
+                            {
+                                var firstItem = Model.ResultSet.First();
+                                <th>Malzeme Aciklamasi</th>
+                                <th>Numune Örneklem Sayısı</th>
+                            <tr>
+                                <td>@firstItem.MalzemeAciklamasi</td>
+                                <td><input type="text" name="Hesaplama" value="@firstItem.Hesaplama" readonly class="form-control" /></td>
+                            </tr>
+                            }
                             <th>HammaddeID</th>
                             <th>Sıra No</th>
                             <th>Tarihi</th>
@@ -188,7 +238,6 @@
                             <th>Miktar Birimi</th>
                             <th>Aciklama</th>
                             <th>Onay Durumu</th>
-                            <th>Amir OnayDurumu</th>
                             <th>Personel SicilNo</th>
                             @foreach (var item in Model.ResultSet)
                             {
@@ -209,27 +258,80 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="number" name="HammaddeID" class="static" value="@Model.ResultSet[0].HammaddeId" /></td>
-                            <td><input type="text" name="SiraNo" class="static" /></td>
-                            <td><input type="text" name="Tarihi" class="static" /></td>
-                            <td><input type="text" name="Saat" class="static" /></td>
-                            <td><input type="text" name="IrsaliyeNo" class="static" /></td>
-                            <td><input type="text" name="MalzemeLotSeriNo" class="static" /></td>
-                            <td><input type="text" name="KYKBarkodNo" class="static" /></td>
-                            <td><input type="text" name="MalzemeUretimTarihi" class="static" /></td>
-                            <td><input type="text" name="MalzemeSKT" class="static" /></td>
-                            <td><input type="text" name="MalzemeMiktarı" class="static" /></td>
-                            <td><input type="text" name="MiktarBirimi" class="static" /></td>
+                            <td><input type="number" name="HammaddeID" class="static" value="@Model.ResultSet[0].HammaddeID" required /></td>
+                            <td>
+                                <input type="text" name="SiraNo" class="static" value="@{
+                                var parts = Model.ResultSet[0].SiraNo.Split('-');
+                                var lastPart = parts[parts.Length - 1];
+                                if (decimal.TryParse(lastPart, out decimal lastDecimal)) {
+                                 var newValue = lastDecimal + 1;
+                                     @Html.Raw(newValue.ToString())
+;
+
+                                } else {
+                                       @Html.Raw("0")
+;
+                                }
+}" />
+                            </td>
+                            <td>
+                                <input type="text" name="Tarihi" class="static" placeholder="gg.aa.yyyy" pattern="\d{2}\.\d{2}\.\d{4}" required />
+                            </td>
+                            <td>
+                                <input type="text" name="Saat" class="static" required oninput="formatTime(this)" placeholder="HH:mm" />
+                            </td>
+
+                            <script>
+                                function formatTime(input) {
+                                    let value = input.value;
+
+                                    value = value.replace(/[^0-9:]/g, '');
+
+                                    if (value.length > 2 && value.charAt(2) !== ':') {
+                                        value = value.slice(0, 2) + ':' + value.slice(2);
+                                    }
+
+                                    if (value.length > 5) {
+                                        value = value.slice(0, 5);
+                                    }
+
+                                    input.value = value;
+                                }
+                            </script>
+                            <td><input type="text" name="IrsaliyeNo" class="static" required /></td>
+                            <td><input type="text" name="MalzemeLotSeriNo" class="static" required /></td>
+                            <td><input type="text" name="KYKBarkodNo" class="static" required /></td>
+                            <td>
+                                <input type="text" name="MalzemeUretimTarihi" class="static" placeholder="gg.aa.yyyy" pattern="\d{2}\.\d{2}\.\d{4}" required />
+                            </td>
+                            <td>
+                                <input type="text" name="MalzemeSKT" class="static" placeholder="gg.aa.yyyy" pattern="\d{2}\.\d{2}\.\d{4}" required />
+                            </td>
+                            <td><input type="text" name="MalzemeMiktarı" class="static" required /></td>
+                            <td><input type="text" name="MiktarBirimi" class="static" required /></td>
                             <td><input type="text" name="Aciklama" class="static" /></td>
                            <td>
                                 <input id="onay_durumu" type="hidden" name="OnayDurumu"/>
                                 <p id="onay_durumu_p">Yukleniyor...</p>
                                 <input type="hidden" name="OlusturmaTarihi" class="static" />
+                                <input type="hidden" name="FabrikaId" class="static"value="@Model.ResultSet[0].FabrikaId" />
                                 <input type="hidden" name="red" class="static" />
                                 <input type="hidden" name="yellow" class="static" />
                                 <input type="hidden" name="green" class="static" />
                                 <input type="hidden" name="malzemeAciklamasi" class="static" value="@Model.ResultSet[0].MalzemeAciklamasi" />
                                 <input type="hidden" name="Versiyon" class="static" value="@Model.ResultSet[0].Versiyon" />
+                                <input type="hidden" name="THMID" class="static" value="@Model.ResultSet[0].THMID.Split('-')[0]" />
+                                <input type="hidden" name="LatestNumuneID" class="static" value="@Model.ResultSet[0].LatestNumuneID" />
+
+                                 <input type="hidden" name="AmirOnayDurumu" class="static" />
+                                @for (int i = 0; i < Model.ResultSet.Count; i++)
+                                {
+                                    var originalValue = Model.ResultSet[i].Value;
+                                    var segments = originalValue.Split('-');
+                                    var last13Segments = segments.Skip(Math.Max(0, segments.Length - 13));
+                                    var concatenatedValue = string.Join("-", last13Segments);
+                                    <input type="hidden" name="Trend@(i+1)" class="static" value="@concatenatedValue" />
+                                }
                                 @for (int i = 0; i < Model.ResultSet.Count; i++)
                                 {
                                     <input type="hidden" name="KontrolParametresi@(i+1)" class="static" value="@Model.ResultSet[i].KontrolParametresi" />
@@ -251,16 +353,29 @@
                                     <input type="hidden" name="UstOnaySiniri@(i+1)" class="static" value="@Model.ResultSet[i].UstOnaySiniri" />
                                 }
                             </td>
-                            <td><input type="text" name="AmirOnayDurumu" class="static" /></td>
                             <td><input type="text" name="PersonelSicilNo" class="static" value="@ViewBag.PersonelSicilNo" /></td>
 
                             @for (int i = 0; i < Model.ResultSet.Count; i++)
                             {
                                 var name = $"Value{i + 1}";
                                 <td>
-                                    <input type="text" name="@name" id="@i" class="static colorcheck" oninput="updateColor(@i)" onkeydown="updateColor(@i)" />
+                                    <input type="text" name="@name" id="@i" class="static colorcheck" oninput="validateFloatInput(this)" onkeydown="updateColor(@i)" required />
                                 </td>
                             }
+
+                            <script>
+                                function validateFloatInput(input) {
+                                    let value = input.value;
+
+                                    value = value.replace(/[^0-9,]/g, '');
+
+                                    const commaCount = (value.match(/,/g) || []).length;
+                                    if (commaCount > 1) {
+                                        value = value.slice(0, value.lastIndexOf(','));
+                                    }
+                                    input.value = value;
+                                }
+                            </script>
                             <td>
                                 <button type="button" class="btn-outline-success" id="sendButton">Gönder</button>
                             </td>
@@ -269,11 +384,1368 @@
                 </table>
                 <table>
                     <thead>
-                
+                        <tr>
+                            <th>Hammadde ID</th>
+                            <th>Sıra No</th>
+                            <th>Üretim Tarihi</th>
+                            <th>MalzemeLotSeriNo</th>
+                            <th>THMID</th>
+                            <th>Saat</th>
+                            <th>Açıklama</th>
+                            <th>Amir Onay Durumu</th>
+                            <th>IrsaliyeNo</th>
+                            <th>MalzemeLotSeriNo</th>
+                            <th>MalzemeMiktarı</th>
+                            <th>MiktarBirimi</th>
+                            <th>MalzemeSKT</th>
+                            <th>KYKBarkodNo</th>
+
+                            @foreach (var item in Model.ResultSet)
+                            {
+                                <th>
+                                    <sub style="font-size: smaller; color: black">ÜŞOS: @item.UstSartliKabulSiniri</sub>
+                                    <br />
+                                    <sub style="font-size: smaller; color: black">ÜOS: @item.UstOnaySiniri</sub>
+                                    <br />
+                                    <sub style="font-size: smaller; color: black">AOS: @item.AltOnaySiniri</sub>
+                                    <br />
+                                    <sub style="font-size: smaller; color: black">AŞOS: @item.AltSartliKabulSiniri</sub>
+                                    <br />
+                                    @item.KontrolParametresi
+                                </th>
+                            }
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                        </tr>
+                        @{
+                            if (Model.ResultSet.Count == 1)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string))>();
+
+                                var firstResult = Model.ResultSet[0];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length}.Max();
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                    </tr>
+                                }
+
+                            }
+                             else if (Model.ResultSet.Count == 2 )
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, string))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length }.Max();
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty
+
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8</td>
+                                    </tr>
+                                }
+
+                            }                          
+                            else if (Model.ResultSet.Count == 3)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 4)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length}.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 5)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 6)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 7)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+                                var sevenresult = Model.ResultSet[6];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue7 = sevenresult?.Value != null ? sevenresult.Value.Split('-') : new string[] { };
+
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                    i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 8)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+                                var sevenresult = Model.ResultSet[6];
+                                var eightresult = Model.ResultSet[7];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue7 = sevenresult?.Value != null ? sevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue8 = eightresult?.Value != null ?
+                                eightresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                    i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                    i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                        <td>@row.Item8.Item8.Item7</td>
+                                    </tr>
+                                }
+
+                            }
+                       
+                            else if (Model.ResultSet.Count == 9)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+                                var sevenresult = Model.ResultSet[6];
+                                var eightresult = Model.ResultSet[7];
+                                var nineresult = Model.ResultSet[8];
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue7 = sevenresult?.Value != null ? sevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue8 = eightresult?.Value != null ?
+                                eightresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue9 = nineresult?.Value != null ? nineresult.Value.Split('-') : new string[] { };
+
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                    i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                    i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                    i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                        <td>@row.Item8.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item8</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 10)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+                                var sevenresult = Model.ResultSet[6];
+                                var eightresult = Model.ResultSet[7];
+                                var nineresult = Model.ResultSet[8];
+                                var tenresult = Model.ResultSet[9];
+
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue7 = sevenresult?.Value != null ? sevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue8 = eightresult?.Value != null ?
+                                eightresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue9 = nineresult?.Value != null ? nineresult.Value.Split('-') : new string[] { };
+                                var splitDataValue10 = tenresult?.Value != null ?
+                                tenresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                    i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                    i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                    i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                    i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                        <td>@row.Item8.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item8</td>
+                                        <td>@row.Item8.Item8.Item9</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 11)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+                                var sevenresult = Model.ResultSet[6];
+                                var eightresult = Model.ResultSet[7];
+                                var nineresult = Model.ResultSet[8];
+                                var tenresult = Model.ResultSet[9];
+                                var elevenresult = Model.ResultSet[10];
+
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue7 = sevenresult?.Value != null ? sevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue8 = eightresult?.Value != null ?
+                                eightresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue9 = nineresult?.Value != null ? nineresult.Value.Split('-') : new string[] { };
+                                var splitDataValue10 = tenresult?.Value != null ?
+                                tenresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                    var splitDataValue11 = elevenresult?.Value != null ? elevenresult.Value.Split('-') : new string[] { };
+
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                    i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                    i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                    i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                    i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty,
+                                    i < splitDataValue11.Length ? splitDataValue11[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                        <td>@row.Item8.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item8</td>
+                                        <td>@row.Item8.Item8.Item9</td>
+                                        <td>@row.Item8.Item8.Item10</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 12)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string, string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+                                var sevenresult = Model.ResultSet[6];
+                                var eightresult = Model.ResultSet[7];
+                                var nineresult = Model.ResultSet[8];
+                                var tenresult = Model.ResultSet[9];
+                                var elevenresult = Model.ResultSet[10];
+                                var twelveresult = Model.ResultSet[11];
+
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue7 = sevenresult?.Value != null ? sevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue8 = eightresult?.Value != null ?
+                                eightresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue9 = nineresult?.Value != null ? nineresult.Value.Split('-') : new string[] { };
+                                var splitDataValue10 = tenresult?.Value != null ?
+                                tenresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue11 = elevenresult?.Value != null ? elevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue12 = twelveresult?.Value != null ?
+                                twelveresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length, splitDataValue11.Length, splitDataValue12.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                    i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                    i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                    i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                    i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty,
+                                    i < splitDataValue11.Length ? splitDataValue11[i] : string.Empty,
+                                    i < splitDataValue12.Length ? splitDataValue12[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                        <td>@row.Item8.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item8</td>
+                                        <td>@row.Item8.Item8.Item9</td>
+                                        <td>@row.Item8.Item8.Item10</td>
+                                        <td>@row.Item8.Item8.Item11</td>
+                                    </tr>
+                                }
+
+                            }
+                            else if (Model.ResultSet.Count == 13)
+                            {
+                                var rowData = new List<(string, string, string, string, string, string, string, (string, string, string, string, string, string, string, (string, string, string, string, string, string, string, string, string, string, string, string)))>();
+
+                                var firstResult = Model.ResultSet[0];
+                                var secondResult = Model.ResultSet[1];
+                                var thirdResult = Model.ResultSet[2];
+                                var fourthResult = Model.ResultSet[3];
+                                var fifthResult = Model.ResultSet[4];
+                                var sixresult = Model.ResultSet[5];
+                                var sevenresult = Model.ResultSet[6];
+                                var eightresult = Model.ResultSet[7];
+                                var nineresult = Model.ResultSet[8];
+                                var tenresult = Model.ResultSet[9];
+                                var elevenresult = Model.ResultSet[10];
+                                var twelveresult = Model.ResultSet[11];
+                                var thirteenresult = Model.ResultSet[12];
+
+
+                                var SiraNo = firstResult?.SiraNo != null ? firstResult.SiraNo.Split('-') : new string[] { };
+                                var MalzemeUretimTarihi = firstResult?.MalzemeUretimTarihi != null ? firstResult.MalzemeUretimTarihi.Split('*') : new string[] { };
+                                var KontrolSaati = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var NumuneSeriNo = firstResult?.THMID != null ? firstResult.THMID.Split('-') : new string[] { };
+                                var Mudahale = firstResult?.Saat != null ? firstResult.Saat.Split('-') : new string[] { };
+                                var splitDataAciklama = firstResult?.Aciklama != null ? firstResult.Aciklama.Split('-') : new string[] { };
+                                var AmirOnayDurumu = firstResult?.AmirOnayDurumu != null ? firstResult.AmirOnayDurumu.Split('-') : new string[] { };
+                                var IrsaliyeNo = firstResult?.IrsaliyeNo != null ? firstResult.IrsaliyeNo.Split('-') : new string[] { };
+                                var MalzemeLotSeriNo = firstResult?.MalzemeLotSeriNo != null ? firstResult.MalzemeLotSeriNo.Split('-') : new string[] { };
+                                var MalzemeMiktarı = firstResult?.MalzemeMiktarı != null ? firstResult.MalzemeMiktarı.Split('-') : new string[] { };
+                                var MiktarBirimi = firstResult?.MiktarBirimi != null ? firstResult.MiktarBirimi.Split('-') : new string[] { };
+                                var MalzemeSKT = firstResult?.MalzemeSKT != null ? firstResult.MalzemeSKT.Split('-') : new string[] { };
+                                var KYKBarkodNo = firstResult?.KYKBarkodNo != null ? firstResult.KYKBarkodNo.Split('-') : new string[] { };
+                                var splitDataValue = firstResult?.Value != null ? firstResult.Value.Split('-') : new string[] { };
+                                var splitDataValue2 = secondResult?.Value != null ?
+                                secondResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue3 = thirdResult?.Value != null ? thirdResult.Value.Split('-') : new string[] { };
+                                var splitDataValue4 = fourthResult?.Value != null ?
+                                fourthResult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue5 = fifthResult?.Value != null ? fifthResult.Value.Split('-') : new string[] { }; ;
+                                var splitDataValue6 = sixresult?.Value != null ?
+                                sixresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue7 = sevenresult?.Value != null ? sevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue8 = eightresult?.Value != null ?
+                                eightresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue9 = nineresult?.Value != null ? nineresult.Value.Split('-') : new string[] { };
+                                var splitDataValue10 = tenresult?.Value != null ?
+                                tenresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue11 = elevenresult?.Value != null ? elevenresult.Value.Split('-') : new string[] { };
+                                var splitDataValue12 = twelveresult?.Value != null ?
+                                twelveresult.Value.Split('-').Reverse().ToArray() :
+                                new string[] { };
+                                var splitDataValue13 = thirteenresult?.Value != null ? thirteenresult.Value.Split('-') : new string[] { };
+
+                                int maxLength = new[] { SiraNo.Length, MalzemeUretimTarihi.Length, KontrolSaati.Length, NumuneSeriNo.Length, Mudahale.Length, splitDataAciklama.Length, AmirOnayDurumu.Length, splitDataValue.Length, splitDataValue2.Length, splitDataValue3.Length, splitDataValue4.Length, splitDataValue5.Length, splitDataValue6.Length, splitDataValue7.Length, splitDataValue8.Length, splitDataValue9.Length, splitDataValue10.Length, splitDataValue11.Length, splitDataValue12.Length, splitDataValue13.Length }.Max();
+
+
+                                for (int i = maxLength - 1; i >= 0; i--)
+                                {
+                                    rowData.Add((
+                                    i < SiraNo.Length ? SiraNo[i] : string.Empty,
+                                    i < MalzemeUretimTarihi.Length ? MalzemeUretimTarihi[i] : string.Empty,
+                                    i < KontrolSaati.Length ? KontrolSaati[i] : string.Empty,
+                                    i < NumuneSeriNo.Length ? NumuneSeriNo[i] : string.Empty,
+                                    i < Mudahale.Length ? Mudahale[i] : string.Empty,
+                                    i < splitDataAciklama.Length ? splitDataAciklama[i] : string.Empty,
+                                    i < AmirOnayDurumu.Length ? AmirOnayDurumu[i] : string.Empty,
+                                    (
+                                    i < IrsaliyeNo.Length ? IrsaliyeNo[i] : string.Empty,
+                                    i < MalzemeLotSeriNo.Length ? MalzemeLotSeriNo[i] : string.Empty,
+                                    i < MalzemeMiktarı.Length ? MalzemeMiktarı[i] : string.Empty,
+                                    i < MiktarBirimi.Length ? MiktarBirimi[i] : string.Empty,
+                                    i < MalzemeSKT.Length ? MalzemeSKT[i] : string.Empty,
+                                    i < KYKBarkodNo.Length ? KYKBarkodNo[i] : string.Empty,
+                                    i < splitDataValue.Length ? splitDataValue[i] : string.Empty,
+                                    (
+                                    i < splitDataValue2.Length ? splitDataValue2[i] : string.Empty,
+                                    i < splitDataValue3.Length ? splitDataValue3[i] : string.Empty,
+                                    i < splitDataValue4.Length ? splitDataValue4[i] : string.Empty,
+                                    i < splitDataValue5.Length ? splitDataValue5[i] : string.Empty,
+                                    i < splitDataValue6.Length ? splitDataValue6[i] : string.Empty,
+                                    i < splitDataValue7.Length ? splitDataValue7[i] : string.Empty,
+                                    i < splitDataValue8.Length ? splitDataValue8[i] : string.Empty,
+                                    i < splitDataValue9.Length ? splitDataValue9[i] : string.Empty,
+                                    i < splitDataValue10.Length ? splitDataValue10[i] : string.Empty,
+                                    i < splitDataValue11.Length ? splitDataValue11[i] : string.Empty,
+                                    i < splitDataValue12.Length ? splitDataValue12[i] : string.Empty,
+                                    i < splitDataValue13.Length ? splitDataValue13[i] : string.Empty
+                                    )
+                                    )
+                                    ));
+                                }
+
+                                var last50Rows = rowData.ToList();
+
+                                @foreach (var row in last50Rows)
+                                {
+                                    <tr>
+                                        <td>@Model.ResultSet[0].HammaddeID</td>
+                                        <td>@row.Item1</td>
+                                        <td>@row.Item2</td>
+                                        <td>@row.Item3</td>
+                                        <td>@row.Item4</td>
+                                        <td>@row.Item5</td>
+                                        <td>@row.Item6</td>
+                                        <td>@row.Item7</td>
+                                        <td>@row.Item8.Item1</td>
+                                        <td>@row.Item8.Item2</td>
+                                        <td>@row.Item8.Item3</td>
+                                        <td>@row.Item8.Item4</td>
+                                        <td>@row.Item8.Item5</td>
+                                        <td>@row.Item8.Item6</td>
+                                        <td>@row.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item1</td>
+                                        <td>@row.Item8.Item8.Item2</td>
+                                        <td>@row.Item8.Item8.Item3</td>
+                                        <td>@row.Item8.Item8.Item4</td>
+                                        <td>@row.Item8.Item8.Item5</td>
+                                        <td>@row.Item8.Item8.Item6</td>
+                                        <td>@row.Item8.Item8.Item7</td>
+                                        <td>@row.Item8.Item8.Item8</td>
+                                        <td>@row.Item8.Item8.Item9</td>
+                                        <td>@row.Item8.Item8.Item10</td>
+                                        <td>@row.Item8.Item8.Item11</td>
+                                        <td>@row.Item8.Item8.Item12</td>
+                                    </tr>
+                                }
+
+                            }
+
+                        }
                     </tbody>
                 </table>
 
@@ -309,28 +1781,34 @@
 
         function updateColor(index) {
             var element = document.getElementById('' + index);
-            var value = parseFloat(element.value);
+            var value = element.value.replace(",", ".");
+            var parsedValue = parseFloat(value);
             var lowerLimit = json[index].AltOnaySiniri;
             var upperLimit = json[index].UstOnaySiniri;
-            var lowerConditionalLimit = json[index].AltSartliKabulSiniri
-            var upperConditionalLimit = json[index].UstSartliKabulSiniri
-            var isValidNumber = !isNaN(value);
+            var lowerConditionalLimit = json[index].AltSartliKabulSiniri;
+            var upperConditionalLimit = json[index].UstSartliKabulSiniri;
+            var isValidNumber = !isNaN(parsedValue);
             var color = "red";
 
             if (isValidNumber) {
-                if (value >= lowerLimit && value <= upperLimit) {
+                if (lowerLimit === 0 && lowerConditionalLimit === 0 && upperLimit === 1 && upperConditionalLimit === 1) {
+                    if (parsedValue === 0) {
+                        color = "red";
+                    } else if (parsedValue === 1) {
+                        color = "green";
+                    }
+                } else if (parsedValue >= lowerLimit && parsedValue <= upperLimit) {
                     color = "green";
-                } else if (value >= lowerConditionalLimit && value <= upperConditionalLimit) {
+                } else if (parsedValue >= lowerConditionalLimit && parsedValue <= upperConditionalLimit) {
                     color = "yellow";
-                    sendEmail(json);
                 }
             }
 
             setAndCheckMode(index, color);
-
             element.style.backgroundColor = color;
             checkColors();
         }
+
 
         function setAndCheckMode(index, color) {
             inputStatus.set(index, color);
@@ -343,8 +1821,6 @@
 
             inputStatus.forEach((value, index, map) => {
 
-                // count[value] += 1;
-
                 if (value == 'red') {
                     count.red += 1;
                 } else if (value == 'yellow') {
@@ -356,6 +1832,7 @@
             document.querySelector('[name="red"]').value = count.red;
             document.querySelector('[name="yellow"]').value = count.yellow;
             document.querySelector('[name="green"]').value = count.green;
+
             if (count.red > 0) {
                 document.getElementById('onay_durumu').value = 'red';
                 document.getElementById('onay_durumu_p').innerHTML = 'Üretimi Durdur!';
@@ -374,6 +1851,9 @@
 
             console.log(count)
         }
+
+    </script>
+    <script>
         function toCamelCase(str) {
             return str.replace(/([-_][a-z])/gi, function ($1) {
                 return $1.toUpperCase().replace('-', '').replace('_', '');
@@ -381,8 +1861,39 @@
                 return match.toLowerCase();
             });
         }
+
+        function clearForm() {
+            var fields = document.getElementsByClassName("static");
+            for (var i = 0; i < fields.length; i++) {
+                var field = fields[i];
+                if (field.type === "checkbox") {
+                    field.checked = false;
+                } else {
+                    field.value = '';
+                }
+            }
+        }
+
         document.getElementById('sendButton').addEventListener('click', function (e) {
             e.preventDefault();
+
+
+            var requiredFields = document.querySelectorAll('[required]');
+            var formIsValid = true;
+
+            requiredFields.forEach(function (field) {
+                if (!field.value.trim()) {
+                    formIsValid = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+
+            if (!formIsValid) {
+                alert('Lütfen zorunlu alanları doldurunuz.');
+                return;
+            }
 
             var fields = document.getElementsByClassName("static");
             var formdata = {};
@@ -390,24 +1901,19 @@
                 var field = fields[i];
                 var name = field.name;
                 let value;
-                if (field.type === "checkbox")
+                if (field.type === "checkbox") {
                     value = field.checked;
-                else {
+                } else {
                     if (!name.startsWith("Value"))
                         value = field.value.trim();
                     else
-                        value = field.value ? field.value : "1"
-                    console.log(name, value);
+                        value = field.value ? field.value : "1";
                 }
 
                 formdata[toCamelCase(name)] = value;
             }
-            console.log(formdata);
-
-
 
             var jsonData = JSON.stringify(formdata);
-
             console.log("Gönderilen veriler:", jsonData);
 
             var xhr = new XMLHttpRequest();
@@ -417,15 +1923,117 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         alert('Numune ve Value ekleme işlemi başarıyla tamamlandı!');
-                        window.location.href = '/GetUpatamaKodlariByUrunID/Index';
+                        clearForm();
                     } else {
-                        alert('Numune ve Value ekleme işleminde bir hata oluştu.Amirinize danışınız!');
-                        window.location.href = '/GetUpatamaKodlariByUrunID/Index';
+                        alert('Numune ve Value ekleme işleminde bir hata oluştu. Amirinizle iletişime geçiniz!');
+                        window.location.href = '/GetHmatamaByhmId/Index';
                     }
                 }
             };
             xhr.send(jsonData);
         });
+
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function filterUnvani() {
+            var selectedMalzeme = document.getElementById("MalzemeAciklamasi").value;
+            var unvanOptions = document.getElementsByClassName("tedarikci-option");
+
+            for (var i = 0; i < unvanOptions.length; i++) {
+                if (unvanOptions[i].getAttribute("data-malzeme") === selectedMalzeme) {
+                    unvanOptions[i].style.display = "block";
+                } else {
+                    unvanOptions[i].style.display = "none"; 
+                }
+            }
+
+            document.getElementById("UNVANI").value = "";
+            document.getElementById("THMID").value = "";
+        }
+
+        function updateThmid() {
+            var selectedOption = document.getElementById("UNVANI").selectedOptions[0];
+            var thmId = selectedOption.getAttribute("data-thmid");
+            document.getElementById("THMID").value = thmId;
+
+            localStorage.setItem("selectedThmid", thmId);
+        }
+
+        function saveSelectedUnvani() {
+            var selectedUnvani = document.getElementById("UNVANI").value;
+            var selectedMalzeme = document.getElementById("MalzemeAciklamasi").value;
+            var thmId = document.getElementById("THMID").value;
+
+            localStorage.setItem("selectedUnvani", selectedUnvani);
+            localStorage.setItem("selectedMalzeme", selectedMalzeme);
+            localStorage.setItem("selectedThmid", thmId);
+
+            return true;
+        }
+
+        window.onload = function () {
+            var storedMalzeme = localStorage.getItem("selectedMalzeme");
+            if (storedMalzeme) {
+                document.getElementById("MalzemeAciklamasi").value = storedMalzeme;
+                filterUnvani();
+            }
+
+            var storedUnvani = localStorage.getItem("selectedUnvani");
+            if (storedUnvani) {
+                document.getElementById("UNVANI").value = storedUnvani;
+            }
+
+            var storedThmId = localStorage.getItem("selectedThmid");
+            if (storedThmId) {
+                document.getElementById("THMID").value = storedThmId;
+            }
+        };
+    </script>
+    <script>
+        function filterUnvani() {
+            var malzemeAciklamasiSelect = document.getElementById("MalzemeAciklamasi");
+            var fabrikaId = document.getElementById("fabrikaId").value;
+            var selectedMalzeme = malzemeAciklamasiSelect.value;
+
+            var unvaniSelect = document.getElementById("UNVANI");
+            var options = unvaniSelect.options;
+
+            for (var i = 0; i < options.length; i++) {
+                var option = options[i];
+                if (
+                    option.getAttribute("data-malzeme") === selectedMalzeme &&
+                    option.getAttribute("data-fabrika-id") === fabrikaId
+                ) {
+                    option.style.display = ""; 
+                } else {
+                    option.style.display = "none"; 
+                }
+            }
+
+
+            unvaniSelect.selectedIndex = -1; 
+            document.getElementById("THMID").value = "";
+        }
+
+        function updateThmid() {
+            var unvaniSelect = document.getElementById("UNVANI");
+            var fabrikaId = document.getElementById("fabrikaId").value;
+            var selectedOption = unvaniSelect.options[unvaniSelect.selectedIndex];
+
+            var thmid = "";
+            if (selectedOption) {
+                if (selectedOption.getAttribute("data-fabrika-id") === fabrikaId) {
+                    thmid = selectedOption.getAttribute("data-thmid");
+                }
+            }
+
+            document.getElementById("THMID").value = thmid; 
+        }
+    </script>
+
+
+
 </body>
 </html>

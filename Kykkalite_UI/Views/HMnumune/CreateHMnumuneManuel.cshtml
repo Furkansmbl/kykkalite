@@ -1,0 +1,127 @@
+﻿@model CreateHMnumuneManuelDto
+@{
+    ViewData["Title"] = "CreateUnumune";
+    Layout = "~/Views/Admin/Index.cshtml";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4" style="overflow-x: auto; white-space: nowrap;">
+                <h6 class="mb-4">Yeni Hammadde Numune Ekleme Sayfası</h6>
+                <form method="post">
+                    <div class="d-flex">
+                        <div class="flex-grow-1">
+                            <label for="HammaddeId" class="form-label">HammaddeId</label>
+                            <input type="number" asp-for="HammaddeId" class="form-control" id="HammaddeId" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="FabrikaId" class="form-label">FabrikaId</label>
+                            <input type="number" asp-for="FabrikaId" class="form-control" id="FabrikaId" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="SiraNo" class="form-label">SiraNo</label>
+                            <input type="text" asp-for="SiraNo" class="form-control" id="SiraNo" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="Tarihi" class="form-label">Tarihi</label>
+                            <input type="text" class="form-control" asp-for="Tarihi" id="Tarihi" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="Saat" class="form-label"> Saat</label>
+                            <input type="text" class="form-control" asp-for="Saat" id="Saat" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="IrsaliyeNo" class="form-label">IrsaliyeNo</label>
+                            <input type="text" asp-for="IrsaliyeNo" class="form-control" id="IrsaliyeNo" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="MalzemeLotSeriNo" class="form-label">MalzemeLotSeriNo</label>
+                            <input type="text" asp-for="MalzemeLotSeriNo" class="form-control" id="MalzemeLotSeriNo" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="KYKBarkodNo" class="form-label">KYKBarkodNo</label>
+                            <input type="text" asp-for="KYKBarkodNo" class="form-control" id="KYKBarkodNo" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="MalzemeUretimTarihi" class="form-label">MalzemeUretimTarihi</label>
+                            <input type="text" asp-for="MalzemeUretimTarihi" class="form-control" id="MalzemeUretimTarihi" />
+                        </div>
+                         <div class="flex-grow-1">
+                            <label for="MalzemeSkt" class="form-label">MalzemeSkt</label>
+                            <input type="text" asp-for="MalzemeSkt" class="form-control" id="MalzemeSkt" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="KYKBarkodNo" class="form-label">KYKBarkodNo</label>
+                            <input type="text" asp-for="KYKBarkodNo" class="form-control" id="KYKBarkodNo" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="MalzemeMiktarı" class="form-label">MalzemeMiktarı</label>
+                            <input type="text" asp-for="MalzemeMiktarı" class="form-control" id="MalzemeMiktarı" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="MiktarBirimi" class="form-label">MiktarBirimi</label>
+                            <input type="text" asp-for="MiktarBirimi" class="form-control" id="MiktarBirimi" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="Aciklama" class="form-label">Aciklama</label>
+                            <input type="text" asp-for="Aciklama" class="form-control" id="Aciklama" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="OnayDurumu" class="form-label">OnayDurumu</label>
+                            <select asp-for="OnayDurumu" class="form-select" id="OnayDurumu">
+                                <option value="true">Aktif</option>
+                                <option value="false">Pasif</option>
+                            </select>
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="THMID" class="form-label">THMID</label>
+                            <input type="text" asp-for="THMID" class="form-control" id="THMID" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="AmirOnayDurumu" class="form-label">AmirOnayDurumu</label>
+                            <input type="text" asp-for="AmirOnayDurumu" class="form-control" id="AmirOnayDurumu" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="Aciklama" class="form-label">Aciklama</label>
+                            <input type="text" asp-for="Aciklama" class="form-control" id="Aciklama" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="Aciklama" class="form-label">Aciklama</label>
+                            <input type="text" asp-for="Aciklama" class="form-control" id="Aciklama" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="AmirOnayDurumu" class="form-label">Amir OnayDurumu</label>
+                            <input type="text" asp-for="AmirOnayDurumu" class="form-control" id="AmirOnayDurumu" />
+                        </div>
+                        <input type="hidden" class="form-control" asp-for="OlusturmaTarihi" />
+
+                        <div class="flex-grow-1">
+                            <label for="PersonelSicilNo" class="form-label">PersonelSicilNo</label>
+                            <input type="text" asp-for="PersonelSicilNo" class="form-control" id="PersonelSicilNo" />
+                        </div>
+                        <div class="flex-grow-1">
+                            <label for="Versiyon" class="form-label">Versiyon</label>
+                            <input type="text" asp-for="Versiyon" class="form-control" id="Versiyon" />
+                        </div>
+        
+                    </div>
+                    <button class="btn btn-primary mt-4">Hammadde Numuneyi Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var now = new Date();
+
+
+        var formattedDate = now.toISOString().slice(0, 16);
+
+        document.querySelector('[name="OlusturmaTarihi"]').value = formattedDate;
+    });
+</script>

@@ -69,7 +69,7 @@ namespace Kykkalite_UI.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> Index(int fabrikaId, string malzemeAciklamasi , string olusturmaTarihi, string bitisTarihi)
+        public async Task<IActionResult> Index(int fabrikaId, string malzemeAciklamasi , string OlusturmaTarihi, string BitisTarihi)
         {
             var token = User.Claims.FirstOrDefault(x => x.Type == "ipktoken")?.Value;
             var personelSicilNo = _loginService.GetPersonelSicilNo;
@@ -82,10 +82,7 @@ namespace Kykkalite_UI.Controllers
             {
                 var client = _httpClientFactory.CreateClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                var encodedOlusturmaTarihi = Uri.EscapeDataString(olusturmaTarihi);
-                var encodedBitisTarihi = Uri.EscapeDataString(bitisTarihi);
-
-                var response = await client.GetAsync($"http://localhost:44344/api/GetRapor?FabrikaId={fabrikaId}&MalzemeAciklamasi={malzemeAciklamasi}&OlusturmaTarihi={encodedOlusturmaTarihi}&BitisTarihi={encodedBitisTarihi}");
+                var response = await client.GetAsync($"http://localhost:44344/api/GetRapor?FabrikaId={fabrikaId}&MalzemeAciklamasi={malzemeAciklamasi}&OlusturmaTarihi={OlusturmaTarihi}&BitisTarihi={BitisTarihi}");
                  if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadFromJsonAsync<List<GetRaporDtos>>();

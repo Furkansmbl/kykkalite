@@ -28,7 +28,6 @@ namespace KykKaliteApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Log and return the error view
                 return BadRequest(ModelState);
             }
 
@@ -39,16 +38,63 @@ namespace KykKaliteApi.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
-                // You can also return a more specific error message if needed
+                
                 return StatusCode(500, "Bir hata oluştu. HmNumune eklenemedi.");
             }
+        }
+        [HttpPost("Manuel")]
+        public async Task<IActionResult> CreateHMnumuneManuel(CreateHMnumuneManuelDto createHMnumuneManuelDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                _hMnumuneRepository.CreateHMnumuneManuel(createHMnumuneManuelDto);
+                return Ok("Hmnumune Başarılı Bir Şekilde Eklendi");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, "Bir hata oluştu. HmNumune eklenemedi.");
+            }
+        }
+        [HttpPost("Mail")] 
+        public async Task<IActionResult> SentHMnumune([FromBody] CreateHMnumuneDto createHMnumuneDto)
+        {
+            _hMnumuneRepository.SentHMnumune(createHMnumuneDto);
+            return Ok("Unumune Başarılı Bir Şekilde Eklendi");
+        }
+        [HttpPost("TrendMail")]
+        public async Task<IActionResult> TrendMailHmNumune([FromBody] CreateHMnumuneDto createHMnumuneDto)
+        {
+            _hMnumuneRepository.TrendMailHMnumune(createHMnumuneDto);
+            return Ok("Unumune Başarılı Bir Şekilde Eklendi");
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHMnumune(int id)
         {
             _hMnumuneRepository.DeleteHMnumune(id);
             return Ok("HMnumune Başarılı Bir Şekilde Silindi");
+        }
+
+        [HttpGet("validate-token")]
+        public async Task<IActionResult> ValidateToken(string token)
+        {
+            var createHMnumuneDto = await _hMnumuneRepository.GetDataByToken(token);
+            if (createHMnumuneDto != null)
+            {
+                return Ok(createHMnumuneDto);
+            }
+            return NotFound();
+        }
+        [HttpPut("update-amir")]
+        public async Task<IActionResult> UpdateAmir([FromBody] AmirOnayDurumuHMnumuneDto amirOnayDurumuHMnumuneDto )
+        {
+            await _hMnumuneRepository.UpdateAmir(amirOnayDurumuHMnumuneDto);
+            return Ok("Amir Onay Durumu Başarıyla Güncellendi");
         }
     }
 }

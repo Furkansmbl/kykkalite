@@ -13,7 +13,7 @@ namespace KykKaliteApi.Repositories.UrunlerRepository
         {
             _context = context;
         }
-
+        //Yeni Ürün EKleme//
         public async void CreateUrunler(CreateUrunlerDto createUrunlerDto)
         {
 
@@ -30,7 +30,7 @@ namespace KykKaliteApi.Repositories.UrunlerRepository
                 await connection.ExecuteAsync(query, parameters);
             }
         }
-
+        //Ürünlerdeki verileri çağırma//
         public async Task<List<ResultUrunlerDto>> GetAllUrunlerAsync()
         {
             string query = "Select * From Urunler";

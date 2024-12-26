@@ -21,6 +21,7 @@ using KykKaliteApi.Repositories.GetHmpatamaByHmIdRepository;
 using KykKaliteApi.Repositories.GetValueByMalzemeAciklamasiWParametreKodu;
 using KykKaliteApi.Repositories.GetRaporRepository;
 using KykKaliteApi.Repositories.TedarikciRepository;
+using KykKaliteApi.Repositories.DashboardRepository;
 
 
 
@@ -30,7 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<Context>();
 builder.Services.AddTransient<IFabrikalarRepository, FabrikalarRepository>();
 builder.Services.AddTransient<ICihazlarRepository, CihazlarRepository>();
-builder.Services.AddTransient<IHammaddeGruplariRespository,HammaddeGruplariRespository>();
+builder.Services.AddTransient<IHammaddeGruplariRespository, HammaddeGruplariRespository>();
 builder.Services.AddTransient<IHammaddelerRepository, HammaddelerRepository>();
 builder.Services.AddTransient<IHMnumuneRepository, HMnumuneRepository>();
 builder.Services.AddTransient<IHMPNvalueRepository, HMPNvalueRepository>();
@@ -49,7 +50,19 @@ builder.Services.AddTransient<IGetHmpatamaByHmýdRepository, GetHmatamaByHmýdRepo
 builder.Services.AddTransient<IGetValueRepository, GetValueRepository>();
 builder.Services.AddTransient<IGetRaporRepository, GetRaporRepository>();
 builder.Services.AddTransient<ITedarikciRepository, TedarikciRepository>();
+builder.Services.AddTransient<IDashboardRepository, DashboardRepository>();
 
+
+// CORS ekle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin()  // Herhangi bir origin'e izin ver
+               .AllowAnyMethod()  // Herhangi bir HTTP metoduna izin ver
+               .AllowAnyHeader(); // Herhangi bir header'a izin ver
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -65,6 +78,9 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
+
+// CORS middleware'ini kullan
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthorization();
 

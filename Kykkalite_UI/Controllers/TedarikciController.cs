@@ -27,7 +27,7 @@ namespace Kykkalite_UI.Controllers
             if (token != null)
             {
                 var client = _httpClientFactory.CreateClient();
-                var responseMessage = await client.GetAsync("http://localhost:5185/api/Tedarikci");
+                var responseMessage = await client.GetAsync("http://localhost:44344/api/Tedarikci");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -48,7 +48,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(tedarikciDtos);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("http://localhost:5185/api/Tedarikci", stringContent);
+            var responseMessage = await client.PostAsync("http://localhost:44344/api/Tedarikci", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -59,7 +59,7 @@ namespace Kykkalite_UI.Controllers
         public async Task<IActionResult> UpdateTedarikci(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync($"http://localhost:5185/api/Tedarikci/{id}");
+            var responseMessage = await client.GetAsync($"http://localhost:44344/api/Tedarikci/{id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
@@ -74,7 +74,7 @@ namespace Kykkalite_UI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(tedarikciDtos);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PutAsync("http://localhost:5185/api/Tedarikci/", stringContent);
+            var responseMessage = await client.PutAsync("http://localhost:44344/api/Tedarikci/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");

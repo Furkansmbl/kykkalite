@@ -56,7 +56,7 @@ namespace KykKaliteApi.Repositories.KullaniciRepository
 
         public async void UpdateKullanici(UpdateKullaniciDto updateKullaniciDto)
         {
-            string query = "UPDATE Kullanici SET PersonelAdiSoyadi = @personelAdiSoyadi,FabrikaId = @fabrikaId, Gorevi = @gorevi, EklenmeGuncellenmeTarihi = @eklenmeGuncellenmeTarihi, KullanimDurumu = @kullanimDurumu WHERE PersonelSicilNo = @personelSicilNo";
+            string query = "UPDATE Kullanici SET PersonelAdiSoyadi = @personelAdiSoyadi,FabrikaId = @fabrikaId, Gorevi = @gorevi, EklenmeGuncellenmeTarihi = @eklenmeGuncellenmeTarihi, KullanimDurumu = @kullanimDurumu, adminUser = @adminUser WHERE PersonelSicilNo = @personelSicilNo";
             var parameters = new DynamicParameters();
             parameters.Add("@personelSicilNo", updateKullaniciDto.PersonelSicilNo);
             parameters.Add("@personelAdiSoyadi", updateKullaniciDto.PersonelAdiSoyadi);
