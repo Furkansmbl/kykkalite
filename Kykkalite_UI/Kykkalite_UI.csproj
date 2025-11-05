@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KykKaliteApi\KykKaliteApi.csproj" />
+    <ProjectReference Include="..\KykKaliteApi\HalApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

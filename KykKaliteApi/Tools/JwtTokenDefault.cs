@@ -1,4 +1,4 @@
-﻿namespace KykKaliteApi.Tools
+﻿namespace HalApi.Tools
 {
     public class JwtTokenDefault
     {

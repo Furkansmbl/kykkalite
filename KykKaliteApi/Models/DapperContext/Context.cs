@@ -4,7 +4,7 @@ using System;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace KykKaliteApi.Models.DapperContext
+namespace HalApi.Models.DapperContext
 {
     public class Context
     {

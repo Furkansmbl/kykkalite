@@ -1,10 +1,9 @@
-﻿namespace KykKaliteApi.Tools
+﻿namespace HalApi.Tools
 {
     public class TokenResponseViewModel
     {
-        public TokenResponseViewModel(string token, DateTime expireDate,string adminUser , int fabrikaId)
+        public TokenResponseViewModel(string token, DateTime expireDate,string adminUser )
         {
-            FabrikaId = fabrikaId;
             AdminUser = adminUser;
             Token = token;
             ExpireDate = expireDate;
@@ -12,7 +11,6 @@
 
         public string Token { get; set; }
         public string AdminUser { get; set; }
-        public int FabrikaId { get; set; }
         public DateTime ExpireDate { get; set; }
     }
 }

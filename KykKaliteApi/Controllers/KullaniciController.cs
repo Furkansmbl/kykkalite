@@ -1,45 +1,67 @@
-﻿using KykKaliteApi.Dtos.FabrikalarDtos;
-using KykKaliteApi.Dtos.KullaniciDtos;
-using KykKaliteApi.Dtos.UretimHatlariDtos;
-using KykKaliteApi.Repositories.FabrikalarRepository;
-using KykKaliteApi.Repositories.KullaniciRepository;
-using Microsoft.AspNetCore.Http;
+﻿using HalApi.Dtos;
+using HalApi.Repositories.KullaniciRepository;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace KykKaliteApi.Controllers
+namespace HalApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class KullaniciController : ControllerBase
     {
-        private readonly IKullaniciRepository _kullaniciRepository;
-        public KullaniciController(IKullaniciRepository kullaniciRepository)
+        private readonly IKullaniciRepository _repository;
+
+        public KullaniciController(IKullaniciRepository repository)
         {
-            _kullaniciRepository = kullaniciRepository;
+            _repository = repository;
         }
+
+        // GET: api/Kullanici
         [HttpGet]
-        public async Task<IActionResult> KullaniciList()
+        public async Task<ActionResult<List<Kullanici>>> GetAll()
         {
-            var values = await _kullaniciRepository.GetAllKullaniciAsync();
-            return Ok(values);
+            var result = await _repository.GetAllAsync();
+            return Ok(result);
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteKullanici(int id)
+
+        // GET: api/Kullanici/{sicilNo}
+        [HttpGet("{sicilNo}")]
+        public async Task<ActionResult<Kullanici>> GetById(string sicilNo)
         {
-            _kullaniciRepository.DeleteKullanici(id);
-            return Ok("Kullanici Başarılı Bir Şekilde Silindi");
+            var result = await _repository.GetByIdAsync(sicilNo);
+            if (result == null) return NotFound();
+            return Ok(result);
         }
+
+        // POST: api/Kullanici
         [HttpPost]
-        public async Task<IActionResult> CreateKullanici(CreateKullaniciDto createKullaniciDto)
+        public async Task<ActionResult> Create(Kullanici kullanici)
         {
-            _kullaniciRepository.CreateKullanici(createKullaniciDto);
-            return Ok("Kullanici Başarılı Bir Şekilde Eklendi");
+            await _repository.CreateAsync(kullanici);
+            return CreatedAtAction(nameof(GetById), new { sicilNo = kullanici.PersonelSicilNo }, kullanici);
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateUrunKullanici(UpdateKullaniciDto updateKullaniciDto )
+
+        // PUT: api/Kullanici/{sicilNo}
+        [HttpPut("{sicilNo}")]
+        public async Task<ActionResult> Update(string sicilNo, Kullanici kullanici)
         {
-            _kullaniciRepository.UpdateKullanici(updateKullaniciDto);
-            return Ok("Kullanıcı Başarıyla Güncellendi");
+            if (sicilNo != kullanici.PersonelSicilNo) return BadRequest("SicilNo mismatch");
+
+            var updated = await _repository.UpdateAsync(kullanici);
+            if (!updated) return NotFound();
+
+            return NoContent();
+        }
+
+        // DELETE: api/Kullanici/{sicilNo}
+        [HttpDelete("{sicilNo}")]
+        public async Task<ActionResult> Delete(string sicilNo)
+        {
+            var deleted = await _repository.DeleteAsync(sicilNo);
+            if (!deleted) return NotFound();
+
+            return NoContent();
         }
     }
 }

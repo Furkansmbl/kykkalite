@@ -1,11 +1,11 @@
 ﻿using Dapper;
-using KykKaliteApi.Dtos.LoginDtos;
-using KykKaliteApi.Models.DapperContext;
-using KykKaliteApi.Tools;
+using HalApi.Dtos.LoginDtos;
+using HalApi.Models.DapperContext;
+using HalApi.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KykKaliteApi.Controllers
+namespace HalApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -21,7 +21,7 @@ namespace KykKaliteApi.Controllers
         public async Task<IActionResult> SignIn(CreateLoginDto createLoginDto)
         {
             string query = "SELECT * FROM Kullanici WHERE PersonelSicilNo = @personelSicilNo AND Password = @password";
-            string query2 = "SELECT PersonelAdiSoyadi, AdminUser, FabrikaId FROM Kullanici WHERE PersonelSicilNo = @personelSicilNo AND Password = @password";
+            string query2 = "SELECT PersonelAdiSoyadi, AdminUser FROM Kullanici WHERE PersonelSicilNo = @personelSicilNo AND Password = @password";
 
             var parameters = new DynamicParameters();
             parameters.Add("@personelSicilNo", createLoginDto.PersonelSicilNo);
@@ -36,7 +36,6 @@ namespace KykKaliteApi.Controllers
                 {
                     GetCheckAppUserDto model = new GetCheckAppUserDto
                     {
-                        FabrikaId = userDetails.FabrikaId,
                         PersonelSicilNo = user.PersonelSicilNo,
                         PersonelAdiSoyadi = userDetails.PersonelAdiSoyadi,
                         AdminUser = userDetails.AdminUser

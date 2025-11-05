@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-namespace KykKaliteApi.Tools
+namespace HalApi.Tools
 {
     public class JwtTokenGenerator
     {
@@ -28,10 +28,7 @@ namespace KykKaliteApi.Tools
                 claims.Add(new Claim("PersonelSicilNo", model.PersonelSicilNo));
 
 
-            claims.Add(new Claim(ClaimTypes.Locality, model.FabrikaId.ToString()));
-
-            if (!string.IsNullOrWhiteSpace(model.FabrikaId.ToString()))
-                claims.Add(new Claim("FabrikaId", model.FabrikaId.ToString()));
+     
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefault.Key));
             var signinCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -59,7 +56,7 @@ namespace KykKaliteApi.Tools
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             string generatedToken = tokenHandler.WriteToken(token);
 
-            return new TokenResponseViewModel(generatedToken, expireDate, model.AdminUser , model.FabrikaId);
+            return new TokenResponseViewModel(generatedToken, expireDate, model.AdminUser );
         }
     }
 }

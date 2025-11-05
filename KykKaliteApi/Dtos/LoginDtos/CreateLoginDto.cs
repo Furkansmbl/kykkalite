@@ -1,4 +1,4 @@
-﻿namespace KykKaliteApi.Dtos.LoginDtos
+﻿namespace HalApi.Dtos.LoginDtos
 {
     public class CreateLoginDto
     {

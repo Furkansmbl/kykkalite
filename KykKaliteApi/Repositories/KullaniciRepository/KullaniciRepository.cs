@@ -1,76 +1,69 @@
 ﻿using Dapper;
-using KykKaliteApi.Dtos.HMPNvalueDtos;
-using KykKaliteApi.Dtos.KullaniciDtos;
-using KykKaliteApi.Dtos.UPNvalueDtos;
-using KykKaliteApi.Models.DapperContext;
+using HalApi.Dtos;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace KykKaliteApi.Repositories.KullaniciRepository
+namespace HalApi.Repositories.KullaniciRepository
 {
     public class KullaniciRepository : IKullaniciRepository
     {
-        private readonly Context _context;
-        public KullaniciRepository(Context context)
+        private readonly string _connectionString;
+
+        public KullaniciRepository(IConfiguration configuration)
         {
-            _context = context;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        public async void CreateKullanici(CreateKullaniciDto createKullaniciDto)
+        public async Task<List<Kullanici>> GetAllAsync()
         {
-            string query = "insert into Kullanici (PersonelSicilNo,PersonelAdiSoyadi,FabrikaId,Gorevi,AdminUser,Password,EklenmeGuncellenmeTarihi,KullanimDurumu) values (@personelSicilNo,@personelAdiSoyadi,@fabrikaId,@gorevi,@adminUser,@password,@eklenmeGuncellenmeTarihi,@kullanimDurumu)";
-            var parameters = new DynamicParameters();
-            parameters.Add("@personelSicilNo", createKullaniciDto.PersonelSicilNo);
-            parameters.Add("@personelAdiSoyadi", createKullaniciDto.PersonelAdiSoyadi);
-            parameters.Add("@fabrikaId", createKullaniciDto.FabrikaId);
-            parameters.Add("@gorevi", createKullaniciDto.Gorevi);
-            parameters.Add("@adminUser", createKullaniciDto.AdminUser);
-            parameters.Add("@password", createKullaniciDto.Password); 
-            parameters.Add("@eklenmeGuncellenmeTarihi", createKullaniciDto.EklenmeGuncellenmeTarihi);
-            parameters.Add("@kullanimDurumu", true);
-
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, parameters);
-            }
+            using var connection = new SqlConnection(_connectionString);
+            var query = "SELECT * FROM Kullanicilar";
+            var result = await connection.QueryAsync<Kullanici>(query);
+            return result.ToList();
         }
 
-        public async void DeleteKullanici(int id)
+        public async Task<Kullanici?> GetByIdAsync(string sicilNo)
         {
-            string query = "Delete From Kullanici Where PersonelSicilNo=@personelSicilNo";
-            var parameters = new DynamicParameters();
-            parameters.Add("personelSicilNo", id);
-            using (var connection = _context.CreateConnection())
-            {
-                int v = await connection.ExecuteAsync(query, parameters);
-            }
+            using var connection = new SqlConnection(_connectionString);
+            var query = "SELECT * FROM Kullanicilar WHERE PersonelSicilNo = @SicilNo";
+            return await connection.QueryFirstOrDefaultAsync<Kullanici>(query, new { SicilNo = sicilNo });
         }
 
-        public async Task<List<ResultKullaniciDto>> GetAllKullaniciAsync()
+        public async Task<int> CreateAsync(Kullanici kullanici)
         {
-            string query = "Select * From Kullanici";
-            using (var connection = _context.CreateConnection())
-            {
-                var values = await connection.QueryAsync<ResultKullaniciDto>(query);
-                return values.ToList();
-            }
+            using var connection = new SqlConnection(_connectionString);
+            var query = @"INSERT INTO Kullanicilar 
+                          (PersonelSicilNo, PersonelAdiSoyadi, Gorevi, AdminUser, Password, EklenmeGuncellenmeTarihi, KullanimDurumu)
+                          VALUES 
+                          (@PersonelSicilNo, @PersonelAdiSoyadi, @Gorevi, @AdminUser, @Password, @EklenmeGuncellenmeTarihi, @KullanimDurumu)";
+            var result = await connection.ExecuteAsync(query, kullanici);
+            return result;
         }
 
-        public async void UpdateKullanici(UpdateKullaniciDto updateKullaniciDto)
+        public async Task<bool> UpdateAsync(Kullanici kullanici)
         {
-            string query = "UPDATE Kullanici SET PersonelAdiSoyadi = @personelAdiSoyadi,FabrikaId = @fabrikaId, Gorevi = @gorevi, EklenmeGuncellenmeTarihi = @eklenmeGuncellenmeTarihi, KullanimDurumu = @kullanimDurumu, adminUser = @adminUser WHERE PersonelSicilNo = @personelSicilNo";
-            var parameters = new DynamicParameters();
-            parameters.Add("@personelSicilNo", updateKullaniciDto.PersonelSicilNo);
-            parameters.Add("@personelAdiSoyadi", updateKullaniciDto.PersonelAdiSoyadi);
-            parameters.Add("@fabrikaId", updateKullaniciDto.FabrikaId);
-            parameters.Add("@gorevi", updateKullaniciDto.Gorevi);
-            parameters.Add("@adminUser", updateKullaniciDto.AdminUser);
-            parameters.Add("@password", updateKullaniciDto.Password);
-            parameters.Add("@eklenmeGuncellenmeTarihi", updateKullaniciDto.EklenmeGuncellenmeTarihi);
-            parameters.Add("@kullanimDurumu", updateKullaniciDto.KullanimDurumu);
+            using var connection = new SqlConnection(_connectionString);
+            var query = @"UPDATE Kullanicilar SET
+                          PersonelAdiSoyadi = @PersonelAdiSoyadi,
+                          Gorevi = @Gorevi,
+                          AdminUser = @AdminUser,
+                          Password = @Password,
+                          EklenmeGuncellenmeTarihi = @EklenmeGuncellenmeTarihi,
+                          KullanimDurumu = @KullanimDurumu
+                          WHERE PersonelSicilNo = @PersonelSicilNo";
+            var affected = await connection.ExecuteAsync(query, kullanici);
+            return affected > 0;
+        }
 
-            using (var connection = _context.CreateConnection())
-            {
-                await connection.ExecuteAsync(query, parameters);
-            }
+        public async Task<bool> DeleteAsync(string sicilNo)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var query = "DELETE FROM Kullanicilar WHERE PersonelSicilNo = @SicilNo";
+            var affected = await connection.ExecuteAsync(query, new { SicilNo = sicilNo });
+            return affected > 0;
         }
     }
 }

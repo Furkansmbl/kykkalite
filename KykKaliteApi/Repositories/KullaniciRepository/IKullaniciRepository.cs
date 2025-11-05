@@ -1,15 +1,15 @@
-﻿using KykKaliteApi.Dtos.HMPNvalueDtos;
-using KykKaliteApi.Dtos.KullaniciDtos;
-using KykKaliteApi.Dtos.UPNvalueDtos;
+﻿using HalApi.Dtos;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace KykKaliteApi.Repositories.KullaniciRepository
+namespace HalApi.Repositories.KullaniciRepository
 {
     public interface IKullaniciRepository
     {
-        Task<List<ResultKullaniciDto>> GetAllKullaniciAsync();
-        void DeleteKullanici(int id);
-        void CreateKullanici(CreateKullaniciDto createKullaniciDto);
-        void UpdateKullanici(UpdateKullaniciDto updateKullaniciDto);
-
+        Task<List<Kullanici>> GetAllAsync();
+        Task<Kullanici?> GetByIdAsync(string sicilNo);
+        Task<int> CreateAsync(Kullanici kullanici);
+        Task<bool> UpdateAsync(Kullanici kullanici);
+        Task<bool> DeleteAsync(string sicilNo);
     }
 }
